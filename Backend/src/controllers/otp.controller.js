@@ -39,13 +39,31 @@ async function sendOtpController(req, res) {
 
         if (purpose === "register") {
 
-            const existingUser = await userModel.findOne({ email });
+            if (purpose === "register") {
 
-            if (existingUser) {
+                const username = (req.body.username || "").trim();
 
-                return res.status(409).json({
-                    message: "Account already exists with this email."
-                });
+                const existingEmail = await userModel.findOne({ email });
+
+                if (existingEmail) {
+
+                    return res.status(409).json({
+                        field: "email",
+                        message: "Account already exists with this email."
+                    });
+
+                }
+
+                const existingUsername = await userModel.findOne({ username });
+
+                if (existingUsername) {
+
+                    return res.status(409).json({
+                        field: "name",
+                        message: "Username is already taken."
+                    });
+
+                }
 
             }
 

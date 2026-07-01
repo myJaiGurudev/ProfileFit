@@ -223,6 +223,7 @@ const Register = () => {
             try {
 
                 await api.post("/otp/send", {
+                    username: formData.name,
                     email: formData.email,
                     purpose: "register"
                 });
@@ -238,9 +239,11 @@ const Register = () => {
 
             } catch (error) {
 
+                const field = error.response?.data?.field;
+
                 setErrors(prev => ({
                     ...prev,
-                    email: error.response?.data?.message || "Failed to send OTP."
+                    [field || "email"]: error.response?.data?.message || "Failed to send OTP."
                 }));
 
             } finally {
@@ -263,10 +266,9 @@ const Register = () => {
         try {
 
             await api.post("/otp/send", {
-
+                username: formData.name,
                 email: formData.email,
                 purpose: "register"
-
             });
 
             clearOtp();
@@ -277,12 +279,11 @@ const Register = () => {
 
         } catch (error) {
 
+            const field = error.response?.data?.field;
+
             setErrors(prev => ({
-
                 ...prev,
-
-                otp: error.response?.data?.message || "Failed to resend OTP."
-
+                [field || "email"]: error.response?.data?.message || "Failed to send OTP."
             }));
 
         } finally {
