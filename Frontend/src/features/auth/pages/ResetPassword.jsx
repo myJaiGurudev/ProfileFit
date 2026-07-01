@@ -56,6 +56,30 @@ const ResetPassword = () => {
 
     const otpRefs = useRef([]);
 
+    const clearOtp = () => {
+
+        setOtp(["", "", "", "", "", ""]);
+
+        setErrors({});
+
+        setCountdown(30);
+
+    };
+
+    const clearPassword = () => {
+
+        setNewPassword("");
+
+        setConfirmPassword("");
+
+        setShowPassword(false);
+
+        setShowConfirmPassword(false);
+
+        setErrors({});
+
+    };
+
     useEffect(() => {
 
         if (step !== 2 || countdown === 0) return;
@@ -87,11 +111,11 @@ const ResetPassword = () => {
 
         setTimeout(() => {
             setLoading(false);
-            setCountdown(30);
+            clearOtp();
             setStep(2);
-            setTimeout(() => {
+            requestAnimationFrame(() => {
                 otpRefs.current[0]?.focus();
-            }, 100);
+            });
         }, 1200);
 
     };
@@ -108,32 +132,12 @@ const ResetPassword = () => {
 
         }
 
-        setErrors({});
+        clearPassword();
         setStep(3);
 
     };
 
     const handleOtp = (value, index) => {
-
-        if (value.length > 1) {
-
-            const pasted = value.slice(0, 6).split("");
-
-            const updated = [...otp];
-
-            pasted.forEach((digit, i) => {
-                updated[i] = digit;
-            });
-
-            setOtp(updated);
-
-            requestAnimationFrame(() => {
-                otpRefs.current[Math.min(pasted.length - 1, 5)]?.focus();
-            });
-
-            return;
-
-        }
 
         if (!/^[0-9]?$/.test(value)) return;
 
@@ -146,6 +150,29 @@ const ResetPassword = () => {
         if (value && index < 5) {
             otpRefs.current[index + 1]?.focus();
         }
+
+    };
+
+    const handlePaste = (e) => {
+
+        e.preventDefault();
+
+        const pastedData = e.clipboardData.getData("text").trim();
+
+        if (!/^\d{6}$/.test(pastedData)) return;
+
+        const updatedOtp = pastedData.split("");
+
+        setOtp(updatedOtp);
+
+        setErrors(prev => ({
+            ...prev,
+            otp: ""
+        }));
+
+        requestAnimationFrame(() => {
+            otpRefs.current[5]?.focus();
+        });
 
     };
 
@@ -179,6 +206,8 @@ const ResetPassword = () => {
 
         setTimeout(() => {
             setLoading(false);
+            clearOtp();
+            clearPassword();
             setStep(4);
         }, 1500);
 
@@ -189,6 +218,9 @@ const ResetPassword = () => {
         if (step !== 4) return;
 
         const timer = setTimeout(() => {
+            clearOtp();
+            clearPassword();
+            setEmail("");
             navigate("/login");
         }, 3000);
 
@@ -281,7 +313,10 @@ const ResetPassword = () => {
                                             value={email}
                                             onChange={(e) => {
                                                 setEmail(e.target.value);
-                                                setErrors({ ...errors, email: "" });
+                                                setErrors(prev => ({
+                                                    ...prev,
+                                                    email: ""
+                                                }));
                                             }}
                                             placeholder="name@example.com"
                                             className={`h-11 w-full rounded-xl border bg-white/5 pl-10 pr-4 text-sm text-white placeholder:text-slate-400 outline-none transition-all duration-300 ${errors.email
@@ -372,6 +407,7 @@ const ResetPassword = () => {
                                                 maxLength={1}
                                                 value={digit}
                                                 onChange={(e) => handleOtp(e.target.value, index)}
+                                                onPaste={handlePaste}
                                                 onKeyDown={(e) => handleBackspace(e, index)}
                                                 className="h-12 w-12 rounded-xl border border-white/10 bg-white/5 text-center text-lg font-semibold text-white outline-none transition-all duration-300 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-500/20"
                                             />
@@ -395,25 +431,46 @@ const ResetPassword = () => {
                                         countdown > 0
                                             ?
 
-                                            <p className="text-sm text-slate-400">
-                                                Resend OTP in <span className="text-indigo-300">{countdown}s</span>
-                                            </p>
+                                            <div className="flex items-center justify-center gap-2 text-sm">
+
+                                                <span className="text-slate-400">
+                                                    Resend OTP in
+                                                </span>
+
+                                                <span className="rounded-md border border-indigo-500/20 bg-indigo-500/10 px-2 py-0.5 font-semibold tracking-wide text-indigo-300 animate-pulse">
+                                                    {countdown}s
+                                                </span>
+
+                                            </div>
 
                                             :
 
                                             <button
                                                 type="button"
                                                 onClick={() => {
-                                                    setOtp(["", "", "", "", "", ""]);
-                                                    setCountdown(30);
-                                                    otpRefs.current[0]?.focus();
-                                                }
-                                                }
-                                                className="cursor-pointer text-sm text-indigo-300 hover:text-indigo-200"
+                                                    clearOtp();
+                                                    requestAnimationFrame(() => {
+                                                        otpRefs.current[0]?.focus();
+                                                    });
+                                                }}
+                                                className="group flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-slate-600 bg-slate-800/40 px-4 py-2 text-sm font-medium text-slate-300 transition-all duration-300 hover:-translate-y-0.5 hover:border-indigo-400 hover:bg-indigo-500/10 hover:text-indigo-300 hover:shadow-lg hover:shadow-indigo-500/10 active:translate-y-0 active:scale-95"
                                             >
-                                                Resend OTP
-                                            </button>
 
+                                                <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    viewBox="0 0 24 24"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    strokeWidth="2"
+                                                    className="h-4 w-4 transition-transform duration-500 group-hover:rotate-180"
+                                                >
+                                                    <path d="M21 12a9 9 0 1 1-2.64-6.36" />
+                                                    <polyline points="21 3 21 9 15 9" />
+                                                </svg>
+
+                                                <span>Resend OTP</span>
+
+                                            </button>
                                     }
 
                                 </div>
@@ -422,7 +479,11 @@ const ResetPassword = () => {
 
                                     <button
                                         type="button"
-                                        onClick={() => setStep(1)}
+                                        onClick={() => {
+                                            clearOtp();
+                                            clearPassword();
+                                            setStep(1);
+                                        }}
                                         className="flex h-11 flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 text-white transition hover:bg-white/10"
                                     >
 
@@ -479,7 +540,10 @@ const ResetPassword = () => {
                                             value={newPassword}
                                             onChange={(e) => {
                                                 setNewPassword(e.target.value);
-                                                setErrors({ ...errors, password: "" });
+                                                setErrors(prev => ({
+                                                    ...prev,
+                                                    password: ""
+                                                }));
                                             }}
                                             placeholder="••••••••"
                                             className={`h-11 w-full rounded-xl border bg-white/5 pl-10 pr-11 text-sm text-white placeholder:text-slate-400 outline-none transition-all duration-300 ${errors.password
@@ -625,7 +689,10 @@ const ResetPassword = () => {
                                             value={confirmPassword}
                                             onChange={(e) => {
                                                 setConfirmPassword(e.target.value);
-                                                setErrors({ ...errors, confirmPassword: "" });
+                                                setErrors(prev => ({
+                                                    ...prev,
+                                                    confirmPassword: ""
+                                                }));
                                             }}
                                             placeholder="••••••••"
                                             className={`h-11 w-full rounded-xl border bg-white/5 pl-10 pr-11 text-sm text-white placeholder:text-slate-400 outline-none transition-all duration-300 ${errors.confirmPassword
@@ -677,8 +744,12 @@ const ResetPassword = () => {
 
                                     <button
                                         type="button"
-                                        onClick={() => setStep(2)}
-                                        className="flex h-11 flex-1 items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 text-white transition hover:bg-white/10"
+                                        onClick={() => {
+                                            clearOtp();
+                                            clearPassword();
+                                            setStep(2);
+                                        }}
+                                        className="flex h-11 flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 text-white transition hover:bg-white/10"
                                     >
 
                                         <FiArrowLeft />

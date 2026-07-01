@@ -6,7 +6,7 @@ const authRouter = Router()
 
 /**
  * @route POST /api/auth/register
- * @description Register a new user
+ * @description register a new user, expects username, email and then send otp to veify email then password in the request body
  * @access Public
  */
 authRouter.post("/register", authController.registerUserController)
@@ -19,6 +19,12 @@ authRouter.post("/register", authController.registerUserController)
  */
 authRouter.post("/login", authController.loginUserController)
 
+/**
+ * @route POST /api/auth/reset-password
+ * @description reset password for a user, expects email and then send otp to veify email then new password in the request body
+ * @access Public
+ */
+authRouter.post("/reset-password", authController.resetPasswordController)
 
 /**
  * @route GET /api/auth/logout
@@ -33,7 +39,7 @@ authRouter.get("/logout", authController.logoutUserController)
  * @description get the current logged in user details
  * @access private
  */
-authRouter.get("/get-me", authMiddleware.authUser, authController.getMeController)
+authRouter.get("/get-details", authMiddleware.authUser, authController.getMeController)
 
 
 module.exports = authRouter

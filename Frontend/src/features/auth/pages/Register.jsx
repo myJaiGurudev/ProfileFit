@@ -3,6 +3,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { FcGoogle } from "react-icons/fc";
 import { FiUser, FiMail, FiLock, FiArrowLeft, FiArrowRight, FiEye, FiEyeOff } from "react-icons/fi";
+import api from "../components/api";
+import { Check } from "lucide-react";
+
 const Register = () => {
 
     const [step, setStep] = useState(1);
@@ -10,11 +13,40 @@ const Register = () => {
     const [errors, setErrors] = useState({});
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-    const [loading, setLoading] = useState(false);
+    const [sendingOtp, setSendingOtp] = useState(false);
+    const [verifyingOtp, setVerifyingOtp] = useState(false);
+    const [creatingAccount, setCreatingAccount] = useState(false);
+    const [resendingOtp, setResendingOtp] = useState(false);
     const [otp, setOtp] = useState(["", "", "", "", "", ""]);
     const [countdown, setCountdown] = useState(30);
     const otpRefs = useRef([]);
     const navigate = useNavigate();
+
+    const clearOtp = () => {
+
+        setOtp(["", "", "", "", "", ""]);
+
+        setErrors({});
+
+        setCountdown(30);
+
+    };
+
+    const clearPassword = () => {
+
+        setFormData(prev => ({
+            ...prev,
+            password: "",
+            confirmPassword: ""
+        }));
+
+        setShowPassword(false);
+
+        setShowConfirmPassword(false);
+
+        setErrors({});
+
+    };
 
     const [formData, setFormData] = useState({
         name: "",
@@ -77,8 +109,22 @@ const Register = () => {
         if (step !== 4) return;
 
         const timer = setTimeout(() => {
-            navigate("/login");
-        }, 3000);
+
+            clearOtp();
+            clearPassword();
+
+            setFormData({
+                name: "",
+                email: "",
+                password: "",
+                confirmPassword: ""
+            });
+
+            setErrors({});
+
+            navigate("/");
+
+        }, 1000);
 
         return () => clearTimeout(timer);
 
@@ -102,26 +148,6 @@ const Register = () => {
 
     const handleOtp = (value, index) => {
 
-        if (value.length > 1) {
-
-            const pasted = value.slice(0, 6).split("");
-
-            const updated = [...otp];
-
-            pasted.forEach((digit, i) => {
-                updated[i] = digit;
-            });
-
-            setOtp(updated);
-
-            requestAnimationFrame(() => {
-                otpRefs.current[Math.min(pasted.length - 1, 5)]?.focus();
-            });
-
-            return;
-
-        }
-
         if (!/^[0-9]?$/.test(value)) return;
 
         const updated = [...otp];
@@ -130,9 +156,37 @@ const Register = () => {
 
         setOtp(updated);
 
+        setErrors(prev => ({
+            ...prev,
+            otp: ""
+        }));
+
         if (value && index < 5) {
             otpRefs.current[index + 1]?.focus();
         }
+
+    };
+
+    const handlePaste = (e) => {
+
+        e.preventDefault();
+
+        const pastedData = e.clipboardData.getData("text").trim();
+
+        if (!/^\d{6}$/.test(pastedData)) return;
+
+        const updatedOtp = pastedData.split("");
+
+        setOtp(updatedOtp);
+
+        setErrors(prev => ({
+            ...prev,
+            otp: ""
+        }));
+
+        requestAnimationFrame(() => {
+            otpRefs.current[5]?.focus();
+        });
 
     };
 
@@ -144,7 +198,7 @@ const Register = () => {
 
     };
 
-    const nextStep = () => {
+    const nextStep = async () => {
 
         const newErrors = {};
 
@@ -164,13 +218,17 @@ const Register = () => {
         setErrors(newErrors);
 
         if (Object.keys(newErrors).length === 0) {
-            setLoading(true);
+            setSendingOtp(true);
 
-            setTimeout(() => {
+            try {
 
-                setLoading(false);
+                await api.post("/otp/send", {
+                    email: formData.email,
+                    purpose: "register"
+                });
 
-                setCountdown(30);
+                clearOtp();
+                clearPassword();
 
                 setStep(2);
 
@@ -178,12 +236,64 @@ const Register = () => {
                     otpRefs.current[0]?.focus();
                 });
 
-            }, 1200);
+            } catch (error) {
+
+                setErrors(prev => ({
+                    ...prev,
+                    email: error.response?.data?.message || "Failed to send OTP."
+                }));
+
+            } finally {
+
+                setSendingOtp(false);
+
+            }
         }
 
     };
 
-    const verifyOtp = () => {
+    const resendOtp = async () => {
+
+        clearOtp();
+        requestAnimationFrame(() => {
+            otpRefs.current[0]?.focus();
+        });
+        setResendingOtp(true);
+
+        try {
+
+            await api.post("/otp/send", {
+
+                email: formData.email,
+                purpose: "register"
+
+            });
+
+            clearOtp();
+
+            requestAnimationFrame(() => {
+                otpRefs.current[0]?.focus();
+            });
+
+        } catch (error) {
+
+            setErrors(prev => ({
+
+                ...prev,
+
+                otp: error.response?.data?.message || "Failed to resend OTP."
+
+            }));
+
+        } finally {
+
+            setResendingOtp(false);
+
+        }
+
+    };
+
+    const verifyOtp = async () => {
 
         if (otp.join("").length !== 6) {
 
@@ -195,13 +305,41 @@ const Register = () => {
 
         }
 
-        setErrors({});
+        setVerifyingOtp(true);
 
-        setStep(3);
+        try {
+
+            await api.post("/otp/verify", {
+
+                email: formData.email,
+                otp: otp.join(""),
+                purpose: "register"
+
+            });
+
+            clearPassword();
+
+            setStep(3);
+
+        } catch (error) {
+
+            setErrors({
+
+                otp: error.response?.data?.message || "Invalid OTP"
+
+            });
+
+        } finally {
+
+            setVerifyingOtp(false);
+
+        }
 
     };
 
     const prevStep = () => {
+        clearPassword();
+        clearOtp();
         setStep(1);
     };
 
@@ -225,19 +363,45 @@ const Register = () => {
             return;
         }
 
-        setLoading(true);
+        setCreatingAccount(true);
 
         try {
 
-            console.log(formData);
+            await api.post("/auth/register", {
 
-            // API HERE
+                username: formData.name,
+                email: formData.email,
+                password: formData.password
 
-        }
-        finally {
+            });
 
-            setLoading(false);
+            clearOtp();
+            clearPassword();
+            setFormData({
+                name: "",
+                email: "",
+                password: "",
+                confirmPassword: ""
+            });
+
+            setErrors({});
+
             setStep(4);
+
+        } catch (error) {
+
+            setErrors(prev => ({
+
+                ...prev,
+
+                password: error.response?.data?.message || "Registration failed."
+
+            }));
+
+        } finally {
+
+            setCreatingAccount(false);
+
         }
 
     };
@@ -327,7 +491,7 @@ const Register = () => {
                                                     : "100%"
                                 }}
                                 transition={{
-                                    duration: 0.35,
+                                    duration: .25
                                 }}
                                 className="h-full rounded-full bg-linear-to-r from-indigo-500 to-violet-600"
                             />
@@ -434,7 +598,10 @@ const Register = () => {
                                                 value={formData.email}
                                                 onChange={handleChange}
                                                 placeholder="name@example.com"
-                                                className="h-11 w-full rounded-xl border border-white/10 bg-white/5 pl-10 pr-4 text-sm text-white placeholder:text-slate-400 outline-none transition-all duration-300 focus:border-indigo-400 focus:bg-white/10"
+                                                className={`h-11 w-full rounded-xl border bg-white/5 pl-10 pr-4 text-sm text-white placeholder:text-slate-400 outline-none transition-all duration-300 ${errors.email
+                                                    ? "border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/20"
+                                                    : "border-white/10 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-500/20"
+                                                    }`}
                                             />
                                             {
                                                 errors.email &&
@@ -451,12 +618,24 @@ const Register = () => {
                                         <button
                                             type="button"
                                             onClick={nextStep}
-                                            className="flex h-11 cursor-pointer items-center gap-2 rounded-xl bg-linear-to-r from-indigo-500 to-violet-600 px-5 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:scale-[1.02] hover:shadow-indigo-500/40 active:scale-[0.98]"
+                                            disabled={sendingOtp}
+                                            className={`flex h-11 items-center gap-2 rounded-xl px-5 text-sm font-semibold text-white shadow-lg transition-all duration-300 ${sendingOtp
+                                                ? "cursor-not-allowed bg-slate-700 opacity-60"
+                                                : "cursor-pointer bg-linear-to-r from-indigo-500 to-violet-600 hover:scale-[1.02] hover:shadow-indigo-500/40 active:scale-[0.98]"
+                                                }`}
                                         >
 
-                                            Next
-
-                                            <FiArrowRight size={18} />
+                                            {sendingOtp ? (
+                                                <>
+                                                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
+                                                    Sending OTP...
+                                                </>
+                                            ) : (
+                                                <>
+                                                    Next
+                                                    <FiArrowRight size={18} />
+                                                </>
+                                            )}
 
                                         </button>
 
@@ -501,8 +680,12 @@ const Register = () => {
                                                     maxLength={1}
                                                     value={digit}
                                                     onChange={(e) => handleOtp(e.target.value, index)}
+                                                    onPaste={handlePaste}
                                                     onKeyDown={(e) => handleBackspace(e, index)}
-                                                    className="h-12 w-12 rounded-xl border border-white/10 bg-white/5 text-center text-lg font-semibold text-white outline-none transition-all duration-300 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-500/20"
+                                                    className={`h-12 w-12 rounded-xl border bg-white/5 text-center text-lg font-semibold text-white outline-none transition-all duration-300 ${errors.otp
+                                                        ? "border-red-500 focus:ring-2 focus:ring-red-500/20"
+                                                        : "border-white/10 focus:border-indigo-400 focus:ring-2 focus:ring-indigo-500/20"
+                                                        }`}
                                                 />
 
                                             ))
@@ -526,38 +709,41 @@ const Register = () => {
                                             countdown > 0
                                                 ?
 
-                                                <p className="text-sm text-slate-400">
+                                                <div className="flex items-center justify-center gap-2 text-sm">
 
-                                                    Resend OTP in{" "}
+                                                    <span className="text-slate-400">
+                                                        Resend OTP in
+                                                    </span>
 
-                                                    <span className="text-indigo-300">
+                                                    <span className="rounded-md border border-indigo-500/20 bg-indigo-500/10 px-2 py-0.5 font-semibold tracking-wide text-indigo-300 animate-pulse">
                                                         {countdown}s
                                                     </span>
 
-                                                </p>
+                                                </div>
 
                                                 :
 
                                                 <button
                                                     type="button"
-                                                    onClick={() => {
-
-                                                        setOtp(["", "", "", "", "", ""]);
-
-                                                        setCountdown(30);
-
-                                                        requestAnimationFrame(() => {
-                                                            otpRefs.current[0]?.focus();
-                                                        });
-
-                                                    }}
-                                                    className="cursor-pointer text-sm font-medium text-indigo-300 transition hover:text-indigo-200"
+                                                    onClick={resendOtp}
+                                                    className="group flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-slate-600 bg-slate-800/40 px-4 py-2 text-sm font-medium text-slate-300 transition-all duration-300 hover:-translate-y-0.5 hover:border-indigo-400 hover:bg-indigo-500/10 hover:text-indigo-300 hover:shadow-lg hover:shadow-indigo-500/10 active:translate-y-0 active:scale-95"
                                                 >
 
-                                                    Resend OTP
+                                                    <svg
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24"
+                                                        fill="none"
+                                                        stroke="currentColor"
+                                                        strokeWidth="2"
+                                                        className="h-4 w-4 transition-transform duration-500 group-hover:rotate-180"
+                                                    >
+                                                        <path d="M21 12a9 9 0 1 1-2.64-6.36" />
+                                                        <polyline points="21 3 21 9 15 9" />
+                                                    </svg>
+
+                                                    <span>Resend OTP</span>
 
                                                 </button>
-
                                         }
 
                                     </div>
@@ -566,7 +752,11 @@ const Register = () => {
 
                                         <button
                                             type="button"
-                                            onClick={() => setStep(1)}
+                                            onClick={() => {
+                                                clearOtp();
+                                                clearPassword();
+                                                setStep(1);
+                                            }}
                                             className="flex h-11 cursor-pointer items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-5 text-sm font-medium text-white transition hover:bg-white/10"
                                         >
 
@@ -579,16 +769,26 @@ const Register = () => {
                                         <button
                                             type="button"
                                             onClick={verifyOtp}
-                                            disabled={otp.join("").length !== 6}
-                                            className={`flex h-11 items-center justify-center gap-2 rounded-xl px-6 text-sm font-semibold transition-all duration-300 ${otp.join("").length !== 6
+                                            disabled={verifyingOtp || otp.join("").length !== 6}
+                                            className={`flex h-11 items-center justify-center gap-2 rounded-xl px-6 text-sm font-semibold transition-all duration-300 ${verifyingOtp || otp.join("").length !== 6
                                                 ? "cursor-not-allowed bg-slate-700 text-slate-400 opacity-60"
                                                 : "cursor-pointer bg-linear-to-r from-indigo-500 to-violet-600 text-white hover:scale-[1.02] hover:shadow-indigo-500/40"
                                                 }`}
                                         >
 
-                                            Verify OTP
-
-                                            <FiArrowRight size={18} />
+                                            {
+                                                verifyingOtp
+                                                    ?
+                                                    <>
+                                                        <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
+                                                        Verifying...
+                                                    </>
+                                                    :
+                                                    <>
+                                                        Verify OTP
+                                                        <FiArrowRight size={18} />
+                                                    </>
+                                            }
 
                                         </button>
 
@@ -817,13 +1017,22 @@ const Register = () => {
 
                                         <button
                                             type="submit"
-                                            disabled={loading || !isPasswordValid}
-                                            className={`flex h-11 items-center justify-center rounded-xl px-6 text-sm font-semibold text-white transition-all duration-300 ${loading || !isPasswordValid
+                                            disabled={creatingAccount || !isPasswordValid}
+                                            className={`flex h-11 items-center justify-center gap-2 rounded-xl px-6 text-sm font-semibold text-white transition-all duration-300 ${creatingAccount || !isPasswordValid
                                                 ? "cursor-not-allowed bg-slate-700 opacity-60"
                                                 : "cursor-pointer bg-linear-to-r from-indigo-500 to-violet-600 hover:scale-[1.02] hover:shadow-indigo-500/40"
                                                 }`}
                                         >
-                                            Create Account
+                                            {
+                                                creatingAccount
+                                                    ?
+                                                    <>
+                                                        <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
+                                                        Creating Account...
+                                                    </>
+                                                    :
+                                                    "Create Account"
+                                            }
                                         </button>
 
                                     </div>
@@ -847,22 +1056,26 @@ const Register = () => {
 
                                         <div className="flex h-14 w-14 items-center justify-center rounded-full bg-green-500 text-white">
 
-                                            ✓
+                                            <Check size={34} />
 
                                         </div>
 
                                     </div>
 
                                     <h2 className="mt-6 text-2xl font-semibold text-white">
-                                        Registration Successful
+                                        Welcome to ProfileFit!
                                     </h2>
 
                                     <p className="mt-2 text-sm text-slate-400">
-                                        Your ProfileFit account has been created successfully.
+                                        <>
+                                            Your account is ready.
+                                            <br />
+                                            We're preparing your personalized workspace.
+                                        </>
                                     </p>
 
                                     <p className="mt-1 text-sm text-slate-500">
-                                        Redirecting to Login in 3 seconds...
+                                        Signing you in...
                                     </p>
 
                                     <div className="mt-6 h-1 overflow-hidden rounded-full bg-white/10">
@@ -870,7 +1083,7 @@ const Register = () => {
                                         <motion.div
                                             initial={{ width: "100%" }}
                                             animate={{ width: "0%" }}
-                                            transition={{ duration: 3, ease: "linear" }}
+                                            transition={{ duration: 1, ease: "linear" }}
                                             className="h-full rounded-full bg-linear-to-r from-green-400 to-emerald-500"
                                         />
 
