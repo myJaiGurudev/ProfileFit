@@ -28,16 +28,24 @@ const Login = () => {
                     {/* Logo */}
                     <div className="flex flex-col items-center">
 
-                        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-linear-to-r from-indigo-500 to-violet-600 text-4xl font-bold text-white">
-                            G
-                        </div>
+                        <Link
+                            to="/"
+                            aria-label="Go to Home"
+                            className="group mx-auto flex w-fit cursor-pointer justify-center"
+                        >
+                            <img
+                                src="/logo.png"
+                                alt="ProfileFit Logo"
+                                className="h-15 w-15 object-contain brightness-110 transition-all duration-200 group-hover:brightness-150"
+                            />
+                        </Link>
 
                         <h1 className="mt-3 text-2xl font-semibold text-white">
                             Welcome Back
                         </h1>
 
                         <p className="mt-1 text-center text-sm text-slate-300">
-                            Sign in to continue to GateMentor
+                            Sign in to continue to ProfileFit
                         </p>
 
                     </div>
@@ -109,12 +117,13 @@ const Login = () => {
 
                         <div className="flex justify-end">
 
-                            <button
+                            <Link
+                                to="/reset-password"
                                 type="button"
                                 className="cursor-pointer text-sm text-indigo-300 transition hover:text-indigo-200"
                             >
                                 Forgot Password?
-                            </button>
+                            </Link>
 
                         </div>
 
