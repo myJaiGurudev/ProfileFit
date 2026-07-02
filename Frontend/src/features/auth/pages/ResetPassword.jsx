@@ -184,9 +184,12 @@ const ResetPassword = () => {
     const verifyOtp = async () => {
 
         if (otp.join("").length !== 6) {
-
+            clearOtp();
             setErrors({
                 otp: "Enter a valid OTP"
+            });
+            requestAnimationFrame(() => {
+                otpRefs.current[0]?.focus();
             });
 
             return;
@@ -307,7 +310,7 @@ const ResetPassword = () => {
 
                 email,
 
-                password: newPassword
+                newPassword: newPassword
 
             });
 
@@ -483,7 +486,7 @@ const ResetPassword = () => {
                                         type="button"
                                         disabled={sendingOtp}
                                         onClick={() => navigate("/login")}
-                                        className="text-sm text-indigo-300 transition hover:text-indigo-200 disabled:cursor-not-allowed disabled:opacity-50"
+                                        className="cursor-pointer text-sm text-indigo-300 transition hover:text-indigo-200 disabled:cursor-not-allowed disabled:opacity-50"
                                     >
                                         Back to Login
                                     </button>
@@ -882,7 +885,7 @@ const ResetPassword = () => {
                                             clearOtp();
                                             clearPassword();
                                             setCountdown(30);
-                                            setStep(2);
+                                            setStep(1);
                                         }}
                                         disabled={resettingPassword}
                                         className="flex h-11 flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 text-white transition hover:bg-white/10"

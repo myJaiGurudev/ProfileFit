@@ -111,9 +111,14 @@ async function resetPasswordController(req, res) {
         const email = req.body.email?.trim().toLowerCase();
         const newPassword = req.body.newPassword;
 
-        if (!email || !newPassword) {
+        if (!email) {
             return res.status(400).json({
-                message: "Please provide email and new password"
+                message: "Please provide email!"
+            });
+        }
+        if(!newPassword) {
+            return res.status(400).json({
+                message: "Please provide new password!"
             });
         }
 

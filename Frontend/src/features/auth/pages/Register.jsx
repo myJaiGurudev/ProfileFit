@@ -293,9 +293,12 @@ const Register = () => {
     const verifyOtp = async () => {
 
         if (otp.join("").length !== 6) {
-
+            clearOtp();
             setErrors({
                 otp: "Enter a valid OTP"
+            });
+            requestAnimationFrame(() => {
+                otpRefs.current[0]?.focus();
             });
 
             return;
@@ -320,10 +323,14 @@ const Register = () => {
 
         } catch (error) {
 
+            clearOtp();
             setErrors({
 
                 otp: error.response?.data?.message || "Invalid OTP"
 
+            });
+            requestAnimationFrame(() => {
+                otpRefs.current[0]?.focus();
             });
 
         } finally {
