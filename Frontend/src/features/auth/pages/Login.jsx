@@ -115,6 +115,10 @@ const Login = () => {
                                 {/* Google Button */}
                                 <button
                                     type="button"
+                                    onClick={() => {
+                                        console.log("Google Sign-In clicked");
+                                    }}
+                                    disabled={loading}
                                     className="mt-5 flex h-11 w-full cursor-pointer items-center justify-center gap-3 rounded-xl border border-white/10 bg-white/5 text-sm font-medium text-white transition-all duration-300 hover:border-indigo-400 hover:bg-white/10"
                                 >
                                     <FcGoogle size={20} />

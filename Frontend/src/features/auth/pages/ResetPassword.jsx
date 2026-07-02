@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { FiMail, FiLock, FiArrowLeft, FiArrowRight, FiEye, FiEyeOff, FiCheckCircle } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
+import api from "../components/api";
 
 const ResetPassword = () => {
 
@@ -12,7 +13,10 @@ const ResetPassword = () => {
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [errors, setErrors] = useState({});
-    const [loading, setLoading] = useState(false);
+    const [sendingOtp, setSendingOtp] = useState(false);
+    const [verifyingOtp, setVerifyingOtp] = useState(false);
+    const [resendingOtp, setResendingOtp] = useState(false);
+    const [resettingPassword, setResettingPassword] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [countdown, setCountdown] = useState(30);
@@ -92,7 +96,7 @@ const ResetPassword = () => {
 
     }, [step, countdown]);
 
-    const sendOtp = () => {
+    const sendOtp = async () => {
 
         const newErrors = {};
 
@@ -107,33 +111,121 @@ const ResetPassword = () => {
 
         if (Object.keys(newErrors).length) return;
 
-        setLoading(true);
+        setSendingOtp(true);
 
-        setTimeout(() => {
-            setLoading(false);
+        try {
+
+            await api.post("/otp/send", {
+
+                email,
+                purpose: "reset"
+
+            });
+
             clearOtp();
+
             setStep(2);
+
             requestAnimationFrame(() => {
                 otpRefs.current[0]?.focus();
             });
-        }, 1200);
+
+        } catch (error) {
+
+            setErrors({
+
+                email: error.response?.data?.message || "Failed to send OTP."
+
+            });
+
+        } finally {
+
+            setSendingOtp(false);
+
+        }
 
     };
 
-    const verifyOtp = () => {
+    const resendOtp = async () => {
+
+        setResendingOtp(true);
+
+        try {
+
+            await api.post("/otp/send", {
+
+                email,
+                purpose: "reset"
+
+            });
+
+            clearOtp();
+
+            requestAnimationFrame(() => {
+                otpRefs.current[0]?.focus();
+            });
+
+        } catch (error) {
+
+            setErrors({
+
+                otp: error.response?.data?.message || "Failed to resend OTP."
+
+            });
+
+        } finally {
+
+            setResendingOtp(false);
+
+        }
+
+    };
+
+    const verifyOtp = async () => {
 
         if (otp.join("").length !== 6) {
 
             setErrors({
-                otp: "Enter valid OTP"
+                otp: "Enter a valid OTP"
             });
 
             return;
 
         }
 
-        clearPassword();
-        setStep(3);
+        setVerifyingOtp(true);
+
+        try {
+
+            await api.post("/otp/verify", {
+
+                email,
+
+                otp: otp.join(""),
+
+                purpose: "reset"
+
+            });
+
+            clearOtp();
+
+            clearPassword();
+
+            setStep(3);
+
+        } catch (error) {
+
+            setErrors({
+
+                otp: error.response?.data?.message || "Invalid OTP."
+
+            });
+
+        } finally {
+
+            setVerifyingOtp(false);
+
+        }
 
     };
 
@@ -146,6 +238,11 @@ const ResetPassword = () => {
         updated[index] = value;
 
         setOtp(updated);
+
+        setErrors(prev => ({
+            ...prev,
+            otp: ""
+        }));
 
         if (value && index < 5) {
             otpRefs.current[index + 1]?.focus();
@@ -184,7 +281,7 @@ const ResetPassword = () => {
 
     };
 
-    const resetPassword = (e) => {
+    const resetPassword = async (e) => {
 
         e.preventDefault();
 
@@ -202,14 +299,37 @@ const ResetPassword = () => {
 
         if (Object.keys(newErrors).length) return;
 
-        setLoading(true);
+        setResettingPassword(true);
 
-        setTimeout(() => {
-            setLoading(false);
+        try {
+
+            await api.post("/auth/reset-password", {
+
+                email,
+
+                password: newPassword
+
+            });
+
             clearOtp();
+
             clearPassword();
+
             setStep(4);
-        }, 1500);
+
+        } catch (error) {
+
+            setErrors({
+
+                password: error.response?.data?.message || "Failed to reset password."
+
+            });
+
+        } finally {
+
+            setResettingPassword(false);
+
+        }
 
     };
 
@@ -226,7 +346,7 @@ const ResetPassword = () => {
 
         return () => clearTimeout(timer);
 
-    }, [step]);
+    }, [step, navigate]);
 
     return (
 
@@ -340,12 +460,12 @@ const ResetPassword = () => {
                                 <button
                                     type="button"
                                     onClick={sendOtp}
-                                    disabled={loading}
+                                    disabled={sendingOtp}
                                     className="mt-5 flex h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-linear-to-r from-indigo-500 to-violet-600 text-sm font-semibold text-white transition-all duration-300 hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-70"
                                 >
 
                                     {
-                                        loading
+                                        sendingOtp
                                             ?
                                             "Sending OTP..."
                                             :
@@ -359,12 +479,14 @@ const ResetPassword = () => {
 
                                 <div className="mt-5 text-center">
 
-                                    <Link
-                                        to="/login"
-                                        className="text-sm text-indigo-300 transition hover:text-indigo-200"
+                                    <button
+                                        type="button"
+                                        disabled={sendingOtp}
+                                        onClick={() => navigate("/login")}
+                                        className="text-sm text-indigo-300 transition hover:text-indigo-200 disabled:cursor-not-allowed disabled:opacity-50"
                                     >
                                         Back to Login
-                                    </Link>
+                                    </button>
 
                                 </div>
 
@@ -405,6 +527,7 @@ const ResetPassword = () => {
                                                 ref={(el) => otpRefs.current[index] = el}
                                                 type="text"
                                                 maxLength={1}
+                                                disabled={verifyingOtp || resendingOtp}
                                                 value={digit}
                                                 onChange={(e) => handleOtp(e.target.value, index)}
                                                 onPaste={handlePaste}
@@ -447,12 +570,8 @@ const ResetPassword = () => {
 
                                             <button
                                                 type="button"
-                                                onClick={() => {
-                                                    clearOtp();
-                                                    requestAnimationFrame(() => {
-                                                        otpRefs.current[0]?.focus();
-                                                    });
-                                                }}
+                                                onClick={resendOtp}
+                                                disabled={resendingOtp || verifyingOtp}
                                                 className="group flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-slate-600 bg-slate-800/40 px-4 py-2 text-sm font-medium text-slate-300 transition-all duration-300 hover:-translate-y-0.5 hover:border-indigo-400 hover:bg-indigo-500/10 hover:text-indigo-300 hover:shadow-lg hover:shadow-indigo-500/10 active:translate-y-0 active:scale-95"
                                             >
 
@@ -468,7 +587,9 @@ const ResetPassword = () => {
                                                     <polyline points="21 3 21 9 15 9" />
                                                 </svg>
 
-                                                <span>Resend OTP</span>
+                                                <span>
+                                                    {resendingOtp ? "Resending..." : "Resend OTP"}
+                                                </span>
 
                                             </button>
                                     }
@@ -482,8 +603,10 @@ const ResetPassword = () => {
                                         onClick={() => {
                                             clearOtp();
                                             clearPassword();
+                                            setCountdown(30);
                                             setStep(1);
                                         }}
+                                        disabled={verifyingOtp || resendingOtp}
                                         className="flex h-11 flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 text-white transition hover:bg-white/10"
                                     >
 
@@ -496,16 +619,21 @@ const ResetPassword = () => {
                                     <button
                                         type="button"
                                         onClick={verifyOtp}
-                                        disabled={otp.join("").length !== 6}
-                                        className={`flex h-11 flex-1 items-center justify-center gap-2 rounded-xl transition-all duration-300 ${otp.join("").length !== 6
+                                        disabled={resendingOtp || verifyingOtp || otp.join("").length !== 6}
+                                        className={`flex h-11 flex-1 items-center justify-center gap-2 rounded-xl transition-all duration-300 ${resendingOtp || verifyingOtp || otp.join("").length !== 6
                                             ? "cursor-not-allowed bg-slate-700 text-slate-400"
                                             : "cursor-pointer bg-linear-to-r from-indigo-500 to-violet-600 text-white hover:scale-[1.02]"
                                             }`}
                                     >
 
-                                        Verify
-
-                                        <FiArrowRight />
+                                        {
+                                            verifyingOtp
+                                                ? "Verifying..."
+                                                : <>
+                                                    Verify
+                                                    <FiArrowRight />
+                                                </>
+                                        }
 
                                     </button>
 
@@ -537,12 +665,14 @@ const ResetPassword = () => {
 
                                         <input
                                             type={showPassword ? "text" : "password"}
+                                            disabled={resettingPassword}
                                             value={newPassword}
                                             onChange={(e) => {
                                                 setNewPassword(e.target.value);
                                                 setErrors(prev => ({
                                                     ...prev,
-                                                    password: ""
+                                                    password: "",
+                                                    confirmPassword: ""
                                                 }));
                                             }}
                                             placeholder="••••••••"
@@ -555,6 +685,7 @@ const ResetPassword = () => {
                                         <button
                                             type="button"
                                             onClick={() => setShowPassword(!showPassword)}
+                                            disabled={resettingPassword}
                                             className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 transition hover:text-white"
                                         >
 
@@ -687,11 +818,13 @@ const ResetPassword = () => {
                                         <input
                                             type={showConfirmPassword ? "text" : "password"}
                                             value={confirmPassword}
+                                            disabled={resettingPassword}
                                             onChange={(e) => {
                                                 setConfirmPassword(e.target.value);
                                                 setErrors(prev => ({
                                                     ...prev,
-                                                    confirmPassword: ""
+                                                    confirmPassword: "",
+                                                    password: ""
                                                 }));
                                             }}
                                             placeholder="••••••••"
@@ -704,6 +837,7 @@ const ResetPassword = () => {
                                         <button
                                             type="button"
                                             onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                            disabled={resettingPassword}
                                             className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 transition hover:text-white"
                                         >
 
@@ -747,8 +881,10 @@ const ResetPassword = () => {
                                         onClick={() => {
                                             clearOtp();
                                             clearPassword();
+                                            setCountdown(30);
                                             setStep(2);
                                         }}
+                                        disabled={resettingPassword}
                                         className="flex h-11 flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 text-white transition hover:bg-white/10"
                                     >
 
@@ -761,15 +897,15 @@ const ResetPassword = () => {
                                     <button
                                         type="button"
                                         onClick={resetPassword}
-                                        disabled={loading || !isPasswordValid}
-                                        className={`flex h-11 flex-1 items-center justify-center rounded-xl font-medium text-white transition-all duration-300 ${loading || !isPasswordValid
+                                        disabled={resettingPassword || !isPasswordValid}
+                                        className={`flex h-11 flex-1 items-center justify-center rounded-xl font-medium text-white transition-all duration-300 ${resettingPassword || !isPasswordValid
                                             ? "cursor-not-allowed bg-slate-700 opacity-60"
                                             : "cursor-pointer bg-linear-to-r from-indigo-500 to-violet-600 hover:scale-[1.02]"
                                             }`}
                                     >
 
                                         {
-                                            loading
+                                            resettingPassword
                                                 ? "Resetting..."
                                                 : "Reset Password"
                                         }

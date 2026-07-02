@@ -257,10 +257,6 @@ const Register = () => {
 
     const resendOtp = async () => {
 
-        clearOtp();
-        requestAnimationFrame(() => {
-            otpRefs.current[0]?.focus();
-        });
         setResendingOtp(true);
 
         try {
@@ -317,7 +313,7 @@ const Register = () => {
                 purpose: "register"
 
             });
-
+            clearOtp();
             clearPassword();
 
             setStep(3);
@@ -509,6 +505,11 @@ const Register = () => {
                             <>
 
                                 <button
+                                    type="button"
+                                    onClick={() => {
+                                        console.log("Google Sign-In clicked");
+                                    }}
+                                    disabled={sendingOtp}
                                     className="mt-5 flex h-11 w-full cursor-pointer items-center justify-center gap-3 rounded-xl border border-white/10 bg-white/5 text-sm font-medium text-white transition-all duration-300 hover:border-indigo-400 hover:bg-white/10"
                                 >
 
@@ -679,6 +680,7 @@ const Register = () => {
                                                     ref={(el) => otpRefs.current[index] = el}
                                                     type="text"
                                                     maxLength={1}
+                                                    disabled={verifyingOtp || resendingOtp}
                                                     value={digit}
                                                     onChange={(e) => handleOtp(e.target.value, index)}
                                                     onPaste={handlePaste}
@@ -727,6 +729,7 @@ const Register = () => {
                                                 <button
                                                     type="button"
                                                     onClick={resendOtp}
+                                                    disabled={resendingOtp || verifyingOtp}
                                                     className="group flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-slate-600 bg-slate-800/40 px-4 py-2 text-sm font-medium text-slate-300 transition-all duration-300 hover:-translate-y-0.5 hover:border-indigo-400 hover:bg-indigo-500/10 hover:text-indigo-300 hover:shadow-lg hover:shadow-indigo-500/10 active:translate-y-0 active:scale-95"
                                                 >
 
@@ -742,7 +745,9 @@ const Register = () => {
                                                         <polyline points="21 3 21 9 15 9" />
                                                     </svg>
 
-                                                    <span>Resend OTP</span>
+                                                    <span>
+                                                        {resendingOtp ? "Resending..." : "Resend OTP"}
+                                                    </span>
 
                                                 </button>
                                         }
@@ -757,7 +762,9 @@ const Register = () => {
                                                 clearOtp();
                                                 clearPassword();
                                                 setStep(1);
+                                                setCountdown(30);
                                             }}
+                                            disabled={verifyingOtp || resendingOtp}
                                             className="flex h-11 cursor-pointer items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-5 text-sm font-medium text-white transition hover:bg-white/10"
                                         >
 
@@ -770,8 +777,8 @@ const Register = () => {
                                         <button
                                             type="button"
                                             onClick={verifyOtp}
-                                            disabled={verifyingOtp || otp.join("").length !== 6}
-                                            className={`flex h-11 items-center justify-center gap-2 rounded-xl px-6 text-sm font-semibold transition-all duration-300 ${verifyingOtp || otp.join("").length !== 6
+                                            disabled={resendingOtp || verifyingOtp || otp.join("").length !== 6}
+                                            className={`flex h-11 items-center justify-center gap-2 rounded-xl px-6 text-sm font-semibold transition-all duration-300 ${resendingOtp || verifyingOtp || otp.join("").length !== 6
                                                 ? "cursor-not-allowed bg-slate-700 text-slate-400 opacity-60"
                                                 : "cursor-pointer bg-linear-to-r from-indigo-500 to-violet-600 text-white hover:scale-[1.02] hover:shadow-indigo-500/40"
                                                 }`}
@@ -822,6 +829,7 @@ const Register = () => {
 
                                             <input
                                                 type={showPassword ? "text" : "password"}
+                                                disabled={creatingAccount}
                                                 name="password"
                                                 value={formData.password}
                                                 onChange={handleChange}
@@ -835,6 +843,7 @@ const Register = () => {
                                             <button
                                                 type="button"
                                                 onClick={() => setShowPassword(!showPassword)}
+                                                disabled={creatingAccount}
                                                 className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-slate-400 transition hover:text-white"
                                             >
                                                 {showPassword ? <FiEyeOff size={18} /> : <FiEye size={18} />}
@@ -959,6 +968,7 @@ const Register = () => {
                                             <input
                                                 type={showConfirmPassword ? "text" : "password"}
                                                 name="confirmPassword"
+                                                disabled={creatingAccount}
                                                 value={formData.confirmPassword}
                                                 onChange={handleChange}
                                                 placeholder="••••••••"
@@ -970,6 +980,7 @@ const Register = () => {
 
                                             <button
                                                 type="button"
+                                                disabled={creatingAccount}
                                                 onClick={() =>
                                                     setShowConfirmPassword(!showConfirmPassword)
                                                 }
@@ -1007,6 +1018,7 @@ const Register = () => {
                                         <button
                                             type="button"
                                             onClick={prevStep}
+                                            disabled={creatingAccount}
                                             className="flex h-11 cursor-pointer items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-5 text-sm font-medium text-white transition hover:bg-white/10"
                                         >
 
