@@ -3,6 +3,9 @@ const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
 const tokenBlacklistModel = require("../models/blacklist.model")
 const otpModel = require("../models/otp.model")
+const { OAuth2Client } = require("google-auth-library")
+
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID)
 
 /**
  * @name registerUserController
@@ -116,7 +119,7 @@ async function resetPasswordController(req, res) {
                 message: "Please provide email!"
             });
         }
-        if(!newPassword) {
+        if (!newPassword) {
             return res.status(400).json({
                 message: "Please provide new password!"
             });
@@ -182,20 +185,26 @@ async function loginUserController(req, res) {
         });
     }
 
-    const user = await userModel.findOne({ email })
+    const user = await userModel.findOne({ email });
 
     if (!user) {
         return res.status(400).json({
             message: "Invalid email or password"
-        })
+        });
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.password)
+    if (user.authProvider === "google") {
+        return res.status(400).json({
+            message: "This account uses Google Sign-In."
+        });
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid) {
         return res.status(400).json({
             message: "Invalid email or password"
-        })
+        });
     }
 
     const token = jwt.sign(
@@ -220,6 +229,147 @@ async function loginUserController(req, res) {
     })
 }
 
+/**
+ * @name googleLoginController
+ * @description login user with google account
+ * @access Public
+ */
+async function googleLoginController(req, res) {
+
+    try {
+
+        const { token } = req.body;
+
+        if (!token) {
+            return res.status(400).json({
+                message: "Google token is required."
+            });
+        }
+
+        const ticket = await client.verifyIdToken({
+
+            idToken: token,
+            audience: process.env.GOOGLE_CLIENT_ID
+
+        });
+
+        const payload = ticket.getPayload();
+
+        console.log(payload);
+
+        if (!payload.email) {
+
+            return res.status(400).json({
+                message: "Google account email not found."
+            });
+
+        }
+
+        if (!payload.email_verified) {
+
+            return res.status(400).json({
+                message: "Google email is not verified."
+            });
+
+        }
+
+        const email = payload.email.trim().toLowerCase();
+
+        let user = await userModel.findOne({ email });
+
+        if (!user) {
+
+            let username = (payload.name || "")
+                .replace(/[^a-zA-Z0-9]/g, "")
+                .toLowerCase();
+
+            if (!username) {
+                username = email.split("@")[0];
+            }
+
+            let tempUsername = username;
+            let count = 1;
+
+            while (await userModel.findOne({ username: tempUsername })) {
+
+                tempUsername = `${username}${count}`;
+                count++;
+
+            }
+
+            user = await userModel.create({
+
+                username: tempUsername,
+                email,
+                authProvider: "google",
+                profilePicture: payload.picture || "",
+                googleId: payload.sub,
+                password: null
+
+            });
+
+        } else {
+
+            user.authProvider = "google";
+            user.googleId = payload.sub;
+            user.profilePicture = payload.picture || user.profilePicture;
+
+            await user.save();
+
+        }
+
+        const jwtToken = jwt.sign(
+
+            {
+                id: user._id,
+                username: user.username
+            },
+
+            process.env.JWT_SECRET,
+
+            {
+                expiresIn: "1d"
+            }
+
+        );
+
+        res.cookie("token", jwtToken, {
+
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
+            maxAge: 24 * 60 * 60 * 1000
+
+        });
+
+        return res.status(200).json({
+
+            message: "Google login successful.",
+
+            user: {
+
+                id: user._id,
+                username: user.username,
+                email: user.email,
+                profilePicture: user.profilePicture
+
+            }
+
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+        return res.status(401).json({
+
+            message: error.message || "Invalid Google token."
+
+        });
+
+    }
+
+}
 
 /**
  * @name logoutUserController
@@ -277,5 +427,6 @@ module.exports = {
     loginUserController,
     logoutUserController,
     getMeController,
-    resetPasswordController
+    resetPasswordController,
+    googleLoginController
 }

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { FcGoogle } from "react-icons/fc";
+import { GoogleLogin } from "@react-oauth/google";
 import { FiUser, FiMail, FiLock, FiArrowLeft, FiArrowRight, FiEye, FiEyeOff } from "react-icons/fi";
 import api from "../components/api";
 import { Check } from "lucide-react";
@@ -410,6 +410,36 @@ const Register = () => {
 
     };
 
+    const handleGoogleLogin = async (credentialResponse) => {
+
+        try {
+
+            setSendingOtp(true);
+
+            await api.post("/auth/google-login", {
+
+                token: credentialResponse.credential
+
+            });
+
+            navigate("/");
+
+        } catch (error) {
+
+            console.log(error);
+
+            setErrors({
+                email: error.response?.data?.message || "Google Sign-In failed."
+            });
+
+        } finally {
+
+            setSendingOtp(false);
+
+        }
+
+    };
+
     return (
         <div className="relative min-h-screen bg-slate-950">
 
@@ -511,20 +541,22 @@ const Register = () => {
 
                             <>
 
-                                <button
-                                    type="button"
-                                    onClick={() => {
-                                        console.log("Google Sign-In clicked");
-                                    }}
-                                    disabled={sendingOtp}
-                                    className="mt-5 flex h-11 w-full cursor-pointer items-center justify-center gap-3 rounded-xl border border-white/10 bg-white/5 text-sm font-medium text-white transition-all duration-300 hover:border-indigo-400 hover:bg-white/10"
-                                >
+                                <div className="mt-5 flex justify-center">
 
-                                    <FcGoogle size={20} />
+                                    <GoogleLogin
+                                        theme="outline"
+                                        shape="pill"
+                                        size="large"
+                                        width="250"
+                                        text="continue_with"
+                                        onSuccess={handleGoogleLogin}
+                                        onError={() => {
+                                            setLoginSuccess(false);
+                                            setStep(2);
+                                        }}
+                                    />
 
-                                    Continue with Google
-
-                                </button>
+                                </div>
 
                                 <div className="my-4 flex items-center">
 

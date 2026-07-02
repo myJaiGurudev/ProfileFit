@@ -33,6 +33,12 @@ authRouter.post("/reset-password", authController.resetPasswordController)
  */
 authRouter.get("/logout", authController.logoutUserController)
 
+/**
+ * @route POST /api/auth/google-login
+ * @description login user with google account
+ * @access Public
+ */
+authRouter.post("/google-login", authController.googleLoginController);
 
 /**
  * @route GET /api/auth/get-me

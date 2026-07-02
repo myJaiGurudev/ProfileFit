@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { FcGoogle } from "react-icons/fc";
 import { FiMail, FiLock } from "react-icons/fi";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../components/api";
 import { motion } from "framer-motion";
+import { GoogleLogin } from "@react-oauth/google";
 
 const Login = () => {
 
@@ -64,6 +64,40 @@ const Login = () => {
 
     }, [step, loginSuccess, navigate]);
 
+    const handleGoogleLogin = async (credentialResponse) => {
+
+        try {
+
+            setLoading(true);
+
+            await api.post("/auth/google-login", {
+
+                token: credentialResponse.credential
+
+            });
+
+            setLoginSuccess(true);
+            setStep(2);
+
+        } catch (error) {
+
+            console.log(error);
+
+            console.log(error.response);
+
+            console.log(error.response?.data);
+
+            setLoginSuccess(false);
+            setStep(2);
+
+        } finally {
+
+            setLoading(false);
+
+        }
+
+    };
+    
     return (
         <div className="relative min-h-screen bg-slate-950">
 
@@ -113,17 +147,22 @@ const Login = () => {
                                 </div>
 
                                 {/* Google Button */}
-                                <button
-                                    type="button"
-                                    onClick={() => {
-                                        console.log("Google Sign-In clicked");
-                                    }}
-                                    disabled={loading}
-                                    className="mt-5 flex h-11 w-full cursor-pointer items-center justify-center gap-3 rounded-xl border border-white/10 bg-white/5 text-sm font-medium text-white transition-all duration-300 hover:border-indigo-400 hover:bg-white/10"
-                                >
-                                    <FcGoogle size={20} />
-                                    Continue with Google
-                                </button>
+                                <div className="mt-5 flex justify-center">
+
+                                    <GoogleLogin
+                                        theme="outline"
+                                        shape="pill"
+                                        size="large"
+                                        width="250"
+                                        text="continue_with"
+                                        onSuccess={handleGoogleLogin}
+                                        onError={() => {
+                                            setLoginSuccess(false);
+                                            setStep(2);
+                                        }}
+                                    />
+
+                                </div>
 
                                 {/* Divider */}
                                 <div className="my-4 flex items-center">
