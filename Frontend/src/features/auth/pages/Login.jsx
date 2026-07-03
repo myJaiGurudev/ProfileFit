@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import api from "../components/api";
 import { motion } from "framer-motion";
 import { GoogleLogin } from "@react-oauth/google";
-import { useAuth } from "../../../context/AuthContext";
+import { useAuth } from "../../../Context/AuthContext";
 
 const Login = () => {
 

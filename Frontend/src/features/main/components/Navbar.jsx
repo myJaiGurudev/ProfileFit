@@ -3,7 +3,7 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 import { HiOutlineMenuAlt3, HiX } from "react-icons/hi";
 import { FiHome, FiUser, FiSettings, FiLogOut, FiChevronDown, FiGrid, FiHelpCircle } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
-import { useAuth } from "../../../context/AuthContext";
+import { useAuth } from "../../../Context/AuthContext";
 
 export default function Navbar() {
 

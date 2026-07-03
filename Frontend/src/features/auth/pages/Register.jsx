@@ -5,7 +5,7 @@ import { GoogleLogin } from "@react-oauth/google";
 import { FiUser, FiMail, FiLock, FiArrowLeft, FiArrowRight, FiEye, FiEyeOff } from "react-icons/fi";
 import api from "../components/api";
 import { Check } from "lucide-react";
-import { useAuth } from "../../../context/AuthContext";
+import { useAuth } from "../../../Context/AuthContext";
 
 const Register = () => {
 
