@@ -97,7 +97,7 @@ const Login = () => {
         }
 
     };
-    
+
     return (
         <div className="relative min-h-screen bg-slate-950">
 
@@ -132,7 +132,7 @@ const Login = () => {
                                         <img
                                             src="/logo.png"
                                             alt="ProfileFit Logo"
-                                            className="h-15 w-15 object-contain brightness-110 transition-all duration-200 group-hover:brightness-150"
+                                            className="h-15 w-15 object-contain brightness-110 transition-all duration-75 group-hover:brightness-150"
                                         />
                                     </Link>
 

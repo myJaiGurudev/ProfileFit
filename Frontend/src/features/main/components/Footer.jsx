@@ -9,13 +9,13 @@ import {
 } from "react-icons/fi";
 import { Link } from "react-router-dom";
 
-const Footer=()=>{
+const Footer = () => {
 
-    return(
+    return (
 
         <footer className="relative overflow-hidden border-t border-white/10 bg-slate-950">
 
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(14,165,233,.08),transparent_65%)]"/>
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(14,165,233,.08),transparent_65%)]" />
 
             <div className="relative mx-auto max-w-7xl px-6 py-20">
 
@@ -24,7 +24,7 @@ const Footer=()=>{
                     <div>
 
                         <motion.h2
-                            whileHover={{scale:1.03}}
+                            whileHover={{ scale: 1.03 }}
                             className="inline-block bg-linear-to-r from-sky-400 via-cyan-300 to-blue-500 bg-clip-text text-4xl font-black text-transparent"
                         >
 
@@ -40,7 +40,7 @@ const Footer=()=>{
 
                         <div className="mt-8 flex items-center gap-2 text-slate-500">
 
-                            <FiHeart className="text-sky-400"/>
+                            <FiHeart className="text-sky-400" />
 
                             <span>Made with passion for job seekers.</span>
 
@@ -73,13 +73,22 @@ const Footer=()=>{
                             </a>
 
                             <a
+                                href="#faq"
+                                className="block text-slate-400 transition-colors duration-200 hover:text-sky-400"
+                            >
+
+                                FAQs
+
+                            </a>
+
+                            <a
                                 href="mailto:profilefit.app@gmail.com"
                                 className="inline-flex items-center gap-2 text-slate-400 transition-colors duration-200 hover:text-sky-400"
                             >
 
                                 Contact
 
-                                <FiArrowUpRight/>
+                                <FiArrowUpRight />
 
                             </a>
 
@@ -106,7 +115,7 @@ const Footer=()=>{
                             className="mt-6 inline-flex items-center gap-3 text-slate-300 transition-colors duration-200 hover:text-sky-400"
                         >
 
-                            <FiMail/>
+                            <FiMail />
 
                             profilefit.app@gmail.com
 
@@ -116,55 +125,55 @@ const Footer=()=>{
 
                             <motion.a
                                 whileHover={{
-                                    y:-5,
-                                    scale:1.08
+                                    y: -5,
+                                    scale: 1.08
                                 }}
                                 whileTap={{
-                                    scale:0.95
+                                    scale: 0.95
                                 }}
                                 href="https://github.com"
                                 target="_blank"
                                 rel="noreferrer"
-                                className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-xl text-slate-300 transition-all duration-200 hover:border-sky-400 hover:bg-sky-500/10 hover:text-sky-400"
+                                className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-white/5 shadow-none hover:shadow-[0_20px_40px_rgba(56,189,248,.12)] text-xl text-slate-300 transition-all duration-75 hover:border-sky-400 hover:bg-sky-500/10 hover:text-sky-400"
                             >
 
-                                <FiGithub/>
+                                <FiGithub />
 
                             </motion.a>
 
                             <motion.a
                                 whileHover={{
-                                    y:-5,
-                                    scale:1.08
+                                    y: -5,
+                                    scale: 1.08
                                 }}
                                 whileTap={{
-                                    scale:0.95
+                                    scale: 0.95
                                 }}
                                 href="https://linkedin.com"
                                 target="_blank"
                                 rel="noreferrer"
-                                className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-xl text-slate-300 transition-all duration-200 hover:border-sky-400 hover:bg-sky-500/10 hover:text-sky-400"
+                                className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-white/5 shadow-none hover:shadow-[0_20px_40px_rgba(56,189,248,.12)] text-xl text-slate-300 transition-all duration-75 hover:border-sky-400 hover:bg-sky-500/10 hover:text-sky-400"
                             >
 
-                                <FiLinkedin/>
+                                <FiLinkedin />
 
                             </motion.a>
 
                             <motion.a
                                 whileHover={{
-                                    y:-5,
-                                    scale:1.08
+                                    y: -5,
+                                    scale: 1.08
                                 }}
                                 whileTap={{
-                                    scale:0.95
+                                    scale: 0.95
                                 }}
                                 href="https://x.com"
                                 target="_blank"
                                 rel="noreferrer"
-                                className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-xl text-slate-300 transition-all duration-200 hover:border-sky-400 hover:bg-sky-500/10 hover:text-sky-400"
+                                className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-white/5 shadow-none hover:shadow-[0_20px_40px_rgba(56,189,248,.12)] text-xl text-slate-300 transition-all duration-75 hover:border-sky-400 hover:bg-sky-500/10 hover:text-sky-400"
                             >
 
-                                <FiTwitter/>
+                                <FiTwitter />
 
                             </motion.a>
 

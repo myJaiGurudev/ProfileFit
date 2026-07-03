@@ -473,7 +473,7 @@ const Register = () => {
                             <img
                                 src="/logo.png"
                                 alt="ProfileFit Logo"
-                                className="h-15 w-15 object-contain brightness-110 transition-all duration-200 group-hover:brightness-150"
+                                className="h-15 w-15 object-contain brightness-110 transition-all duration-75 group-hover:brightness-150"
                             />
                         </Link>
 
