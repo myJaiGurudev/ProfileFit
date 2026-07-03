@@ -814,27 +814,6 @@ export default function Error() {
 
                         </div>
 
-                        {/* Footer */}
-
-                        <motion.p
-
-                            animate={{
-                                opacity: [.45, 1, .45]
-                            }}
-
-                            transition={{
-                                duration: 3,
-                                repeat: Infinity
-                            }}
-
-                            className="mt-6 text-center text-xs font-medium uppercase tracking-[0.35em] text-slate-500"
-
-                        >
-
-                            ProfileFit • Learn • Practice • Succeed
-
-                        </motion.p>
-
                     </motion.div>
                 </div>
 
