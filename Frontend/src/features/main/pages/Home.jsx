@@ -25,7 +25,7 @@ const Home = () => {
 
             setLoading(false);
 
-        }, 1800);
+        }, 1300);
 
         return () => clearTimeout(timer);
 

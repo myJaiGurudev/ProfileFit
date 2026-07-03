@@ -107,8 +107,8 @@ async function sendOtpController(req, res) {
         const isRegister = purpose === "register";
 
         const emailSubject = isRegister
-            ? "ProfileFit • Email Verification Code"
-            : "ProfileFit • Password Reset Code";
+            ? "Email Verification Code"
+            : "Password Reset Code";
 
         const heading = isRegister ?
             "✅ Verify Your Email" : "🔒 Reset Your Password";

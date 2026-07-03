@@ -5,6 +5,7 @@ import { GoogleLogin } from "@react-oauth/google";
 import { FiUser, FiMail, FiLock, FiArrowLeft, FiArrowRight, FiEye, FiEyeOff } from "react-icons/fi";
 import api from "../components/api";
 import { Check } from "lucide-react";
+import { useAuth } from "../../../context/AuthContext";
 
 const Register = () => {
 
@@ -21,6 +22,7 @@ const Register = () => {
     const [countdown, setCountdown] = useState(30);
     const otpRefs = useRef([]);
     const navigate = useNavigate();
+    const { setUser, refreshUser } = useAuth();
 
     const clearOtp = () => {
 
@@ -416,11 +418,13 @@ const Register = () => {
 
             setSendingOtp(true);
 
-            await api.post("/auth/google-login", {
-
+            const res = await api.post("/auth/google-login", {
                 token: credentialResponse.credential
-
             });
+
+            setUser(res.data.user);
+            setCreatingAccount(true);
+            setStep(4);
 
             navigate("/");
 

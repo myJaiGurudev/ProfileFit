@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import api from "../components/api";
 import { motion } from "framer-motion";
 import { GoogleLogin } from "@react-oauth/google";
+import { useAuth } from "../../../context/AuthContext";
 
 const Login = () => {
 
@@ -13,6 +14,7 @@ const Login = () => {
     const navigate = useNavigate();
     const [step, setStep] = useState(1);
     const [loginSuccess, setLoginSuccess] = useState(false);
+    const { setUser, refreshUser } = useAuth();
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -20,10 +22,12 @@ const Login = () => {
         try {
             setLoading(true);
 
-            await api.post("/auth/login", {
+            const res = await api.post("/auth/login", {
                 email,
                 password
             });
+
+            setUser(res.data.user);
 
             setLoginSuccess(true);
             setStep(2);
@@ -70,11 +74,11 @@ const Login = () => {
 
             setLoading(true);
 
-            await api.post("/auth/google-login", {
-
+            const res = await api.post("/auth/google-login", {
                 token: credentialResponse.credential
-
             });
+
+            setUser(res.data.user);
 
             setLoginSuccess(true);
             setStep(2);

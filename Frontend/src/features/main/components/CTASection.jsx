@@ -84,7 +84,7 @@ export default function CTASection() {
 
                         <Link
 
-                            to="/login"
+                            to="/analyze-resume"
 
                             className="group relative inline-flex overflow-hidden rounded-2xl p-[1.5px]"
 

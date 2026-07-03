@@ -86,7 +86,8 @@ async function registerUserController(req, res) {
             user: {
                 id: user._id,
                 username: user.username,
-                email: user.email
+                email: user.email,
+                profilePicture: user.profilePicture || ""
             }
         });
 
@@ -224,9 +225,10 @@ async function loginUserController(req, res) {
         user: {
             id: user._id,
             username: user.username,
-            email: user.email
+            email: user.email,
+            profilePicture: user.profilePicture || ""
         }
-    })
+    });
 }
 
 /**
@@ -414,9 +416,10 @@ async function getMeController(req, res) {
         user: {
             id: user._id,
             username: user.username,
-            email: user.email
+            email: user.email,
+            profilePicture: user.profilePicture || ""
         }
-    })
+    });
 
 }
 

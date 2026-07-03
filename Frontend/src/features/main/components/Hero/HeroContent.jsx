@@ -90,7 +90,7 @@ export default function HeroContent() {
             >
 
                 <Link
-                    to="/login"
+                    to="/analyze-resume"
                     className="group relative inline-flex w-64 items-center justify-center overflow-hidden rounded-2xl p-px transition-all duration-500 hover:scale-105 hover:shadow-[0_20px_60px_rgba(59,130,246,0.45)]"
                 >
 
