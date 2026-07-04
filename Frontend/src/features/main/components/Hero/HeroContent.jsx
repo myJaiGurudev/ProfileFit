@@ -179,7 +179,7 @@ export default function HeroContent() {
 
                     <div className="relative">
 
-                        <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-sky-500/15 text-sky-400 transition-transform duration-150 group-hover:scale-110">
+                        <div className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-sky-500/15 text-sky-400 transition-transform duration-150 group-hover:scale-110">
 
                             <HiShieldCheck className="text-3xl" />
 
@@ -252,7 +252,7 @@ export default function HeroContent() {
 
                     <div className="relative">
 
-                        <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-cyan-500/15 text-cyan-400 transition-transform duration-200 group-hover:scale-110">
+                        <div className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-cyan-500/15 text-cyan-400 transition-transform duration-200 group-hover:scale-110">
 
                             <HiMagnifyingGlass className="text-3xl" />
 
@@ -325,7 +325,7 @@ export default function HeroContent() {
 
                     <div className="relative">
 
-                        <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-violet-500/15 text-violet-400 transition-transform duration-200 group-hover:scale-110">
+                        <div className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-violet-500/15 text-violet-400 transition-transform duration-200 group-hover:scale-110">
 
                             <HiLightBulb className="text-3xl" />
 
