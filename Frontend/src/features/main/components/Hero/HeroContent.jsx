@@ -38,7 +38,7 @@ export default function HeroContent() {
             variants={container}
             initial="hidden"
             animate="show"
-            className="w-full max-w-2xl min-w-0"
+            className="w-full max-w-2xl min-w-0 text-center lg:text-left"
         >
 
             <motion.div
@@ -86,7 +86,7 @@ export default function HeroContent() {
 
             <motion.div
                 variants={item}
-                className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:items-start"
+                className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row sm:justify-center lg:justify-start"
             >
 
                 <Link
@@ -126,7 +126,7 @@ export default function HeroContent() {
             <motion.div
                 id="features"
                 variants={item}
-                className="mt-14 grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3"
+                className="mt-14 grid w-full grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3"
             >
 
                 <motion.div

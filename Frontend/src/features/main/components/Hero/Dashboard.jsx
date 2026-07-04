@@ -188,7 +188,7 @@ export default function Dashboard() {
                     </motion.div>
 
                 </div>
-                
+
                 {/* AI Engine */}
 
                 <motion.div
@@ -228,32 +228,17 @@ export default function Dashboard() {
 
                             <h3 className="text-lg sm:text-xl font-bold text-white wrap-break-word">
 
-                                ProfileFit AI Engine
+                                Analyzing Resume
 
                             </h3>
 
                             <p className="text-xs sm:text-sm text-slate-400 break-all">
 
-                                Analyzing compatibility, keywords and skill gaps...
+                                Comparing your resume with the job description...
 
                             </p>
 
                         </div>
-
-                    </div>
-
-                    <div className="mt-6 h-3 overflow-hidden rounded-full bg-slate-700">
-
-                        <motion.div
-                            animate={{
-                                width: ["15%", "82%", "100%"]
-                            }}
-                            transition={{
-                                duration: 3,
-                                repeat: Infinity
-                            }}
-                            className="h-full rounded-full bg-linear-to-r from-sky-400 to-cyan-400"
-                        />
 
                     </div>
 
