@@ -32,7 +32,7 @@ export default function TrustedSection() {
 
     return (
 
-        <section className="relative overflow-hidden py-24">
+        <section className="relative overflow-hidden py-16 sm:py-20 lg:py-24">
 
             <div className="absolute inset-0 overflow-hidden">
 
@@ -46,12 +46,12 @@ export default function TrustedSection() {
                         repeat: Infinity,
                         ease: "easeInOut"
                     }}
-                    className="absolute left-1/2 top-0 h-96 w-96 -translate-x-1/2 rounded-full bg-sky-500/10 blur-3xl"
+                    className="absolute left-1/2 top-0 h-60 w-60 -translate-x-1/2 rounded-full bg-sky-500/10 blur-3xl sm:h-80 sm:w-80 lg:h-96 lg:w-96"
                 />
 
             </div>
 
-            <div className="mx-auto max-w-7xl px-6">
+            <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
 
                 <motion.div
 
@@ -77,19 +77,19 @@ export default function TrustedSection() {
 
                 >
 
-                    <span className="rounded-full border border-sky-500/20 bg-sky-500/10 px-5 py-2 text-sm font-semibold text-sky-300">
+                    <span className="inline-block rounded-full border border-sky-500/20 bg-sky-500/10 px-4 py-2 text-xs font-semibold tracking-wide text-sky-300 sm:px-5 sm:text-sm">
 
                         TRUSTED FOR MODERN CAREERS
 
                     </span>
 
-                    <h2 className="mt-6 text-4xl font-black text-white">
+                    <h2 className="mt-6 text-2xl font-black leading-tight text-white sm:text-3xl md:text-4xl lg:text-5xl text-balance">
 
                         Designed for Candidates Targeting
 
                     </h2>
 
-                    <p className="mx-auto mt-5 max-w-2xl text-lg text-slate-400">
+                    <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-slate-400 sm:text-base lg:text-lg text-pretty">
 
                         Whether you're applying to startups or global tech companies, ProfileFit helps optimize your resume for modern hiring systems.
 
@@ -97,7 +97,7 @@ export default function TrustedSection() {
 
                 </motion.div>
 
-                <div className="mt-16 grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-6">
+                <div className="mt-12 grid grid-cols-2 gap-3 sm:mt-16 sm:gap-5 md:grid-cols-3 lg:grid-cols-6 lg:gap-6">
 
                     {
 
@@ -137,13 +137,13 @@ export default function TrustedSection() {
                                     scale: 0.98
                                 }}
 
-                                className="group relative flex h-20 items-center justify-center overflow-hidden rounded-2xl border border-white/10 bg-white/5 text-lg font-bold text-slate-400 transition-all duration-300 hover:border-sky-400/40 hover:bg-white/10 hover:text-white hover:shadow-[0_15px_35px_rgba(56,189,248,.18)]"
+                                className="group relative flex min-h-16 sm:h-20 items-center justify-center overflow-hidden rounded-xl sm:rounded-2xl border border-white/10 bg-white/5 px-2 text-center text-sm font-bold text-slate-400 transition-all duration-300 hover:border-sky-400/40 hover:bg-white/10 hover:text-white hover:shadow-[0_15px_35px_rgba(56,189,248,.18)] sm:text-base lg:text-lg"
                             >
 
                                 <>
                                     <div className="absolute inset-0 rounded-2xl bg-linear-to-br from-sky-500/10 to-cyan-500/10 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
 
-                                    <span className="relative">
+                                    <span className="relative wrap-break-word text-balance">
 
                                         {company}
 
@@ -158,7 +158,7 @@ export default function TrustedSection() {
 
                 </div>
 
-                <div className="mt-20 grid grid-cols-2 gap-6 lg:grid-cols-4">
+                <div className="mt-14 grid grid-cols-2 gap-4 sm:mt-20 sm:gap-6 lg:grid-cols-4">
 
                     {
 
@@ -186,7 +186,7 @@ export default function TrustedSection() {
                                     delay: .3 + (index * .1)
                                 }}
 
-                                className="group relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-8 text-center backdrop-blur-xl transition-all duration-300 hover:-translate-y-2 hover:border-sky-400/40 hover:bg-white/10 hover:shadow-[0_20px_45px_rgba(56,189,248,.18)]"
+                                className="group relative overflow-hidden rounded-2xl sm:rounded-3xl border border-white/10 bg-white/5 p-5 sm:p-6 lg:p-8 text-center backdrop-blur-xl transition-all duration-300 hover:-translate-y-2 hover:border-sky-400/40 hover:bg-white/10 hover:shadow-[0_20px_45px_rgba(56,189,248,.18)]"
 
                             >
                                 <div className="absolute inset-0 overflow-hidden rounded-3xl">
@@ -215,14 +215,14 @@ export default function TrustedSection() {
                                         repeat: Infinity,
                                         ease: "easeInOut"
                                     }}
-                                    className="text-4xl font-black bg-linear-to-r from-sky-400 via-cyan-300 to-blue-500 bg-clip-text text-transparent"
+                                    className="text-2xl font-black bg-linear-to-r from-sky-400 via-cyan-300 to-blue-500 bg-clip-text text-transparent sm:text-3xl lg:text-4xl"
                                 >
 
                                     {item.value}
 
                                 </motion.h3>
 
-                                <p className="mt-3 text-slate-400">
+                                <p className="mt-2 text-xs leading-6 text-slate-400 sm:mt-3 sm:text-sm lg:text-base">
 
                                     {item.label}
 

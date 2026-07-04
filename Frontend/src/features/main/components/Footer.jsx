@@ -66,6 +66,15 @@ const Footer = () => {
                             </Link>
 
                             <a
+                                href="#workflow"
+                                className="block text-slate-400 transition-colors duration-200 hover:text-sky-400"
+                            >
+
+                                WorkFlow
+
+                            </a>
+
+                            <a
                                 href="#faq"
                                 className="block text-slate-400 transition-colors duration-200 hover:text-sky-400"
                             >
