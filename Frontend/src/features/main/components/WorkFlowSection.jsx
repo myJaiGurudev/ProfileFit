@@ -37,9 +37,9 @@ export default function WorkflowSection() {
 
     return (
 
-        <section id="workflow" className="relative overflow-hidden py-32">
+        <section id="workflow" className="relative overflow-hidden py-16 sm:py-20 lg:py-32">
 
-            <div className="mx-auto max-w-7xl px-6">
+            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 
                 <motion.div
 
@@ -67,11 +67,11 @@ export default function WorkflowSection() {
 
                     </span>
 
-                    <h2 className="mt-8 text-5xl font-black text-white">
+                    <h2 className="mt-8 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight wrap-break-word">
 
                         From Upload
 
-                        <span className="block bg-linear-to-r from-sky-400 via-cyan-300 to-blue-500 bg-clip-text text-transparent">
+                        <span className="block bg-linear-to-r from-sky-400 via-cyan-300 to-blue-500 bg-clip-text text-transparent wrap-break-word">
 
                             To Interview Ready
 
@@ -79,7 +79,7 @@ export default function WorkflowSection() {
 
                     </h2>
 
-                    <p className="mx-auto mt-8 max-w-2xl text-lg leading-8 text-slate-400">
+                    <p className="mx-auto mt-6 max-w-2xl text-base sm:text-lg leading-7 sm:leading-8 text-slate-400 wrap-break-word">
 
                         Optimize your resume with AI in four simple steps.
 
@@ -87,7 +87,7 @@ export default function WorkflowSection() {
 
                 </motion.div>
 
-                <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-4">
+                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-4">
 
                     {
 
@@ -124,29 +124,29 @@ export default function WorkflowSection() {
                                         scale: 1.03
                                     }}
 
-                                    className="group relative overflow-hidden rounded-[28px] border border-white/10 bg-white/5 p-8 backdrop-blur-2xl"
+                                    className="group relative flex h-full flex-col overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-5 sm:p-6 lg:p-8 backdrop-blur-2xl"
 
                                 >
 
-                                    <div className={`flex h-16 w-16 items-center justify-center rounded-2xl bg-linear-to-br ${step.color}`}>
+                                    <div className={`flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-linear-to-br ${step.color}`}>
 
-                                        <Icon className="text-3xl text-white" />
+                                        <Icon className="text-2xl sm:text-3xl text-white shrink-0" />
 
                                     </div>
 
-                                    <div className="mt-8 text-5xl font-black text-white/10">
+                                    <div className="mt-6 text-4xl sm:text-5xl font-black text-white/10">
 
                                         0{index + 1}
 
                                     </div>
 
-                                    <h3 className="mt-4 text-xl font-bold text-white">
+                                    <h3 className="mt-4 text-lg sm:text-xl font-bold text-white wrap-break-word">
 
                                         {step.title}
 
                                     </h3>
 
-                                    <p className="mt-3 leading-7 text-slate-400">
+                                    <p className="mt-3 text-sm sm:text-base leading-6 sm:leading-7 text-slate-400 wrap-break-word">
 
                                         {step.desc}
 
