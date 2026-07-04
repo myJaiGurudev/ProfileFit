@@ -188,47 +188,7 @@ export default function Dashboard() {
                     </motion.div>
 
                 </div>
-
-                <div className="relative my-8 flex items-center justify-center">
-
-                    <motion.div
-
-                        animate={{
-                            x: ["0%", "40%"]
-                        }}
-
-                        transition={{
-                            duration: 2,
-                            repeat: Infinity,
-                            ease: "linear"
-                        }}
-
-                        className="absolute left-[18%] top-1/2 h-2 w-2 -translate-y-1/2 rounded-full bg-sky-400 shadow-[0_0_15px_#38bdf8]"
-
-                    />
-
-                    <motion.div
-
-                        animate={{
-                            x: ["0%", "-40%"]
-                        }}
-
-                        transition={{
-                            duration: 2,
-                            repeat: Infinity,
-                            ease: "linear"
-                        }}
-
-                        className="absolute right-[18%] top-1/2 h-2 w-2 -translate-y-1/2 rounded-full bg-violet-400 shadow-[0_0_15px_#a855f7]"
-
-                    />
-
-                    <div className="absolute left-[22%] right-[50%] top-1/2 h-px bg-linear-to-r from-sky-500 via-cyan-400 to-transparent" />
-
-                    <div className="absolute left-[50%] right-[22%] top-1/2 h-px bg-linear-to-l from-violet-500 via-fuchsia-400 to-transparent" />
-
-                </div>
-
+                
                 {/* AI Engine */}
 
                 <motion.div
@@ -340,17 +300,17 @@ export default function Dashboard() {
 
                     </div>
 
-                    <div className="mt-5 grid grid-cols-3 gap-3 sm:gap-4">
+                    <div className="mt-5 grid grid-cols-3 gap-4">
 
-                        <div className="min-w-0">
+                        <div className="flex min-w-0 flex-col items-center justify-center text-center">
 
-                            <p className="text-3xl font-black text-white">
+                            <p className="text-2xl font-black text-white sm:text-3xl">
 
                                 {atsScore}%
 
                             </p>
 
-                            <p className="mt-1 text-xs text-slate-400">
+                            <p className="mt-2 text-xs font-medium text-slate-400">
 
                                 ATS Score
 
@@ -358,15 +318,15 @@ export default function Dashboard() {
 
                         </div>
 
-                        <div>
+                        <div className="flex min-w-0 flex-col items-center justify-center text-center">
 
-                            <p className="text-3xl font-black text-white">
+                            <p className="text-2xl font-black text-white sm:text-3xl">
 
                                 {keywords}/42
 
                             </p>
 
-                            <p className="mt-1 text-xs text-slate-400">
+                            <p className="mt-2 text-xs font-medium text-slate-400">
 
                                 Keywords
 
@@ -374,15 +334,15 @@ export default function Dashboard() {
 
                         </div>
 
-                        <div>
+                        <div className="flex min-w-0 flex-col items-center justify-center text-center">
 
-                            <p className="text-3xl font-black text-white">
+                            <p className="text-2xl font-black text-white sm:text-3xl">
 
                                 +{tips}
 
                             </p>
 
-                            <p className="mt-1 text-xs text-slate-400">
+                            <p className="mt-2 text-xs font-medium text-slate-400">
 
                                 AI Tips
 
