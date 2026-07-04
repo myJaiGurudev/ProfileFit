@@ -57,7 +57,7 @@ export default function WorkflowSection() {
                         once: true
                     }}
 
-                    className="mx-auto mb-20 max-w-3xl text-center"
+                    className="mx-auto mb-12 max-w-3xl text-center sm:mb-16 lg:mb-20"
 
                 >
 
