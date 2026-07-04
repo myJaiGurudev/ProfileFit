@@ -66,13 +66,6 @@ const Footer = () => {
                             </Link>
 
                             <a
-                                href="#features"
-                                className="block text-slate-400 transition-colors duration-200 hover:text-sky-400"
-                            >
-                                Features
-                            </a>
-
-                            <a
                                 href="#faq"
                                 className="block text-slate-400 transition-colors duration-200 hover:text-sky-400"
                             >

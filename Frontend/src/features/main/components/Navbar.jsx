@@ -135,7 +135,6 @@ export default function Navbar() {
                         {/* Navigation Links */}
                         <div className="flex items-center gap-1">
                             {[
-                                { label: "Features", href: "#features" },
                                 { label: "FAQs", href: "#faq" }
                             ].map((item) => (
                                 <a
@@ -500,18 +499,6 @@ export default function Navbar() {
                                     </NavLink>
 
                                     <a
-                                        href="#features"
-                                        onClick={closeMenu}
-                                        className="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-700 transition hover:bg-slate-100 hover:text-blue-600"
-                                    >
-
-                                        <FiGrid />
-
-                                        Features
-
-                                    </a>
-
-                                    <a
                                         href="#faq"
                                         onClick={closeMenu}
                                         className="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-700 transition hover:bg-slate-100 hover:text-blue-600"
@@ -645,18 +632,6 @@ export default function Navbar() {
                                             Settings
 
                                         </Link>
-
-                                        <a
-                                            href="#features"
-                                            onClick={closeMenu}
-                                            className="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-700 transition hover:bg-slate-100 hover:text-blue-600"
-                                        >
-
-                                            <FiGrid />
-
-                                            Features
-
-                                        </a>
 
                                         <a
                                             href="#faq"

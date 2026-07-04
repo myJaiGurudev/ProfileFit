@@ -234,7 +234,7 @@ export default function Dashboard() {
 
                             <p className="text-xs sm:text-sm text-slate-400 break-all">
 
-                                Evaluating resume against job requirements...
+                                Assessing resume-job compatibility...
 
                             </p>
 
