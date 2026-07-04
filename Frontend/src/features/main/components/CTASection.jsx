@@ -118,17 +118,17 @@ export default function CTASection() {
 
                     </div>
 
-                    <div className="mt-10 sm:mt-12 lg:mt-14 grid grid-cols-1 sm:grid-cols-3 gap-8 text-center">
+                    <div className="mt-10 sm:mt-12 lg:mt-14 flex items-center justify-between gap-2 sm:gap-4 md:gap-6 lg:gap-8 text-center">
 
-                        <div>
+                        <div className="flex-1 min-w-0">
 
-                            <h3 className="text-2xl sm:text-3xl md:text-4xl font-black text-white">
+                            <h3 className="text-lg xs:text-xl sm:text-2xl md:text-3xl lg:text-4xl font-black text-white leading-none wrap-break-word">
 
                                 50K+
 
                             </h3>
 
-                            <p className="mt-2 text-sm sm:text-base text-slate-400">
+                            <p className="mt-2 text-[11px] sm:text-sm md:text-base text-slate-400 leading-snug break-words">
 
                                 Resumes Analyzed
 
@@ -136,15 +136,15 @@ export default function CTASection() {
 
                         </div>
 
-                        <div>
+                        <div className="flex-1 min-w-0">
 
-                            <h3 className="text-2xl sm:text-3xl md:text-4xl font-black text-white">
+                            <h3 className="text-lg xs:text-xl sm:text-2xl md:text-3xl lg:text-4xl font-black text-white leading-none wrap-break-word">
 
                                 94%
 
                             </h3>
 
-                            <p className="mt-2 text-sm sm:text-base text-slate-400">
+                            <p className="mt-2 text-[11px] sm:text-sm md:text-base text-slate-400 leading-snug break-words">
 
                                 Average ATS Score
 
@@ -152,15 +152,15 @@ export default function CTASection() {
 
                         </div>
 
-                        <div>
+                        <div className="flex-1 min-w-0">
 
-                            <h3 className="text-2xl sm:text-3xl md:text-4xl font-black text-white">
+                            <h3 className="text-lg xs:text-xl sm:text-2xl md:text-3xl lg:text-4xl font-black text-white leading-none wrap-break-word">
 
                                 4.9/5
 
                             </h3>
 
-                            <p className="mt-2 text-sm sm:text-base text-slate-400">
+                            <p className="mt-2 text-[11px] sm:text-sm md:text-base text-slate-400 leading-snug break-words">
 
                                 User Satisfaction
 
