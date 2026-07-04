@@ -41,7 +41,6 @@ const Home = () => {
             <ScrollProgress />
             <BackToTop />
             <Background />
-            <Navbar />
             <div className="relative min-h-screen bg-slate-950">
 
                 <HeroBackground />

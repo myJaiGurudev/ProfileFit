@@ -6,7 +6,7 @@ export default function CTASection() {
 
     return (
 
-        <section className="relative overflow-hidden py-16 sm:py-20 md:py-24 lg:py-32">
+        <section id="cta" className="relative overflow-hidden py-16 sm:py-20 md:py-24 lg:py-32">
 
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(14,165,233,.12),transparent_65%)]" />
 

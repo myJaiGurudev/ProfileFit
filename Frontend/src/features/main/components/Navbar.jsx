@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { HiOutlineMenuAlt3, HiX } from "react-icons/hi";
-import { FiHome, FiUser, FiSettings, FiLogOut, FiChevronDown, FiGrid, FiHelpCircle } from "react-icons/fi";
+import { FiHome, FiUser, FiSettings, FiLogOut, FiChevronDown, FiGrid, FiHelpCircle, FiFileText } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "../../../Context/AuthContext";
 import { HiOutlineQueueList } from "react-icons/hi2";
@@ -136,7 +136,7 @@ export default function Navbar() {
                         {/* Navigation Links */}
                         <div className="flex items-center gap-1">
                             {[
-                                {label: "WorkFlow", href: "#workflow"},
+                                { label: "WorkFlow", href: "#workflow" },
                                 { label: "FAQs", href: "#faq" }
                             ].map((item) => (
                                 <a
@@ -500,6 +500,18 @@ export default function Navbar() {
 
                                     </NavLink>
 
+                                    <NavLink
+                                        to="/analyze-resume"
+                                        onClick={closeMenu}
+                                        className="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-700 transition hover:bg-slate-100 hover:text-blue-600"
+                                    >
+
+                                        <FiFileText />
+
+                                        Analyze Resume
+
+                                    </NavLink>
+
                                     <a
                                         href="#workflow"
                                         onClick={closeMenu}
@@ -620,6 +632,18 @@ export default function Navbar() {
                                             <FiHome />
 
                                             Home
+
+                                        </NavLink>
+
+                                        <NavLink
+                                            to="/analyze-resume"
+                                            onClick={closeMenu}
+                                            className="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-700 transition hover:bg-slate-100 hover:text-blue-600"
+                                        >
+
+                                            <FiFileText />
+
+                                            Analyze Resume
 
                                         </NavLink>
 
