@@ -89,26 +89,45 @@ export default function HeroContent() {
                 className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row sm:justify-center lg:justify-start"
             >
 
-                <Link
-                    to="/analyze-resume"
-                    className="group relative inline-flex w-full sm:w-64 items-center justify-center overflow-hidden rounded-2xl p-px transition-all duration-500 hover:scale-105 hover:shadow-[0_20px_60px_rgba(59,130,246,0.45)]"
+                <motion.div
+                    className="w-full sm:w-64"
+                    whileHover={{
+                        y: -3,
+                        scale: 1.02
+                    }}
+                    whileTap={{
+                        y: 2,
+                        scale: 0.985
+                    }}
+                    transition={{
+                        type: "spring",
+                        stiffness: 450,
+                        damping: 20
+                    }}
                 >
 
-                    <span className="absolute inset-0 bg-[linear-linear(90deg,#38bdf8,#3b82f6,#8b5cf6,#38bdf8)] bg-size-[300%_100%] animate-[linear_4s_linear_infinite]" />
+                    <Link
+                        to="/analyze-resume"
+                        className="group relative flex w-full"
+                    >
 
-                    <span className="relative flex w-full sm:w-64 items-center justify-center gap-3 rounded-2xl bg-slate-950 py-4 font-semibold text-white transition-all duration-300 group-hover:bg-slate-900">
+                        <span className="absolute inset-0 w-full rounded-2xl bg-sky-800 translate-y-1.25 transition-all duration-200 group-hover:translate-y-1.5 group-active:translate-y-0.5" />
 
-                        <span className="absolute inset-0 rounded-2xl bg-white/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                        <span className="relative flex flex-1 items-center justify-center gap-3 rounded-2xl border border-sky-400/20 bg-linear-to-b from-sky-500 via-sky-600 to-blue-700 px-8 py-4 text-sm sm:text-base font-semibold text-white transition-all duration-200 group-hover:-translate-y-px group-active:translate-y-0.75">
 
-                        <span className="relative">
-                            Analyze Resume
+                            <span className="relative z-10">
+
+                                Analyze Resume
+
+                            </span>
+
+                            <FiArrowRight className="relative z-10 transition-all duration-300 group-hover:translate-x-1.5" />
+
                         </span>
 
-                        <FiArrowRight className="relative text-lg transition-transform duration-300 group-hover:translate-x-2" />
+                    </Link>
 
-                    </span>
-
-                </Link>
+                </motion.div>
 
                 <Link
                     to="/demo"
