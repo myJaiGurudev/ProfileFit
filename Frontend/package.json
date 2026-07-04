@@ -15,13 +15,15 @@
     "framer-motion": "^12.42.2",
     "lucide-react": "^1.23.0",
     "nodemailer": "^9.0.3",
+    "prop-types": "^15.8.1",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "react-icons": "^5.7.0",
     "react-router": "^8.0.1",
     "react-router-dom": "^7.18.0",
     "sass": "^1.101.0",
-    "swiper": "^14.0.1"
+    "swiper": "^14.0.1",
+    "tailwind-scrollbar": "^4.0.2"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
