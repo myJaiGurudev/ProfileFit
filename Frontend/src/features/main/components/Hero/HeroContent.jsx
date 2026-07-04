@@ -38,7 +38,7 @@ export default function HeroContent() {
             variants={container}
             initial="hidden"
             animate="show"
-            className="max-w-2xl"
+            className="w-full max-w-2xl min-w-0"
         >
 
             <motion.div
@@ -58,7 +58,7 @@ export default function HeroContent() {
 
             <motion.h1
                 variants={item}
-                className="mt-8 text-5xl font-black leading-tight tracking-[-0.04em] text-white sm:text-6xl xl:text-7xl"
+                className="mt-8 text-3xl font-black leading-tight tracking-[-0.03em] text-white sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl"
             >
 
                 Land More Interviews
@@ -73,7 +73,7 @@ export default function HeroContent() {
 
             <motion.p
                 variants={item}
-                className="mt-8 max-w-xl text-lg leading-8 text-slate-300"
+                className="mt-8 max-w-xl text-base leading-7 text-slate-300 sm:text-lg sm:leading-8"
             >
 
                 Upload your resume and a job description.
@@ -91,12 +91,12 @@ export default function HeroContent() {
 
                 <Link
                     to="/analyze-resume"
-                    className="group relative inline-flex w-64 items-center justify-center overflow-hidden rounded-2xl p-px transition-all duration-500 hover:scale-105 hover:shadow-[0_20px_60px_rgba(59,130,246,0.45)]"
+                    className="group relative inline-flex w-full sm:w-64 items-center justify-center overflow-hidden rounded-2xl p-px transition-all duration-500 hover:scale-105 hover:shadow-[0_20px_60px_rgba(59,130,246,0.45)]"
                 >
 
                     <span className="absolute inset-0 bg-[linear-linear(90deg,#38bdf8,#3b82f6,#8b5cf6,#38bdf8)] bg-size-[300%_100%] animate-[linear_4s_linear_infinite]" />
 
-                    <span className="relative flex w-64 items-center justify-center gap-3 rounded-2xl bg-slate-950 py-4 font-semibold text-white transition-all duration-300 group-hover:bg-slate-900">
+                    <span className="relative flex w-full sm:w-64 items-center justify-center gap-3 rounded-2xl bg-slate-950 py-4 font-semibold text-white transition-all duration-300 group-hover:bg-slate-900">
 
                         <span className="absolute inset-0 rounded-2xl bg-white/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
 
@@ -112,7 +112,7 @@ export default function HeroContent() {
 
                 <Link
                     to="/demo"
-                    className="group inline-flex w-64 items-center justify-center rounded-2xl border border-white/10 bg-white/5 py-4 font-semibold text-white backdrop-blur-xl transition-all duration-300 hover:border-sky-500/50 hover:bg-white/10"
+                    className="group inline-flex w-full sm:w-64 items-center justify-center rounded-2xl border border-white/10 bg-white/5 py-4 font-semibold text-white backdrop-blur-xl transition-all duration-300 hover:border-sky-500/50 hover:bg-white/10"
                 >
 
                     <FiPlayCircle className="mr-3 text-xl transition-transform duration-300 group-hover:scale-110" />
@@ -126,7 +126,7 @@ export default function HeroContent() {
             <motion.div
                 id="features"
                 variants={item}
-                className="mt-14 grid gap-5 sm:grid-cols-3"
+                className="mt-14 grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3"
             >
 
                 <motion.div

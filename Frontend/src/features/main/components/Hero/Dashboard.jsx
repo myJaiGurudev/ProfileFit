@@ -73,9 +73,9 @@ export default function Dashboard() {
             <div
                 ref={dashboardRef}
                 onMouseMove={handleMouseMove}
-                className="relative w-full max-w-2xl rounded-[34px] border border-white/10 bg-white/5 p-7 backdrop-blur-3xl shadow-[0_25px_80px_rgba(0,0,0,.35)]">
+                className="relative w-full max-w-md sm:max-w-xl lg:max-w-2xl rounded-[26px] sm:rounded-[34px] border border-white/10 bg-white/5 p-4 sm:p-5 md:p-7 backdrop-blur-3xl shadow-[0_25px_80px_rgba(0,0,0,.35)] overflow-hidden">
 
-                <div className="grid grid-cols-2 gap-5">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-5">
 
                     {/* Resume */}
 
@@ -84,26 +84,26 @@ export default function Dashboard() {
                             y: -6,
                             scale: 1.02
                         }}
-                        className="rounded-3xl border border-sky-500/20 bg-sky-500/10 p-5"
+                        className="min-w-0 rounded-3xl border border-sky-500/20 bg-sky-500/10 p-4 sm:p-5"
                     >
 
                         <div className="flex items-center gap-3">
 
-                            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-sky-500/20 text-sky-400">
+                            <div className="flex h-10 w-10 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-xl bg-sky-500/20 text-sky-400">
 
-                                <FiFileText className="text-2xl" />
+                                <FiFileText className="text-xl sm:text-2xl" />
 
                             </div>
 
                             <div>
 
-                                <h3 className="font-bold text-white">
+                                <h3 className="text-sm sm:text-base font-bold text-white wrap-break-word">
 
                                     Resume
 
                                 </h3>
 
-                                <p className="text-sm text-slate-400">
+                                <p className="text-xs sm:text-sm text-slate-400 break-all">
 
                                     Resume.pdf
 
@@ -120,7 +120,7 @@ export default function Dashboard() {
 
                                     <span
                                         key={skill}
-                                        className="rounded-full bg-sky-500/15 px-3 py-1 text-xs font-medium text-sky-300"
+                                        className="rounded-full bg-sky-500/15 px-2.5 sm:px-3 py-1 text-[10px] sm:text-xs font-medium text-sky-300 whitespace-nowrap"
                                     >
                                         {skill}
                                     </span>
@@ -139,26 +139,26 @@ export default function Dashboard() {
                             y: -6,
                             scale: 1.02
                         }}
-                        className="rounded-3xl border border-violet-500/20 bg-violet-500/10 p-5"
+                        className="min-w-0 rounded-3xl border border-violet-500/20 bg-violet-500/10 p-4 sm:p-5"
                     >
 
                         <div className="flex items-center gap-3">
 
-                            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-violet-500/20 text-violet-400">
+                            <div className="flex h-10 w-10 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-xl bg-sky-500/20 text-sky-400">
 
-                                <FiBriefcase className="text-2xl" />
+                                <FiBriefcase className="text-xl sm:text-2xl" />
 
                             </div>
 
                             <div>
 
-                                <h3 className="font-bold text-white">
+                                <h3 className="text-sm sm:text-base font-bold text-white wrap-break-word">
 
                                     Job Description
 
                                 </h3>
 
-                                <p className="text-sm text-slate-400">
+                                <p className="text-xs sm:text-sm text-slate-400 break-all">
 
                                     Google • SDE
 
@@ -194,7 +194,7 @@ export default function Dashboard() {
                     <motion.div
 
                         animate={{
-                            x: [0, 220]
+                            x: ["0%", "40%"]
                         }}
 
                         transition={{
@@ -210,7 +210,7 @@ export default function Dashboard() {
                     <motion.div
 
                         animate={{
-                            x: [0, -220]
+                            x: ["0%", "-40%"]
                         }}
 
                         transition={{
@@ -239,10 +239,10 @@ export default function Dashboard() {
                         duration: 2.5,
                         repeat: Infinity
                     }}
-                    className="mt-6 rounded-3xl border border-cyan-500/20 bg-linear-to-r from-sky-500/10 to-cyan-500/10 p-6"
+                    className="mt-6 rounded-3xl border border-cyan-500/20 bg-linear-to-r from-sky-500/10 to-cyan-500/10 p-4 sm:p-6"
                 >
 
-                    <div className="flex items-center gap-4">
+                    <div className="flex flex-col md:flex-row items-center md:items-start gap-4 text-center md:text-left">
 
                         <motion.div
 
@@ -256,23 +256,23 @@ export default function Dashboard() {
                                 repeat: Infinity
                             }}
 
-                            className="flex h-14 w-14 items-center justify-center rounded-2xl bg-cyan-500/20 text-cyan-400"
+                            className="flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center shrink-0 rounded-2xl bg-cyan-500/20 text-cyan-400"
 
                         >
 
-                            <FiCpu className="text-3xl" />
+                            <FiCpu className="text-2xl sm:text-3xl" />
 
                         </motion.div>
 
                         <div>
 
-                            <h3 className="text-xl font-bold text-white">
+                            <h3 className="text-lg sm:text-xl font-bold text-white wrap-break-word">
 
                                 ProfileFit AI Engine
 
                             </h3>
 
-                            <p className="text-sm text-slate-400">
+                            <p className="text-xs sm:text-sm text-slate-400 break-all">
 
                                 Analyzing compatibility, keywords and skill gaps...
 
@@ -315,7 +315,7 @@ export default function Dashboard() {
                     transition={{
                         delay: 0.6
                     }}
-                    className="mt-6 rounded-3xl border border-emerald-500/20 bg-emerald-500/10 p-5"
+                    className="mt-6 rounded-3xl border border-emerald-500/20 bg-emerald-500/10 p-4 sm:p-5"
                 >
 
                     <div className="flex items-center justify-between">
@@ -324,7 +324,7 @@ export default function Dashboard() {
 
                             <FiCheckCircle className="text-2xl text-emerald-400" />
 
-                            <h3 className="font-bold text-white">
+                            <h3 className="text-sm sm:text-base font-bold text-white wrap-break-word">
 
                                 Analysis Ready
 
@@ -340,9 +340,9 @@ export default function Dashboard() {
 
                     </div>
 
-                    <div className="mt-5 grid grid-cols-3 gap-4">
+                    <div className="mt-5 grid grid-cols-3 gap-3 sm:gap-4">
 
-                        <div>
+                        <div className="min-w-0">
 
                             <p className="text-3xl font-black text-white">
 

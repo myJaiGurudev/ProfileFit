@@ -2,7 +2,6 @@ import React from 'react'
 import Navbar from '../components/Navbar'
 import Background from '../components/Background'
 import Hero from '../components/Hero/Hero'
-import FeatureSection from '../components/FeatureSection/FeatureSection'
 import WorkflowSection from '../components/WorkFlowSection'
 import TransformationSection from '../components/TransformationSection'
 import HeroBackground from '../components/Hero/HeroBackground'
@@ -52,8 +51,6 @@ const Home = () => {
                     <Hero />
 
                     <TrustedSection />
-
-                    <FeatureSection />
 
                     <WorkflowSection />
 
