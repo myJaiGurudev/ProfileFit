@@ -107,7 +107,7 @@ export default function TransformationSection() {
 
                             </p>
 
-                            <p className="mt-2 text-slate-400">
+                            <p className="mt-2 text-sm sm:text-base text-slate-400">
 
                                 ATS Score
 
@@ -187,7 +187,7 @@ export default function TransformationSection() {
 
                             </motion.p>
 
-                            <p className="mt-2 text-slate-400">
+                            <p className="mt-2 text-sm sm:text-base text-slate-400">
 
                                 ATS Score
 

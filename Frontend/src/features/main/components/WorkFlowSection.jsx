@@ -61,7 +61,7 @@ export default function WorkflowSection() {
 
                 >
 
-                    <span className="rounded-full border border-cyan-500/20 bg-cyan-500/10 px-5 py-2 text-sm font-semibold text-cyan-300">
+                    <span className="inline-flex rounded-full border border-cyan-500/20 bg-cyan-500/10 px-4 sm:px-5 py-2 text-xs sm:text-sm font-semibold text-cyan-300">
 
                         SIMPLE PROCESS
 

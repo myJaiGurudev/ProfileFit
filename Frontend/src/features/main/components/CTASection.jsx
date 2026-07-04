@@ -6,7 +6,7 @@ export default function CTASection() {
 
     return (
 
-        <section className="relative overflow-hidden py-32">
+        <section className="relative overflow-hidden py-16 sm:py-20 md:py-24 lg:py-32">
 
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(14,165,233,.12),transparent_65%)]" />
 
@@ -22,11 +22,11 @@ export default function CTASection() {
                     repeat: Infinity
                 }}
 
-                className="absolute left-1/2 top-1/2 h-125 w-125 -translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-400/10 blur-[120px]"
+                className="absolute left-1/2 top-1/2 h-64 w-64 sm:h-80 sm:w-80 md:h-112 md:w-md lg:h-128 lg:w-lg -translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-400/10 blur-[80px] sm:blur-[100px] lg:blur-[120px]"
 
             />
 
-            <div className="relative mx-auto max-w-6xl px-6">
+            <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
 
                 <motion.div
 
@@ -48,19 +48,19 @@ export default function CTASection() {
                         duration: .8
                     }}
 
-                    className="overflow-hidden rounded-[36px] border border-white/10 bg-white/5 p-12 backdrop-blur-3xl"
+                    className="overflow-hidden rounded-2xl sm:rounded-3xl lg:rounded-[36px] border border-white/10 bg-white/5 p-6 sm:p-8 md:p-10 lg:p-12 backdrop-blur-3xl"
 
                 >
 
                     <div className="mx-auto max-w-3xl text-center">
 
-                        <span className="rounded-full border border-cyan-500/20 bg-cyan-500/10 px-5 py-2 text-sm font-semibold text-cyan-300">
+                        <span className="inline-flex rounded-full border border-cyan-500/20 bg-cyan-500/10 px-4 sm:px-5 py-2 text-xs sm:text-sm font-semibold text-cyan-300">
 
                             READY TO GET STARTED?
 
                         </span>
 
-                        <h2 className="mt-8 text-5xl font-black leading-tight text-white">
+                        <h2 className="mt-6 sm:mt-8 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black leading-tight wrap-break-word text-white">
 
                             Land More Interviews With
 
@@ -72,7 +72,7 @@ export default function CTASection() {
 
                         </h2>
 
-                        <p className="mx-auto mt-8 max-w-2xl text-lg leading-8 text-slate-400">
+                        <p className="mx-auto mt-6 sm:mt-8 max-w-2xl text-sm sm:text-base md:text-lg leading-7 sm:leading-8 text-slate-400">
 
                             Upload your resume, compare it with your dream job, improve your ATS score, and receive personalized recommendations—all in minutes.
 
@@ -80,19 +80,19 @@ export default function CTASection() {
 
                     </div>
 
-                    <div className="mt-12 flex flex-col items-center justify-center gap-5 sm:flex-row">
+                    <div className="mt-10 sm:mt-12 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-5">
 
                         <Link
 
                             to="/analyze-resume"
 
-                            className="group relative inline-flex overflow-hidden rounded-2xl p-[1.5px]"
+                            className="group relative inline-flex w-full sm:w-auto overflow-hidden rounded-2xl p-[1.5px]"
 
                         >
 
                             <span className="absolute inset-0 bg-[linear-gradient(90deg,#38bdf8,#3b82f6,#8b5cf6,#38bdf8)] bg-size-[300%_100%] animate-[gradient_5s_linear_infinite]" />
 
-                            <span className="relative flex items-center gap-3 rounded-2xl bg-slate-950 px-9 py-4 font-semibold text-white">
+                            <span className="relative flex w-full justify-center items-center gap-3 rounded-2xl bg-slate-950 px-6 sm:px-8 md:px-9 py-3.5 sm:py-4 text-sm sm:text-base font-semibold text-white">
 
                                 Analyze Resume
 
@@ -106,7 +106,7 @@ export default function CTASection() {
 
                             to="/demo"
 
-                            className="group flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-8 py-4 font-semibold text-white transition-all duration-300 hover:border-cyan-400/40 hover:bg-white/10"
+                            className="group flex w-full sm:w-auto justify-center items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-6 sm:px-8 py-3.5 sm:py-4 text-sm sm:text-base font-semibold text-white transition-all duration-300 hover:border-cyan-400/40 hover:bg-white/10"
 
                         >
 
@@ -118,17 +118,17 @@ export default function CTASection() {
 
                     </div>
 
-                    <div className="mt-14 grid gap-6 text-center md:grid-cols-3">
+                    <div className="mt-10 sm:mt-12 lg:mt-14 grid grid-cols-1 sm:grid-cols-3 gap-8 text-center">
 
                         <div>
 
-                            <h3 className="text-3xl font-black text-white">
+                            <h3 className="text-2xl sm:text-3xl md:text-4xl font-black text-white">
 
                                 50K+
 
                             </h3>
 
-                            <p className="mt-2 text-slate-400">
+                            <p className="mt-2 text-sm sm:text-base text-slate-400">
 
                                 Resumes Analyzed
 
@@ -138,13 +138,13 @@ export default function CTASection() {
 
                         <div>
 
-                            <h3 className="text-3xl font-black text-white">
+                            <h3 className="text-2xl sm:text-3xl md:text-4xl font-black text-white">
 
                                 94%
 
                             </h3>
 
-                            <p className="mt-2 text-slate-400">
+                            <p className="mt-2 text-sm sm:text-base text-slate-400">
 
                                 Average ATS Score
 
@@ -154,13 +154,13 @@ export default function CTASection() {
 
                         <div>
 
-                            <h3 className="text-3xl font-black text-white">
+                            <h3 className="text-2xl sm:text-3xl md:text-4xl font-black text-white">
 
                                 4.9/5
 
                             </h3>
 
-                            <p className="mt-2 text-slate-400">
+                            <p className="mt-2 text-sm sm:text-base text-slate-400">
 
                                 User Satisfaction
 
