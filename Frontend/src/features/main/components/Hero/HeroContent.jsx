@@ -108,20 +108,20 @@ export default function HeroContent() {
 
                     <Link
                         to="/analyze-resume"
-                        className="group relative flex w-full"
+                        className="group relative flex w-full select-none"
                     >
 
-                        <span className="absolute inset-0 w-full rounded-2xl bg-sky-800 translate-y-1.25 transition-all duration-200 group-hover:translate-y-1.5 group-active:translate-y-0.5" />
+                        <span className="absolute inset-0 rounded-2xl bg-sky-900 translate-y-1 transition-opacity duration-75 group-active:opacity-0" />
 
-                        <span className="relative flex flex-1 items-center justify-center gap-3 rounded-2xl border border-sky-400/20 bg-linear-to-b from-sky-500 via-sky-600 to-blue-700 px-8 py-4 text-sm sm:text-base font-semibold text-white transition-all duration-200 group-hover:-translate-y-px group-active:translate-y-0.75">
+                        <span className="relative flex flex-1 items-center justify-center gap-3 overflow-hidden rounded-2xl border border-sky-300/20 bg-linear-to-b from-sky-400 via-sky-500 to-blue-700 px-8 py-4 text-sm sm:text-base font-semibold text-white shadow-[0_2px_0_rgb(14,116,144),0_4px_0_rgb(8,47,73),0_8px_18px_rgba(0,0,0,.25)] transition-[transform,box-shadow] duration-75 ease-linear group-active:translate-y-1 group-active:shadow-none">
+
+                            <span className="absolute inset-y-0 -left-1/2 w-1/3 -skew-x-12 bg-white/20 transition-all duration-700 group-hover:left-[150%]" />
 
                             <span className="relative z-10">
-
                                 Analyze Resume
-
                             </span>
 
-                            <FiArrowRight className="relative z-10 transition-all duration-300 group-hover:translate-x-1.5" />
+                            <FiArrowRight className="relative z-10 transition-transform duration-300 group-hover:translate-x-1" />
 
                         </span>
 
