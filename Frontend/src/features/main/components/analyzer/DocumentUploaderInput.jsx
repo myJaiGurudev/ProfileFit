@@ -25,6 +25,7 @@ export default function DocumentUploaderInput({ title, description, placeholder,
     const [showPreview, setShowPreview] = useState(false);
     const inputRef = useRef(null);
     const isDesktop = window.matchMedia("(min-width:1024px)").matches;
+    const [isDragging, setIsDragging] = useState(false);
 
     const handleFile = (selectedFile) => {
         if (!selectedFile) return;
@@ -38,7 +39,7 @@ export default function DocumentUploaderInput({ title, description, placeholder,
             if (onError) {
                 onError("Only PDF and TXT files are allowed.");
             }
-            
+
             if (inputRef.current) {
                 inputRef.current.value = "";
             }
@@ -50,6 +51,30 @@ export default function DocumentUploaderInput({ title, description, placeholder,
 
         if (inputRef.current) {
             inputRef.current.value = "";
+        }
+    };
+
+    const handleDragOver = (e) => {
+        e.preventDefault();
+        if (file || value.trim()) return;
+        setIsDragging(true);
+    };
+
+    const handleDragLeave = (e) => {
+        e.preventDefault();
+        setIsDragging(false);
+    };
+
+    const handleDrop = (e) => {
+        e.preventDefault();
+        setIsDragging(false);
+
+        if (file || value.trim()) return;
+
+        const droppedFile = e.dataTransfer.files[0];
+
+        if (droppedFile) {
+            handleFile(droppedFile);
         }
     };
 
@@ -123,13 +148,18 @@ export default function DocumentUploaderInput({ title, description, placeholder,
                     type: "spring",
                     stiffness: 300
                 }}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
                 onClick={() => {
                     if (file || value.trim()) return;
                     inputRef.current.click();
                 }}
-                className={`mt-8 rounded-3xl border-2 border-dashed p-8 transition-all duration-300 ${value.trim()
-                    ? "cursor-not-allowed border-slate-800 bg-slate-900/30 opacity-60"
-                    : "cursor-pointer border-slate-700 bg-slate-950/40 hover:border-sky-400 hover:bg-slate-900/60"
+                className={`mt-8 rounded-3xl border-2 border-dashed p-8 transition-all duration-300 ${isDragging
+                    ? "cursor-pointer border-sky-400 bg-sky-500/10 scale-[1.02]"
+                    : value.trim()
+                        ? "cursor-not-allowed border-slate-800 bg-slate-900/30 opacity-60"
+                        : "cursor-pointer border-slate-700 bg-slate-950/40 hover:border-sky-400 hover:bg-slate-900/60"
                     }`}
             >
                 {
@@ -137,23 +167,30 @@ export default function DocumentUploaderInput({ title, description, placeholder,
                         (
                             <div className="flex flex-col items-center text-center">
                                 <motion.div
-                                    animate={{ y: [0, -8, 0] }}
-                                    transition={{
-                                        duration: 2,
-                                        repeat: Infinity
-                                    }}
+                                    animate={
+                                        isDragging
+                                            ? {
+                                                scale: 1.2,
+                                                rotate: 10
+                                            }
+                                            : {
+                                                y: [0, -8, 0]
+                                            }
+                                    }
                                 >
                                     <FiUploadCloud className="text-6xl text-sky-400" />
                                 </motion.div>
 
                                 <h3 className="mt-7 text-xl font-bold text-white">
-                                    {`Upload ${title}`}
+                                    {isDragging ? "Drop your file here" : `Upload ${title}`}
                                 </h3>
 
                                 <p className="mt-3 text-slate-400">
-                                    {value.trim()
-                                        ? "Clear the text to enable file upload"
-                                        : description}
+                                    {isDragging
+                                        ? "Release the mouse to upload"
+                                        : value.trim()
+                                            ? "Clear the text to enable file upload"
+                                            : description}
                                 </p>
 
                                 <div className="mt-7 flex flex-wrap justify-center gap-3">
