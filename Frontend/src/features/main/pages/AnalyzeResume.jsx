@@ -139,7 +139,7 @@ export default function AnalyzeResume() {
 
                     <button
                         onClick={() => setToast((t) => ({ ...t, show: false }))}
-                        className="flex h-8 w-8 items-center justify-center rounded-full text-red-300 transition-all duration-200 hover:scale-110 hover:bg-red-500/15 hover:text-white active:scale-95"
+                        className="cursor-pointer flex h-8 w-8 items-center justify-center rounded-full text-red-300 transition-all duration-200 hover:scale-110 hover:bg-red-500/15 hover:text-white active:scale-95"
                     >
                         <IoClose className="h-5 w-5" />
                     </button>
