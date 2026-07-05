@@ -1,21 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { FiFileText, FiTrash2, FiUploadCloud } from "react-icons/fi";
+import { Toaster } from "react-hot-toast";
 
 function TextPreview({ file }) {
-
     const [text, setText] = useState("");
-
     useEffect(() => {
-
         const reader = new FileReader();
-
         reader.onload = e => setText(e.target.result);
-
         reader.readAsText(file);
-
     }, [file]);
-
     return (
         <pre className="h-full overflow-auto whitespace-pre-wrap p-6 text-slate-800">
             {text}
@@ -32,11 +26,31 @@ export default function DocumentUploaderInput({ title, description, placeholder,
     const storageKey = `document-text-${title}`;
     const [showPreview, setShowPreview] = useState(false);
     const inputRef = useRef(null);
+    const isDesktop = window.matchMedia("(min-width:1024px)").matches;
 
     const handleFile = (selectedFile) => {
         if (!selectedFile) return;
+
+        const showError = (message) => {
+            toast.error(message);
+        };
+
+        const allowedTypes = [
+            "application/pdf",
+            "text/plain"
+        ];
+
+        if (!allowedTypes.includes(selectedFile.type)) {
+            showError("Only PDF and TXT files are allowed.");
+            if (inputRef.current) {
+                inputRef.current.value = "";
+            }
+            return;
+        }
+
         setFile(selectedFile);
         setFileUrl(URL.createObjectURL(selectedFile));
+
         if (inputRef.current) {
             inputRef.current.value = "";
         }
@@ -106,17 +120,11 @@ export default function DocumentUploaderInput({ title, description, placeholder,
         >
 
             <input
-
                 ref={inputRef}
-
                 hidden
-
                 type="file"
-
-                accept=".pdf,.doc,.docx,.txt"
-
+                accept=".pdf,.txt"
                 onChange={(e) => handleFile(e.target.files[0])}
-
             />
 
             <motion.div
@@ -191,11 +199,6 @@ export default function DocumentUploaderInput({ title, description, placeholder,
                                         [
 
                                             "PDF",
-
-                                            "DOC",
-
-                                            "DOCX",
-
                                             "TXT"
 
                                         ].map((item) => (
@@ -239,6 +242,10 @@ export default function DocumentUploaderInput({ title, description, placeholder,
                                 <div
                                     onClick={(e) => {
                                         e.stopPropagation();
+                                        if (!isDesktop) {
+                                            showError("Preview is available on desktop only.");
+                                            return;
+                                        }
                                         setShowPreview(true);
                                     }}
                                     className="flex flex-col gap-4 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-5 transition hover:border-emerald-400 hover:bg-emerald-500/15 sm:flex-row sm:items-center sm:justify-between"
@@ -349,7 +356,7 @@ export default function DocumentUploaderInput({ title, description, placeholder,
 
             </div>
 
-            {showPreview && file && (
+            {showPreview && file && isDesktop && (
 
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
 
