@@ -136,6 +136,7 @@ export default function Navbar() {
                         {/* Navigation Links */}
                         <div className="flex items-center gap-1">
                             {[
+                                { label: "Analyze Resume", href: "/analyze-resume" },
                                 { label: "WorkFlow", href: "#workflow" },
                                 { label: "FAQs", href: "#faq" }
                             ].map((item) => (
