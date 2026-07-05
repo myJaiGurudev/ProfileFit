@@ -37,8 +37,6 @@ export default function DocumentUploaderInput({ title, description, placeholder,
         if (!allowedTypes.includes(selectedFile.type)) {
             if (onError) {
                 onError("Only PDF and TXT files are allowed.");
-            } else {
-                toast.error("Only PDF and TXT files are allowed.");
             }
             
             if (inputRef.current) {

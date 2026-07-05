@@ -23,15 +23,16 @@ export default function AnalyzeResume() {
     );
 
     // --- Error Toast State ---
-    const [toast, setToast] = useState({ show: false, title: "", message: "" });
+    const [toast, setToast] = useState({ show: false, message: "" });
 
     const canAnalyze = (resumeText.trim() || resumeFile) && (jobDescriptionText.trim() || jobDescriptionFile);
 
     // --- Error Toast Logic ---
-    const triggerError = useCallback((title, message) => {
-        setToast({ show: false, title: "", message: "" });
+    const triggerError = useCallback((message) => {
+        setToast({ show: false, message: "" });
+
         setTimeout(() => {
-            setToast({ show: true, title, message });
+            setToast({ show: true, message });
         }, 50);
     }, []);
 
@@ -81,7 +82,9 @@ export default function AnalyzeResume() {
                             file={resumeFile}
                             setFile={setResumeFile}
                             // Pass the function down to trigger the error from inside the uploader
-                            onError={(msg) => triggerError("Invalid File Type: Resume", msg || "Resume must be PDF or TXT.")}
+                            onError={(msg) =>
+                                triggerError(msg || "Resume must be PDF or TXT.")
+                            }
                         />
                     </UploadCard>
 
@@ -99,7 +102,9 @@ export default function AnalyzeResume() {
                             file={jobDescriptionFile}
                             setFile={setJobDescriptionFile}
                             // Pass the function down to trigger the error from inside the uploader
-                            onError={(msg) => triggerError("Invalid File Type: Job Description", msg || "Job Description must be PDF or TXT.")}
+                            onError={(msg) =>
+                                triggerError(msg || "Job Description must be PDF or TXT.")
+                            }
                         />
                     </UploadCard>
                 </section>
@@ -120,26 +125,21 @@ export default function AnalyzeResume() {
                     : "translate-y-5 opacity-0 pointer-events-none"
                     }`}
             >
-                <div className="flex w-96 items-start gap-4 rounded-2xl border border-red-500/30 bg-[#1f0a0a]/95 p-4 shadow-[0_15px_40px_rgba(239,68,68,0.25)] backdrop-blur-xl">
+                <div className="flex w-96 items-center gap-4 rounded-2xl border border-red-500/30 bg-[#1f0a0a]/95 p-4 shadow-[0_15px_40px_rgba(239,68,68,0.25)] backdrop-blur-xl">
 
-                    <div className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-red-500/15 text-xl text-red-400">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-red-500/15 text-red-400">
                         <HiOutlineExclamationTriangle className="h-6 w-6" />
                     </div>
 
-                    <div className="flex-1">
-                        <h3 className="text-sm font-semibold text-red-300">
-                            {toast.title}
-                        </h3>
-
-                        <p className="mt-1 text-sm leading-5 text-red-200/90">
+                    <div className="flex flex-1 items-center min-h-10">
+                        <p className="text-sm font-medium leading-6 text-red-100">
                             {toast.message}
                         </p>
                     </div>
 
                     <button
                         onClick={() => setToast((t) => ({ ...t, show: false }))}
-                        aria-label="Close warning"
-                        className="cursor-pointer flex h-8 w-8 items-center justify-center rounded-full text-red-300 transition-all duration-200 hover:scale-110 hover:bg-red-500/15 hover:text-white active:scale-95"
+                        className="flex h-8 w-8 items-center justify-center rounded-full text-red-300 transition-all duration-200 hover:scale-110 hover:bg-red-500/15 hover:text-white active:scale-95"
                     >
                         <IoClose className="h-5 w-5" />
                     </button>
