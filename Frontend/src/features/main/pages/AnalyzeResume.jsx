@@ -6,18 +6,34 @@ import UploadCard from "../components/analyzer/UploadCard";
 import AnalyzeButton from "../components/analyzer/AnalyzeButton";
 import DocumentUploaderInput from "../components/analyzer/DocumentUploaderInput";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function AnalyzeResume() {
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
+    const [resumeFile, setResumeFile] = useState(null);
+    const [jobDescriptionFile, setJobDescriptionFile] = useState(null);
+    const [resumeText, setResumeText] = useState(
+        () => localStorage.getItem("document-text-Resume") || ""
+    );
+    const [jobDescriptionText, setJobDescriptionText] = useState(
+        () => localStorage.getItem("document-text-Job Description") || ""
+    );
+    const canAnalyze = (resumeText.trim() || resumeFile) && (jobDescriptionText.trim() || jobDescriptionFile);
 
     const handleAnalyze = async () => {
 
         setLoading(true);
 
-        // Replace this with your actual API call later
+        // Temporary loading
         await new Promise(resolve => setTimeout(resolve, 3000));
 
+        localStorage.removeItem("document-text-Resume");
+        localStorage.removeItem("document-text-Job Description");
+
         setLoading(false);
+
+        navigate("/resume-analysis");
 
     };
 
@@ -43,6 +59,10 @@ export default function AnalyzeResume() {
                             title="Resume"
                             description="Click or drag your resume here"
                             placeholder="Paste your resume here..."
+                            value={resumeText}
+                            setValue={setResumeText}
+                            file={resumeFile}
+                            setFile={setResumeFile}
                         />
 
                     </UploadCard>
@@ -57,6 +77,10 @@ export default function AnalyzeResume() {
                             title="Job Description"
                             description="Click or drag your job description here"
                             placeholder="Paste the job description here..."
+                            value={jobDescriptionText}
+                            setValue={setJobDescriptionText}
+                            file={jobDescriptionFile}
+                            setFile={setJobDescriptionFile}
                         />
 
                     </UploadCard>
@@ -67,6 +91,7 @@ export default function AnalyzeResume() {
 
                     <AnalyzeButton
                         loading={loading}
+                        disabled={!canAnalyze}
                         onClick={handleAnalyze}
                     />
 

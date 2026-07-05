@@ -2,12 +2,7 @@ import { motion } from "framer-motion";
 import PropTypes from "prop-types";
 import { FiArrowUpRight } from "react-icons/fi";
 
-export default function UploadCard({
-    title,
-    subtitle,
-    icon,
-    children
-}) {
+export default function UploadCard({ title, subtitle, icon, children }) {
 
     const Icon = icon;
 
@@ -31,11 +26,6 @@ export default function UploadCard({
 
             transition={{
                 duration: 0.6
-            }}
-
-            whileHover={{
-                y: -8,
-                scale: 1.015
             }}
 
             className="group relative overflow-hidden rounded-4xl border border-white/10 bg-white/5 backdrop-blur-2xl"

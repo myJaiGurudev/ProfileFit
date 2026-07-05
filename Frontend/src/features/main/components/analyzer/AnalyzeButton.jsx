@@ -4,10 +4,9 @@ import {
     FiArrowRight
 } from "react-icons/fi";
 
-export default function AnalyzeButton({
-    loading = false,
-    onClick
-}) {
+export default function AnalyzeButton({ loading = false, disabled = false, onClick }) {
+
+    const isDisabled = loading || disabled;
 
     return (
 
@@ -18,9 +17,9 @@ export default function AnalyzeButton({
                 damping: 24
             }}
             onClick={onClick}
-            disabled={loading}
-            className={`group relative w-full max-w-md ${loading
-                ? "pointer-events-none cursor-default"
+            disabled={isDisabled}
+            className={`group relative w-full max-w-md ${isDisabled
+                ? "pointer-events-none cursor-not-allowed opacity-80"
                 : "cursor-pointer"
                 }`}
         >
@@ -28,7 +27,7 @@ export default function AnalyzeButton({
             {/* 3D Base */}
 
             <div
-                className={`absolute inset-0 transition-all duration-150 ${loading ? "opacity-0" : "opacity-100"
+                className={`absolute inset-0 transition-all duration-150 ${isDisabled ? "opacity-0" : "opacity-100"
                     }`}
             >
 
@@ -53,8 +52,8 @@ export default function AnalyzeButton({
             {/* Button Face */}
 
             <div
-                className={`relative rounded-3xl border px-8 py-5 transition-all duration-150 ${loading
-                    ? "border-sky-950 bg-linear-to-b from-sky-700 via-sky-800 to-cyan-900 shadow-[inset_0_6px_12px_rgba(0,0,0,.5),inset_0_1px_2px_rgba(255,255,255,.06)]"
+                className={`relative rounded-3xl border px-8 py-5 transition-all duration-150 ${isDisabled
+                    ? "border-slate-700 bg-linear-to-b from-slate-700 via-slate-800 to-slate-900 text-slate-400 shadow-[inset_0_6px_12px_rgba(0,0,0,.5)]"
                     : "border-sky-300/20 bg-linear-to-b from-sky-400 via-sky-500 to-cyan-600 shadow-[0_2px_0_rgb(14,116,144),0_4px_0_rgb(8,47,73),0_6px_0_rgb(6,30,60),0_12px_22px_rgba(0,0,0,.25),inset_0_1px_1px_rgba(255,255,255,.28)]"
                     }`}
             >
@@ -97,7 +96,7 @@ export default function AnalyzeButton({
 
                     </span>
 
-                    {!loading && (
+                    {!isDisabled && (
 
                         <motion.div
 

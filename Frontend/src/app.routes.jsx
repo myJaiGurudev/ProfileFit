@@ -8,6 +8,7 @@ import GuestRoute from "./features/main/components/GuestRoute";
 import AnalyzeResume from "./features/main/pages/AnalyzeResume";
 import LayoutWithFooter from "./features/main/components/LayoutWithFooter";
 import LayoutWithoutFooter from "./features/main/components/LayoutWithoutFooter";
+import ResumeAnalysis from "./features/main/pages/ResumeAnalysis";
 
 export const router=createBrowserRouter([
     {
@@ -27,6 +28,10 @@ export const router=createBrowserRouter([
             {
                 path:"/analyze-resume",
                 element:<AnalyzeResume />
+            },
+            {
+                path:"/resume-analysis",
+                element: <ResumeAnalysis />
             }
         ]
     },

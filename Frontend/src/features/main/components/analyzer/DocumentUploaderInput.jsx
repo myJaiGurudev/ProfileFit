@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { FiArrowLeft, FiClipboard, FiFileText, FiTrash2, FiUploadCloud, FiX } from "react-icons/fi";
+import { FiFileText, FiTrash2, FiUploadCloud } from "react-icons/fi";
 
 function TextPreview({ file }) {
 
@@ -24,14 +24,12 @@ function TextPreview({ file }) {
 
 }
 
-export default function DocumentUploaderInput({ title, description, placeholder }) {
+export default function DocumentUploaderInput({ title, description, placeholder, value, setValue, file, setFile }) {
 
-    const textareaRef = useRef(null);
     const previewRef = useRef(null);
     const [fileUrl, setFileUrl] = useState("");
     const [isClosing, setIsClosing] = useState(false);
-    const [value, setValue] = useState("");
-    const [file, setFile] = useState(null);
+    const storageKey = `document-text-${title}`;
     const [showPreview, setShowPreview] = useState(false);
     const inputRef = useRef(null);
 
@@ -39,6 +37,9 @@ export default function DocumentUploaderInput({ title, description, placeholder 
         if (!selectedFile) return;
         setFile(selectedFile);
         setFileUrl(URL.createObjectURL(selectedFile));
+        if (inputRef.current) {
+            inputRef.current.value = "";
+        }
     };
 
     const closePreview = () => {
@@ -59,6 +60,14 @@ export default function DocumentUploaderInput({ title, description, placeholder 
             }
         };
     }, [fileUrl]);
+
+    useEffect(() => {
+        if (value.trim()) {
+            localStorage.setItem(storageKey, value);
+        } else {
+            localStorage.removeItem(storageKey);
+        }
+    }, [value, storageKey]);
 
     useEffect(() => {
         const handleOutsideClick = (e) => {
@@ -265,7 +274,6 @@ export default function DocumentUploaderInput({ title, description, placeholder 
                                             e.stopPropagation();
                                             setFile(null);
                                             setFileUrl("");
-                                            setShowPreview(false);
                                         }}
                                         className="flex w-full shrink-0 cursor-pointer items-center justify-center gap-2 rounded-xl border border-red-500/25 bg-red-500/10 px-4 py-3 font-medium text-red-400 transition-all duration-200 hover:border-red-400 hover:bg-red-500/20 hover:text-red-300 active:scale-95 sm:w-auto"
                                     >
@@ -312,11 +320,12 @@ export default function DocumentUploaderInput({ title, description, placeholder 
                 </div>
 
                 <textarea
-                    ref={textareaRef}
                     rows={8}
                     value={value}
                     disabled={!!file}
-                    onChange={(e) => setValue(e.target.value)}
+                    onChange={(e) => {
+                        setValue(e.target.value);
+                    }}
                     placeholder={file
                         ? `Remove the uploaded file to paste ${title.toLowerCase()}.`
                         : placeholder
