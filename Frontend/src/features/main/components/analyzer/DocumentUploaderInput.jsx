@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { FiClipboard, FiFileText, FiUploadCloud, FiX } from "react-icons/fi";
+import { FiArrowLeft, FiClipboard, FiFileText, FiTrash2, FiUploadCloud, FiX } from "react-icons/fi";
 
 function TextPreview({ file }) {
 
@@ -29,16 +29,27 @@ export default function DocumentUploaderInput({ title, description, placeholder 
     const textareaRef = useRef(null);
     const previewRef = useRef(null);
     const [fileUrl, setFileUrl] = useState("");
+    const [isClosing, setIsClosing] = useState(false);
     const [value, setValue] = useState("");
     const [file, setFile] = useState(null);
     const [showPreview, setShowPreview] = useState(false);
     const inputRef = useRef(null);
 
-
     const handleFile = (selectedFile) => {
         if (!selectedFile) return;
         setFile(selectedFile);
         setFileUrl(URL.createObjectURL(selectedFile));
+    };
+
+    const closePreview = () => {
+        if (isClosing) return;
+
+        setIsClosing(true);
+
+        setTimeout(() => {
+            setShowPreview(false);
+            setIsClosing(false);
+        }, 400);
     };
 
     useEffect(() => {
@@ -51,15 +62,21 @@ export default function DocumentUploaderInput({ title, description, placeholder 
 
     useEffect(() => {
         const handleOutsideClick = (e) => {
-            if (showPreview && previewRef.current && !previewRef.current.contains(e.target)) {
-                setShowPreview(false);
+            if (
+                showPreview &&
+                previewRef.current &&
+                !previewRef.current.contains(e.target)
+            ) {
+                closePreview();
             }
         };
+
         document.addEventListener("mousedown", handleOutsideClick);
+
         return () => {
             document.removeEventListener("mousedown", handleOutsideClick);
         };
-    }, [showPreview]);
+    }, [showPreview, isClosing]);
 
     return (
 
@@ -199,8 +216,14 @@ export default function DocumentUploaderInput({ title, description, placeholder 
                         :
                         (
                             <motion.div
-                                initial={{ opacity: 0, scale: .98 }}
-                                animate={{ opacity: 1, scale: 1 }}
+                                initial={{
+                                    opacity: 0,
+                                    scale: .98
+                                }}
+                                animate={{
+                                    opacity: 1,
+                                    scale: 1
+                                }}
                                 className="flex h-full flex-col justify-center"
                             >
 
@@ -209,20 +232,23 @@ export default function DocumentUploaderInput({ title, description, placeholder 
                                         e.stopPropagation();
                                         setShowPreview(true);
                                     }}
-                                    className="flex cursor-pointer items-center justify-between rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-5 transition hover:border-emerald-400 hover:bg-emerald-500/15"
+                                    className="flex flex-col gap-4 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-5 transition hover:border-emerald-400 hover:bg-emerald-500/15 sm:flex-row sm:items-center sm:justify-between"
                                 >
 
-                                    <div className="flex items-center gap-4">
+                                    <div className="flex min-w-0 flex-1 items-center gap-4">
 
-                                        <div className="flex h-12 w-16 items-center justify-center rounded-2xl bg-emerald-500">
+                                        <div className="flex h-12 w-16 shrink-0 items-center justify-center rounded-2xl bg-emerald-500">
 
                                             <FiFileText className="text-3xl text-white" />
 
                                         </div>
 
-                                        <div>
+                                        <div className="min-w-0 flex-1">
 
-                                            <p className="font-semibold text-white">
+                                            <p
+                                                className="truncate font-semibold text-white"
+                                                title={file.name}
+                                            >
                                                 {file.name}
                                             </p>
 
@@ -241,9 +267,13 @@ export default function DocumentUploaderInput({ title, description, placeholder 
                                             setFileUrl("");
                                             setShowPreview(false);
                                         }}
-                                        className="cursor-pointer rounded-xl bg-red-500/10 px-5 py-3 font-medium text-red-400 transition hover:bg-red-500/20"
+                                        className="flex w-full shrink-0 cursor-pointer items-center justify-center gap-2 rounded-xl border border-red-500/25 bg-red-500/10 px-4 py-3 font-medium text-red-400 transition-all duration-200 hover:border-red-400 hover:bg-red-500/20 hover:text-red-300 active:scale-95 sm:w-auto"
                                     >
-                                        Remove
+
+                                        <FiTrash2 className="text-lg" />
+
+                                        <span>Remove</span>
+
                                     </button>
 
                                 </div>
@@ -293,8 +323,8 @@ export default function DocumentUploaderInput({ title, description, placeholder 
                     }
 
                     className={`${file ? "min-h-110" : "min-h-88"} w-full resize-none overflow-y-auto rounded-2xl border p-5 text-[clamp(.95rem,1.5vw,1rem)] leading-7 outline-none transition-all duration-300 scrollbar scrollbar-thumb-sky-500 scrollbar-track-slate-900 scrollbar-thumb-rounded-full hover:scrollbar-thumb-cyan-400 ${file
-                            ? "cursor-not-allowed border-slate-800 bg-slate-900/30 text-slate-500"
-                            : "border-transparent bg-slate-950/60 text-slate-200 placeholder:text-slate-500 focus:border-sky-400/60 focus:ring-4 focus:ring-sky-500/10"
+                        ? "cursor-not-allowed border-slate-800 bg-slate-900/30 text-slate-500"
+                        : "border-transparent bg-slate-950/60 text-slate-200 placeholder:text-slate-500 focus:border-sky-400/60 focus:ring-4 focus:ring-sky-500/10"
                         }`}
                 />
 
@@ -326,11 +356,39 @@ export default function DocumentUploaderInput({ title, description, placeholder 
                             </h2>
 
                             <button
-                                onClick={() => setShowPreview(false)}
-                                className="group flex cursor-pointer items-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2 font-medium text-slate-700 transition-all duration-200 hover:border-red-400 hover:bg-red-50 hover:text-red-600 active:scale-95"
+                                onClick={closePreview}
+                                disabled={isClosing}
+                                className={`relative flex h-11 items-center justify-center rounded-xl border px-6 font-semibold select-none transition-all duration-100 ${isClosing
+                                    ? "translate-y-1 border-red-950 bg-linear-to-b from-red-800 to-red-900 text-white shadow-[inset_0_4px_8px_rgba(0,0,0,.55),inset_0_1px_2px_rgba(255,255,255,.08)]"
+                                    : "cursor-pointer border-red-700 bg-linear-to-b from-red-500 via-red-600 to-red-700 text-white shadow-[0_2px_0_rgb(185,28,28),0_4px_0_rgb(153,27,27),0_6px_0_rgb(127,29,29),0_8px_14px_rgba(0,0,0,.22),inset_0_1px_1px_rgba(255,255,255,.25),inset_0_-1px_1px_rgba(0,0,0,.15)] hover:brightness-105 active:translate-y-1 active:shadow-[inset_0_4px_8px_rgba(0,0,0,.45),inset_0_1px_2px_rgba(255,255,255,.08)]"
+                                    }`}
                             >
-                                <FiX className="transition-transform duration-200 group-hover:rotate-90" />
-                                Close
+                                {isClosing ? (
+                                    <span className="flex items-center gap-2 text-white">
+                                        <svg
+                                            className="h-4 w-4 animate-spin"
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                        >
+                                            <circle
+                                                className="opacity-25"
+                                                cx="12"
+                                                cy="12"
+                                                r="10"
+                                                stroke="currentColor"
+                                                strokeWidth="4"
+                                            />
+                                            <path
+                                                className="opacity-100"
+                                                fill="currentColor"
+                                                d="M22 12a10 10 0 0 1-10 10V18a6 6 0 0 0 6-6h4Z"
+                                            />
+                                        </svg>
+                                        Closing...
+                                    </span>
+                                ) : (
+                                    "Close"
+                                )}
                             </button>
 
                         </div>

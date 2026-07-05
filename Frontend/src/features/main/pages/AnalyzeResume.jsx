@@ -5,8 +5,21 @@ import { FiFileText, FiBriefcase } from "react-icons/fi";
 import UploadCard from "../components/analyzer/UploadCard";
 import AnalyzeButton from "../components/analyzer/AnalyzeButton";
 import DocumentUploaderInput from "../components/analyzer/DocumentUploaderInput";
+import { useState } from "react";
 
 export default function AnalyzeResume() {
+    const [loading, setLoading] = useState(false);
+
+    const handleAnalyze = async () => {
+
+        setLoading(true);
+
+        // Replace this with your actual API call later
+        await new Promise(resolve => setTimeout(resolve, 3000));
+
+        setLoading(false);
+
+    };
 
     return (
 
@@ -52,7 +65,10 @@ export default function AnalyzeResume() {
 
                 <div className="mt-10 flex justify-center">
 
-                    <AnalyzeButton />
+                    <AnalyzeButton
+                        loading={loading}
+                        onClick={handleAnalyze}
+                    />
 
                 </div>
 

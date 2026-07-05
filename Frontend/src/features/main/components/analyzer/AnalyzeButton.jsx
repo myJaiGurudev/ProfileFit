@@ -12,103 +12,111 @@ export default function AnalyzeButton({
     return (
 
         <motion.button
-
-            whileHover={{
-                y: -3,
-                scale: 1.01
-            }}
-
-            whileTap={{
-                y: 1,
-                scale: 0.985
-            }}
-
             transition={{
                 type: "spring",
                 stiffness: 450,
                 damping: 24
             }}
-
             onClick={onClick}
-
             disabled={loading}
-
-            className="group relative w-full max-w-md cursor-pointer"
-
+            className={`group relative w-full max-w-md ${loading
+                ? "pointer-events-none cursor-default"
+                : "cursor-pointer"
+                }`}
         >
 
-            <div className="absolute inset-0 translate-y-1 rounded-3xl bg-sky-900/70 transition-all duration-300 group-hover:translate-y-2" />
+            {/* 3D Base */}
 
-            <div className="absolute inset-0 rounded-3xl bg-sky-500/20 blur-lg opacity-60 transition-all duration-300 group-hover:opacity-80" />
+            <div
+                className={`absolute inset-0 transition-all duration-150 ${loading ? "opacity-0" : "opacity-100"
+                    }`}
+            >
 
-            <div className="relative overflow-hidden rounded-3xl bg-linear-to-r from-sky-500 to-cyan-600 px-8 py-5 shadow-[0_10px_28px_rgba(14,165,233,.18)] transition-shadow duration-300 group-hover:shadow-[0_14px_34px_rgba(14,165,233,.22)]">
+                {/* Bottom */}
 
-                <motion.div
+                <div className="absolute bottom-0 left-3 right-3 h-4 rounded-b-3xl bg-sky-950" />
 
-                    animate={{
-                        x: ["-180%", "220%"]
-                    }}
+                {/* Left */}
 
-                    transition={{
-                        repeat: Infinity,
-                        duration: 3,
-                        ease: "linear"
-                    }}
+                <div className="absolute left-0 top-3 bottom-3 w-3 rounded-l-3xl bg-cyan-950" />
 
-                    className="absolute inset-y-0 w-14 rotate-12 bg-white/15 blur-lg"
+                {/* Right */}
 
-                />
+                <div className="absolute right-0 top-3 bottom-3 w-3 rounded-r-3xl bg-sky-900" />
 
-                <div className="relative flex items-center justify-center gap-4">
+                {/* Outer Shadow */}
 
-                    <motion.div
+                <div className="absolute inset-0 rounded-3xl shadow-[0_12px_25px_rgba(0,0,0,.28)]" />
 
-                        animate={{
-                            rotate: loading
-                                ? 360
-                                : 0
-                        }}
+            </div>
 
-                        transition={{
-                            repeat: loading
-                                ? Infinity
-                                : 0,
-                            duration: 1,
-                            ease: "linear"
-                        }}
+            {/* Button Face */}
 
-                    >
+            <div
+                className={`relative rounded-3xl border px-8 py-5 transition-all duration-150 ${loading
+                    ? "border-sky-950 bg-linear-to-b from-sky-700 via-sky-800 to-cyan-900 shadow-[inset_0_6px_12px_rgba(0,0,0,.5),inset_0_1px_2px_rgba(255,255,255,.06)]"
+                    : "border-sky-300/20 bg-linear-to-b from-sky-400 via-sky-500 to-cyan-600 shadow-[0_2px_0_rgb(14,116,144),0_4px_0_rgb(8,47,73),0_6px_0_rgb(6,30,60),0_12px_22px_rgba(0,0,0,.25),inset_0_1px_1px_rgba(255,255,255,.28)]"
+                    }`}
+            >
+
+                <div className="flex items-center justify-center gap-4">
+
+                    {loading ? (
+
+                        <svg
+                            className="h-5 w-5 animate-spin text-white"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                        >
+                            <circle
+                                cx="12"
+                                cy="12"
+                                r="10"
+                                stroke="currentColor"
+                                strokeWidth="4"
+                                className="opacity-25"
+                            />
+
+                            <path
+                                fill="currentColor"
+                                d="M22 12a10 10 0 0 1-10 10v-4a6 6 0 0 0 6-6h4z"
+                            />
+                        </svg>
+
+                    ) : (
 
                         <FiCpu className="text-2xl text-white" />
 
-                    </motion.div>
+                    )}
 
                     <span className="text-[clamp(1rem,2vw,1.15rem)] font-semibold tracking-wide text-white">
 
-                        {
-                            loading
-                                ? "Analyzing..."
-                                : "Analyze Resume"
-                        }
+                        {loading
+                            ? "Analyzing..."
+                            : "Analyze Resume"}
 
                     </span>
 
-                    <motion.div
+                    {!loading && (
 
-                        animate={{
-                            x: [0, 4, 0]
-                        }}
+                        <motion.div
 
-                        transition={{
-                            repeat: Infinity,
-                            duration: 1.4
-                        }}
+                            animate={{
+                                x: [0, 4, 0]
+                            }}
 
-                    >
+                            transition={{
+                                repeat: Infinity,
+                                duration: 1.2
+                            }}
 
-                        <FiArrowRight className="text-lg text-white" />
+                        >
 
-                    </motion.div>
+                            <FiArrowRight className="text-lg text-white" />
+
+                        </motion.div>
+
+                    )}
 
                 </div>
 
