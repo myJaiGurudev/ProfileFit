@@ -19,8 +19,8 @@ export default function AnalyzeButton({ loading = false, disabled = false, onCli
             onClick={onClick}
             disabled={isDisabled}
             className={`group relative w-full max-w-md ${isDisabled
-                ? "pointer-events-none cursor-not-allowed opacity-80"
-                : "cursor-pointer"
+                    ? "cursor-not-allowed opacity-80"
+                    : "cursor-pointer"
                 }`}
         >
 
