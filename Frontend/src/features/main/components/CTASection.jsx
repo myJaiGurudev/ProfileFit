@@ -82,45 +82,20 @@ export default function CTASection() {
 
                     <div className="mt-10 sm:mt-12 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-5">
 
-                        <motion.div
-                            className="w-full sm:w-64"
-                            whileHover={{
-                                y: -3,
-                                scale: 1.02
-                            }}
-                            whileTap={{
-                                y: 2,
-                                scale: 0.985
-                            }}
-                            transition={{
-                                type: "spring",
-                                stiffness: 450,
-                                damping: 20
-                            }}
+                        <Link
+                            to="/analyze-resume"
+                            className="group inline-flex w-full sm:w-64 items-center justify-center rounded-2xl border border-sky-500/40 bg-linear-to-r from-sky-500 via-sky-600 to-blue-700 py-4 font-semibold text-white shadow-lg shadow-sky-500/20 transition-all duration-300 hover:border-sky-300/60 hover:shadow-xl hover:shadow-sky-500/30"
                         >
 
-                            <Link
-                                to="/analyze-resume"
-                                className="group relative flex w-full select-none"
-                            >
+                            <span className="mr-3">
 
-                                <span className="absolute inset-0 rounded-2xl bg-sky-900 translate-y-1 transition-opacity duration-75 group-active:opacity-0" />
+                                Analyze Resume
 
-                                <span className="relative flex flex-1 items-center justify-center gap-3 overflow-hidden rounded-2xl border border-sky-300/20 bg-linear-to-b from-sky-400 via-sky-500 to-blue-700 px-8 py-4 text-sm sm:text-base font-semibold text-white shadow-[0_2px_0_rgb(14,116,144),0_4px_0_rgb(8,47,73),0_8px_18px_rgba(0,0,0,.25)] transition-[transform,box-shadow] duration-75 ease-linear group-active:translate-y-1 group-active:shadow-none">
+                            </span>
 
-                                    <span className="absolute inset-y-0 -left-1/2 w-1/3 -skew-x-12 bg-white/20 transition-all duration-700 group-hover:left-[150%]" />
+                            <FiArrowRight className="text-xl transition-transform duration-300 group-hover:translate-x-1.5" />
 
-                                    <span className="relative z-10">
-                                        Analyze Resume
-                                    </span>
-
-                                    <FiArrowRight className="relative z-10 transition-transform duration-300 group-hover:translate-x-1" />
-
-                                </span>
-
-                            </Link>
-
-                        </motion.div>
+                        </Link>
 
                         <Link
 
