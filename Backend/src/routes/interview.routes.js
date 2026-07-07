@@ -59,7 +59,7 @@ interviewRouter.get("/", authMiddleware.authUser, getAllInterviewReportsControll
 interviewRouter.post(
     "/resume/pdf/:interviewReportId",
     authMiddleware.authUser,
-    interviewController.generateResumePdfController
+    generateResumePdfController
 )
 
 
