@@ -27,6 +27,10 @@ async function extractText(file, pastedText, fileType) {
             throw new Error(`Invalid ${fileType} file.`)
         }
 
+        if (file.buffer.length === 0) {
+            throw new Error(`${fileType} file is empty.`)
+        }
+
         switch (file.mimetype) {
             case "application/pdf":
                 source = "PDF"
@@ -42,7 +46,7 @@ async function extractText(file, pastedText, fileType) {
                 break
             case "text/plain":
                 source = "TXT"
-                extractedText = file.buffer.toString("utf8")
+                extractedText = Buffer.from(file.buffer).toString("utf8")
                 break
             default:
                 throw new Error(`Unsupported ${fileType} format.`)
@@ -61,6 +65,8 @@ async function extractText(file, pastedText, fileType) {
         .replace(/[‘’]/g, "'")
         .replace(/\uFFFD/g, "")
         .replace(/[ ]{2,}/g, " ")
+        .replace(/\n +/g, "\n")
+        .replace(/[ ]+\n/g, "\n")
         .replace(/\n{3,}/g, "\n\n")
         .trim()
 
@@ -69,13 +75,16 @@ async function extractText(file, pastedText, fileType) {
     }
 
     const words = extractedText.match(/\S+/g) || []
+
+    if (words.length > 25000) {
+        throw new Error(
+            `${fileType} contains too much text.`
+        )
+    }
+
     const wordCount = words.length
 
     const characterCount = extractedText.length
-
-    if (characterCount < 20) {
-        throw new Error(`${fileType} is too short.`)
-    }
 
     if (characterCount === 0) {
         throw new Error(`${fileType} cannot be empty.`)

@@ -5,29 +5,23 @@ function escapeHtml(value) {
     }
 
     return String(value)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#39;")
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#39;")
 
 }
 
-function renderList(items = []) {
+function normalizeArray(items) {
 
-    const filteredItems = items.filter(item => item)
-
-    if (!filteredItems.length) {
-        return ""
+    if (!Array.isArray(items)) {
+        return []
     }
 
-    return `
-        <ul>
-            ${filteredItems.map(item => `
-                <li>${escapeHtml(item)}</li>
-            `).join("")}
-        </ul>
-    `
+    return items
+        .map(item => String(item ?? "").trim())
+        .filter(Boolean)
 
 }
 
@@ -40,11 +34,79 @@ function renderSection(title, content) {
     return `
         <section class="section">
 
-            <h2>${escapeHtml(title)}</h2>
+            <h2>
+                ${escapeHtml(title)}
+            </h2>
 
             ${content}
 
         </section>
+    `
+
+}
+
+function renderBulletList(items = []) {
+
+    const values = normalizeArray(items)
+
+    if (!values.length) {
+        return ""
+    }
+
+    return `
+        <ul class="bullet-list">
+
+            ${values.map(item => `
+                <li>
+
+                    ${escapeHtml(item)}
+
+                </li>
+            `).join("")}
+
+        </ul>
+    `
+
+}
+
+function renderSimpleItems(items = []) {
+
+    const values = normalizeArray(items)
+
+    if (!values.length) {
+        return ""
+    }
+
+    return values.map(item => `
+        <div class="simple-item">
+
+            ${escapeHtml(item)}
+
+        </div>
+    `).join("")
+
+}
+
+function renderSkills(items = []) {
+
+    const values = normalizeArray(items)
+
+    if (!values.length) {
+        return ""
+    }
+
+    return `
+        <div class="skills">
+
+            ${values.map(skill => `
+                <span>
+
+                    ${escapeHtml(skill)}
+
+                </span>
+            `).join("")}
+
+        </div>
     `
 
 }
@@ -73,11 +135,19 @@ function generateResumeHtml(resumeData) {
 
         experience,
 
+        internships,
+
         projects,
 
         education,
 
-        certifications
+        achievements,
+
+        certifications,
+
+        positionsOfResponsibility,
+
+        publications
 
     } = resumeData
 
@@ -93,9 +163,11 @@ function generateResumeHtml(resumeData) {
 
 <meta
 name="viewport"
-content="width=device-width, initial-scale=1.0">
+content="width=device-width,initial-scale=1.0">
 
-<title>Resume</title>
+<title>
+Resume
+</title>
 
 <style>
 
@@ -107,306 +179,540 @@ content="width=device-width, initial-scale=1.0">
 
 @page{
     size:A4;
-    margin:20mm;
+    margin:16mm;
 }
 
 html{
-    font-size:11px;
+    font-size:12px;
 }
 
 body{
+    font-family:Arial,Helvetica,sans-serif;
+    color:#202124;
+    background:#ffffff;
     width:100%;
     max-width:210mm;
-    font-family:Arial,Helvetica,sans-serif;
-    color:#222;
-    background:#fff;
-    line-height:1.55;
+    margin:0 auto;
+    line-height:1.45;
+    -webkit-print-color-adjust:exact;
+    print-color-adjust:exact;
+}
+
+.resume{
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:flex-start;
+
+    width:100%;
+
+}
+
+header{
+
+    text-align:center;
+
+    border-bottom:2px solid #1f2937;
+
+    padding-bottom:12px;
+
+    margin-bottom:18px;
+
 }
 
 h1{
-    font-size:24px;
+
+    font-size:30px;
+
     font-weight:700;
-    text-align:center;
-    margin-bottom:6px;
+
     color:#111827;
-}
-h2{
-    page-break-after:avoid;
-}
 
-ul{
-    page-break-inside:avoid;
-}
+    letter-spacing:.6px;
 
-p{
-    page-break-inside:avoid;
+    margin-bottom:8px;
+
 }
 
 .contact{
-    text-align:center;
-    font-size:10px;
+
+    display:flex;
+
+    justify-content:center;
+
+    flex-wrap:wrap;
+
+    gap:8px;
+
+    font-size:11px;
+
     color:#4b5563;
-    margin-bottom:20px;
-    word-break:break-word;
+
 }
 
-.contact span{
-    margin:0 6px;
+.contact a{
+
+    color:#2563eb;
+
+    text-decoration:none;
+
+}
+
+.contact-item{
+
+    white-space:nowrap;
+
 }
 
 .section{
+
+    margin-bottom:18px;
+
+    page-break-inside:avoid;
+
     break-inside:avoid;
-    page-break-inside:avoid;
-    margin-top:18px;
-    page-break-inside:avoid;
+
+}
+
+.section:last-child{
+
+    margin-bottom:0;
+
 }
 
 .section h2{
-    font-size:13px;
+
+    font-size:15px;
+
     font-weight:700;
+
+    color:#111827;
+
     text-transform:uppercase;
-    color:#111827;
-    border-bottom:2px solid #d1d5db;
-    padding-bottom:4px;
+
+    border-bottom:1.5px solid #d1d5db;
+
+    padding-bottom:5px;
+
     margin-bottom:10px;
-    letter-spacing:.5px;
+
+    letter-spacing:.4px;
+
 }
 
-p{
-    margin-bottom:8px;
+.summary{
+
     text-align:justify;
+
+    font-size:12px;
+
 }
 
-ul{
-    margin-left:18px;
-}
+.skills{
 
-li{
-    margin-bottom:5px;
-}
-
-.skill-list{
     display:flex;
+
     flex-wrap:wrap;
+
     gap:6px;
+
+    font-size:12px;
+
+    line-height:1.6;
+
 }
 
-.skill{
-    border:1px solid #d1d5db;
-    padding:4px 8px;
-    border-radius:4px;
-    font-size:10px;
+.skills span{
+
+    border:none;
+
+    background:none;
+
+    padding:0;
+
+    color:#202124;
+
 }
 
-.item{
-    break-inside:avoid;
-    page-break-inside:avoid;
-    margin-bottom:16px;
-    page-break-inside:avoid;
-}
+.skills span:not(:last-child)::after{
 
-.item-header{
-    display:flex;
-    justify-content:space-between;
-    align-items:flex-start;
-    margin-bottom:4px;
-}
+    content:" • ";
 
-.item-title{
-    font-weight:700;
-    color:#111827;
-}
-
-.item-subtitle{
-    color:#4b5563;
-    font-size:10px;
-}
-
-.item-duration{
     color:#6b7280;
-    font-size:10px;
-    white-space:nowrap;
+
 }
 
-.tech-stack{
-    margin-top:5px;
-    font-size:10px;
-    color:#374151;
+.simple-item{
+
+    margin-bottom:10px;
+
+    line-height:1.6;
+
 }
 
-.education-score{
-    font-size:10px;
-    color:#374151;
+.simple-item:last-child{
+
+    margin-bottom:0;
+
 }
 
-.certification{
-    margin-bottom:5px;
+.bullet-list{
+
+    margin-left:18px;
+
+}
+
+.bullet-list li{
+
+    margin-bottom:6px;
+
+    text-align:justify;
+
+}
+
+.bullet-list li:last-child{
+
+    margin-bottom:0;
+
 }
 
 a{
-    color:#2563eb;
-    text-decoration:none;
+
     word-break:break-all;
+
 }
 
 .page-break{
+
     page-break-before:always;
+
 }
 
 </style>
 
+</head>
+
 <body>
 
-<h1>${escapeHtml(fullName || "Professional Resume")}</h1>
+<div class="resume">
+<header>
+
+<h1>
+
+    ${escapeHtml(fullName || "Professional Resume")}
+
+</h1>
 
 <div class="contact">
 
-    ${[
-        email && `<a href="mailto:${escapeHtml(email)}">${escapeHtml(email)}</a>`,
+${[
+    email
+        ? `
+        <span class="contact-item">
+            ${escapeHtml(email)}
+        </span>
+        `
+        : "",
 
-        phone && `<a href="tel:${escapeHtml(phone)}">${escapeHtml(phone)}</a>`,
+    phone
+        ? `
+        <span class="contact-item">
+            • ${escapeHtml(phone)}
+        </span>
+        `
+        : "",
 
-        location && escapeHtml(location),
+    location
+        ? `
+        <span class="contact-item">
+            • ${escapeHtml(location)}
+        </span>
+        `
+        : "",
 
-        linkedin && `<a href="${escapeHtml(linkedin)}">${escapeHtml(linkedin)}</a>`,
+    linkedin
+        ? `
+        <span class="contact-item">
 
-        github && `<a href="${escapeHtml(github)}">${escapeHtml(github)}</a>`,
+            • <a href="${escapeHtml(
+                linkedin.startsWith("http")
+                    ? linkedin
+                    : `https://${linkedin}`
+            )}">
 
-        portfolio && `<a href="${escapeHtml(portfolio)}">${escapeHtml(portfolio)}</a>`
+                ${escapeHtml(linkedin)}
 
-    ].filter(Boolean).join(" | ")}
+            </a>
+
+        </span>
+        `
+        : "",
+
+    github
+        ? `
+        <span class="contact-item">
+
+            • <a href="${escapeHtml(
+                github.startsWith("http")
+                    ? github
+                    : `https://${github}`
+            )}">
+
+                ${escapeHtml(github)}
+
+            </a>
+
+        </span>
+        `
+        : "",
+
+    portfolio
+        ? `
+        <span class="contact-item">
+
+            • <a href="${escapeHtml(
+                portfolio.startsWith("http")
+                    ? portfolio
+                    : `https://${portfolio}`
+            )}">
+
+                ${escapeHtml(portfolio)}
+
+            </a>
+
+        </span>
+        `
+        : ""
+
+].filter(Boolean).join("")}
 
 </div>
 
-${renderSection(
-    "Professional Summary",
-    professionalSummary
-        ? `<p>${escapeHtml(professionalSummary)}</p>`
-        : ""
-)}
+</header>
 
 ${renderSection(
-    "Technical Skills",
-    skills && skills.length
+
+    "Professional Summary",
+
+    professionalSummary
         ? `
-        <div class="skill-list">
-            ${skills.map(skill => `
-                <div class="skill">
-                    ${escapeHtml(skill)}
-                </div>
-            `).join("")}
+        <div class="summary">
+
+            ${escapeHtml(professionalSummary)}
+
         </div>
         `
         : ""
+
 )}
 
 ${renderSection(
+
+    "Technical Skills",
+
+    renderSkills(skills)
+
+)}
+
+${renderSection(
+
     "Professional Experience",
-    experience && experience.length
-        ? experience.map(job => `
-            <div class="item">
 
-                <div class="item-header">
+    (() => {
 
-                    <div>
+        const values = normalizeArray(experience)
 
-                        <div class="item-title">
-                            ${escapeHtml(job.position)}
-                        </div>
+        if (!values.length) {
+            return ""
+        }
 
-                        <div class="item-subtitle">
-                            ${escapeHtml(job.company)}
-                        </div>
+        return values.map(item => `
 
-                    </div>
+            <div class="simple-item">
 
-                    <div class="item-duration">
-                        ${escapeHtml(job.duration)}
-                    </div>
+                ${item.includes("|")
+                    ? item
+                        .split("|")
+                        .map(part => escapeHtml(part.trim()))
+                        .map((part,index) => {
 
-                </div>
+                            if(index===0){
+                                return `<strong>${part}</strong>`
+                            }
 
-                ${renderList(job.responsibilities)}
+                            return part
+
+                        })
+                        .join(" &nbsp;|&nbsp; ")
+                    : escapeHtml(item)
+                }
 
             </div>
+
         `).join("")
-        : ""
+
+    })()
+
 )}
 
 ${renderSection(
+
+    "Internships",
+
+    (() => {
+
+        const values = normalizeArray(internships)
+
+        if (!values.length) {
+            return ""
+        }
+
+        return values.map(item => `
+
+            <div class="simple-item">
+
+                ${item.includes("|")
+                    ? item
+                        .split("|")
+                        .map(part => escapeHtml(part.trim()))
+                        .map((part,index) => {
+
+                            if(index===0){
+                                return `<strong>${part}</strong>`
+                            }
+
+                            return part
+
+                        })
+                        .join(" &nbsp;|&nbsp; ")
+                    : escapeHtml(item)
+                }
+
+            </div>
+
+        `).join("")
+
+    })()
+
+)}
+
+${renderSection(
+
     "Projects",
-    projects && projects.length
-        ? projects.map(project => `
-            <div class="item">
 
-                <div class="item-title">
-                    ${escapeHtml(project.title)}
-                </div>
+    (() => {
 
-                <div class="tech-stack">
+        const values = normalizeArray(projects)
 
-                    <strong>Technologies:</strong>
+        if (!values.length) {
+            return ""
+        }
 
-                    ${project.technologies
-                        .map(escapeHtml)
-                        .join(", ")}
+        return values.map(item => `
 
-                </div>
+            <div class="simple-item">
 
-                ${renderList(project.description)}
+                ${item.includes("|")
+                    ? item
+                        .split("|")
+                        .map(part => escapeHtml(part.trim()))
+                        .map((part,index) => {
+
+                            if(index===0){
+                                return `<strong>${part}</strong>`
+                            }
+
+                            return part
+
+                        })
+                        .join(" &nbsp;|&nbsp; ")
+                    : escapeHtml(item)
+                }
 
             </div>
+
         `).join("")
-        : ""
+
+    })()
+
 )}
 
 ${renderSection(
+
     "Education",
-    education && education.length
-        ? education.map(item => `
-            <div class="item">
 
-                <div class="item-header">
+    (() => {
 
-                    <div>
+        const values = normalizeArray(education)
 
-                        <div class="item-title">
-                            ${escapeHtml(item.degree)}
-                        </div>
+        if (!values.length) {
+            return ""
+        }
 
-                        <div class="item-subtitle">
-                            ${escapeHtml(item.institution)}
-                        </div>
+        return values.map(item => `
 
-                    </div>
+            <div class="simple-item">
 
-                    <div class="item-duration">
-                        ${escapeHtml(item.duration)}
-                    </div>
+                ${item.includes("|")
+                    ? item
+                        .split("|")
+                        .map(part => escapeHtml(part.trim()))
+                        .map((part,index) => {
 
-                </div>
+                            if(index===0){
+                                return `<strong>${part}</strong>`
+                            }
 
-                ${item.score
-                    ? `<div class="education-score">${escapeHtml(item.score)}</div>`
-                    : ""}
+                            return part
+
+                        })
+                        .join(" &nbsp;|&nbsp; ")
+                    : escapeHtml(item)
+                }
 
             </div>
+
         `).join("")
-        : ""
+
+    })()
+
 )}
 
 ${renderSection(
-    "Certifications",
-    certifications && certifications.length
-        ? certifications.map(cert => `
-            <div class="certification">
 
-                • ${escapeHtml(cert)}
+    "Achievements",
 
-            </div>
-        `).join("")
-        : ""
+    renderBulletList(achievements)
+
 )}
+
+${renderSection(
+
+    "Certifications",
+
+    renderBulletList(certifications)
+
+)}
+
+${renderSection(
+
+    "Positions of Responsibility",
+
+    renderBulletList(positionsOfResponsibility)
+
+)}
+
+${renderSection(
+
+    "Publications",
+
+    renderBulletList(publications)
+
+)}
+
+</div>
 
 </body>
 

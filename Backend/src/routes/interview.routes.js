@@ -10,7 +10,6 @@ const upload = require("../middlewares/file.middleware")
 
 const interviewRouter = express.Router()
 
-const MAX_FIELDS = 2
 
 
 

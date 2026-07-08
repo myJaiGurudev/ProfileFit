@@ -4,16 +4,16 @@ function cleanPromptText(text) {
         return ""
     }
 
-    text = String(text)
-
-    return text
+    return String(text)
         .replace(/\0/g, "")
         .replace(/\r/g, "")
         .replace(/\t/g, " ")
-        .replace(/[“”]/g, '"')
+        .replace(/[“”]/g, "\"")
         .replace(/[‘’]/g, "'")
         .replace(/\uFFFD/g, "")
         .replace(/[ ]{2,}/g, " ")
+        .replace(/\n +/g, "\n")
+        .replace(/[ ]+\n/g, "\n")
         .replace(/\n{3,}/g, "\n\n")
         .trim()
 

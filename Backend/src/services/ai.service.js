@@ -10,7 +10,7 @@ const ai = new GoogleGenAI({
     apiKey: process.env.GOOGLE_GENAI_API_KEY
 })
 
-const AI_TIMEOUT = 60000
+const AI_TIMEOUT = 90000
 
 const PDF_OPTIONS = Object.freeze({
     format: "A4",
@@ -55,7 +55,15 @@ async function generateAiResponse(request) {
                 throw error
             }
 
-            await new Promise(resolve => setTimeout(resolve, 1000 * attempt))
+            await new Promise(resolve =>
+                setTimeout(
+                    resolve,
+                    Math.min(
+                        2000 * attempt,
+                        5000
+                    )
+                )
+            )
 
         }
 
@@ -76,134 +84,49 @@ function safeJsonParse(text) {
 const AI_MODEL = process.env.GOOGLE_GENAI_MODEL || "gemini-2.5-flash"
 
 const interviewReportSchema = z.object({
-
     title: z.string(),
-
-    matchScore: z.number().min(0).max(100),
-
-    atsScore: z.number().min(0).max(100),
-
     overallFeedback: z.string(),
-
     recruiterSummary: z.string(),
-
     strengths: z.array(
         z.string()
     ),
-
     weaknesses: z.array(
         z.string()
     ),
-
     missingKeywords: z.array(
         z.string()
     ),
-
     matchedKeywords: z.array(
         z.string()
     ),
-
     resumeImprovements: z.array(
         z.string()
     ),
-
     technicalQuestions: z.array(
-        z.object({
-            question: z.string(),
-            intention: z.string(),
-            answer: z.string()
-        })
+        z.string()
     ),
-
     behavioralQuestions: z.array(
-        z.object({
-            question: z.string(),
-            intention: z.string(),
-            answer: z.string()
-        })
+        z.string()
     ),
-
     skillGaps: z.array(
-        z.object({
-            skill: z.string(),
-            severity: z.enum([
-                "low",
-                "medium",
-                "high"
-            ]),
-            improvement: z.string()
-        })
+        z.string()
     ),
-
     preparationPlan: z.array(
-        z.object({
-            day: z.number(),
-            focus: z.string(),
-            tasks: z.array(
-                z.string()
-            )
-        })
+        z.string()
     ),
-
     recommendedProjects: z.array(
         z.string()
     ),
-
-    recommendedCertifications: z.array(
-        z.string()
-    ),
-
     prioritySkills: z.array(
         z.string()
     ),
-
     interviewDifficulty: z.enum([
         "Easy",
         "Medium",
         "Hard"
     ]),
-
     hiringProbability: z.number().min(0).max(100),
-
-    confidenceScore: z.number().min(0).max(100),
-
-    resumeSectionScores: z.object({
-
-        summary: z.number().min(0).max(100),
-
-        skills: z.number().min(0).max(100),
-
-        experience: z.number().min(0).max(100),
-
-        projects: z.number().min(0).max(100),
-
-        education: z.number().min(0).max(100),
-
-        overall: z.number().min(0).max(100)
-
-    }),
-
-    keywordCoverage: z.number().min(0).max(100),
-
-    topMissingSkills: z.array(
-        z.string()
-    ),
-
-    actionVerbScore: z.number().min(0).max(100),
-
-    achievementScore: z.number().min(0).max(100),
-
-    readabilityScore: z.number().min(0).max(100),
-
-    resumeLengthRecommendation: z.enum([
-        "One Page",
-        "Two Pages"
-    ]),
-
-    importantWarnings: z.array(
-        z.string()
-    )
-
+    confidenceScore: z.number().min(0).max(100)
 })
 
 const resumePdfSchema = z.object({
@@ -215,42 +138,16 @@ const resumePdfSchema = z.object({
     github: z.string().default(""),
     portfolio: z.string().default(""),
     professionalSummary: z.string().default(""),
-    skills: z.array(
-        z.string().default("")
-    ),
-    experience: z.array(
-        z.object({
-            company: z.string().default(""),
-            position: z.string().default(""),
-            duration: z.string().default(""),
-            responsibilities: z.array(
-                z.string().default("")
-            )
-        })
-    ),
-    projects: z.array(
-        z.object({
-            title: z.string().default(""),
-            technologies: z.array(
-                z.string().default("")
-            ),
-            description: z.array(
-                z.string().default("")
-            )
-        })
-    ),
-    education: z.array(
-        z.object({
-            institution: z.string().default(""),
-            degree: z.string().default(""),
-            duration: z.string().default(""),
-            score: z.string().default("")
-        })
-    ),
-    certifications: z.array(
-        z.string().default("")
-    )
-})
+    skills: z.array(z.string()).default([]),
+    experience: z.array(z.string()).default([]),
+    internships: z.array(z.string()).default([]),
+    projects: z.array(z.string()).default([]),
+    education: z.array(z.string()).default([]),
+    achievements: z.array(z.string()).default([]),
+    certifications: z.array(z.string()).default([]),
+    positionsOfResponsibility: z.array(z.string()).default([]),
+    publications: z.array(z.string()).default([])
+}).strict()
 
 
 async function generateInterviewReport({ resume, jobDescription }) {
@@ -263,41 +160,63 @@ async function generateInterviewReport({ resume, jobDescription }) {
         throw new Error("Job description cannot be empty.")
     }
 
-    const prompt = interviewReportPrompt({
-        resume: resume.trim(),
-        jobDescription: jobDescription.trim()
-    })
+    const prompt =
+        interviewReportPrompt({
+            resume: resume.trim(),
+            jobDescription: jobDescription.trim()
+        })
 
-    const response = await generateAiResponse({
-        model: AI_MODEL,
-        contents: [
-            {
-                role: "user",
-                parts: [
-                    {
-                        text: prompt
-                    }
-                ]
+    const response =
+        await generateAiResponse({
+            model: AI_MODEL,
+            contents: [
+                {
+                    role: "user",
+                    parts: [
+                        {
+                            text: prompt
+                        }
+                    ]
+                }
+            ],
+            config: {
+                responseMimeType: "application/json",
+                responseSchema:
+                    zodToJsonSchema(
+                        interviewReportSchema
+                    )
             }
-        ],
-        config: {
-            responseMimeType: "application/json",
-            responseSchema: zodToJsonSchema(interviewReportSchema)
-        }
-    })
-    const report = safeJsonParse(
-        response.text.trim()
-    )
+        })
+
+    console.log("========== AI RESPONSE ==========")
+    console.log(response.text)
+    console.log("=================================")
+
+    const report =
+        safeJsonParse(
+            response.text
+                .replace(/```(?:json)?/gi, "")
+                .trim()
+        )
 
     if (!report || typeof report !== "object") {
-        throw new Error("AI returned an invalid JSON response.")
+        throw new Error("AI returned invalid JSON.")
     }
 
-    if (Object.keys(report).length === 0) {
-        throw new Error("AI returned an empty response.")
+    const validation = interviewReportSchema.safeParse(report)
+
+    if (!validation.success) {
+        console.error(validation.error.issues)
+        throw new Error("AI response does not match the required schema.")
     }
 
-    return report
+    const validated = validation.data
+
+    return {
+        ...validated,
+        generatedWith:
+            AI_MODEL
+    }
 }
 
 async function generatePdfFromHtml(htmlContent) {
@@ -307,7 +226,7 @@ async function generatePdfFromHtml(htmlContent) {
     try {
 
         browser = await puppeteer.launch({
-            headless: true,
+            headless: "new",
             args: [
                 "--no-sandbox",
                 "--disable-setuid-sandbox"
@@ -319,6 +238,8 @@ async function generatePdfFromHtml(htmlContent) {
         await page.setContent(htmlContent, {
             waitUntil: "networkidle0"
         })
+
+        await page.emulateMediaType("screen")
 
         return await page.pdf(PDF_OPTIONS)
 
@@ -359,12 +280,16 @@ async function generateResumePdf({ resume, jobDescription }) {
         ],
         config: {
             responseMimeType: "application/json",
-            responseSchema: zodToJsonSchema(resumePdfSchema)
+            responseSchema: zodToJsonSchema(
+                resumePdfSchema
+            )
         }
     })
 
     const resumeData = safeJsonParse(
-        response.text.trim()
+        response.text
+            .replace(/```(?:json)?/gi, "")
+            .trim()
     )
 
     if (!resumeData || typeof resumeData !== "object") {
@@ -375,15 +300,27 @@ async function generateResumePdf({ resume, jobDescription }) {
         throw new Error("AI returned an empty response.")
     }
 
-    const htmlContent =
-        generateResumeHtml(
-            resumeData
-        )
+    const validation = resumePdfSchema.safeParse(resumeData)
 
-    const pdfBuffer =
-        await generatePdfFromHtml(
-            htmlContent
-        )
+    if (!validation.success) {
+        console.error(validation.error.issues)
+        throw new Error("AI response does not match the required resume schema.")
+    }
+
+    const validatedResume = validation.data
+
+    const htmlContent = generateResumeHtml(validatedResume)
+
+    if (!htmlContent || !htmlContent.trim()) {
+        throw new Error("Failed to generate resume HTML.")
+    }
+
+    const pdfBuffer = await generatePdfFromHtml(htmlContent)
+
+    if (!pdfBuffer || pdfBuffer.length === 0) {
+        throw new Error("Failed to generate resume PDF.")
+    }
+
     return pdfBuffer
 }
 

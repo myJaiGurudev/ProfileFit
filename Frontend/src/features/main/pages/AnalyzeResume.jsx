@@ -5,14 +5,16 @@ import { FiFileText, FiBriefcase } from "react-icons/fi";
 import UploadCard from "../components/analyzer/UploadCard";
 import AnalyzeButton from "../components/analyzer/AnalyzeButton";
 import DocumentUploaderInput from "../components/analyzer/DocumentUploaderInput";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { HiOutlineExclamationTriangle } from "react-icons/hi2";
 import { IoClose } from "react-icons/io5";
+import api from "../../auth/components/api"
 
 export default function AnalyzeResume() {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+    const redirectTimerRef = useRef(null);
     const [resumeFile, setResumeFile] = useState(null);
     const [jobDescriptionFile, setJobDescriptionFile] = useState(null);
     const [resumeText, setResumeText] = useState(
@@ -46,17 +48,91 @@ export default function AnalyzeResume() {
         return () => clearTimeout(timer);
     }, [toast.show]);
 
+    useEffect(() => {
+        return () => {
+            if (redirectTimerRef.current) {
+                clearTimeout(redirectTimerRef.current);
+            }
+        };
+    }, []);
+
     const handleAnalyze = async () => {
-        setLoading(true);
+        if (!canAnalyze) {
+            return;
+        }
+        try {
 
-        // Temporary loading
-        await new Promise(resolve => setTimeout(resolve, 3000));
+            const token = localStorage.getItem("token");
 
-        localStorage.removeItem("document-text-Resume");
-        localStorage.removeItem("document-text-Job Description");
+            if (!token) {
 
-        setLoading(false);
-        navigate("/resume-analysis");
+                if (redirectTimerRef.current) {
+                    clearTimeout(redirectTimerRef.current);
+                }
+
+                triggerError("Please login to analyze your resume.");
+
+                redirectTimerRef.current = setTimeout(() => {
+                    navigate("/login");
+                }, 5000);
+
+                return;
+            }
+
+            setLoading(true);
+
+            const formData = new FormData();
+            if (resumeFile) {
+                formData.append("resume", resumeFile);
+            } else {
+                formData.append("resume", resumeText.trim());
+            }
+            if (jobDescriptionFile) {
+                formData.append(
+                    "jobDescriptionFile",
+                    jobDescriptionFile
+                );
+            } else {
+                formData.append(
+                    "jobDescription",
+                    jobDescriptionText.trim()
+                );
+            }
+            const response = await api.post(
+                "/interview",
+                formData
+            );
+            localStorage.removeItem("document-text-Resume");
+            localStorage.removeItem("document-text-Job Description");
+            setResumeFile(null);
+            setJobDescriptionFile(null);
+            setResumeText("");
+            setJobDescriptionText("");
+            navigate(
+                `/resume-analysis/${response.data.interviewReport._id}`
+            );
+        } catch (error) {
+
+            const message =
+                error.response?.data?.message ||
+                error.message ||
+                "Unable to analyze resume. Please try again.";
+
+            triggerError(message);
+
+            if (error.response?.status === 401) {
+
+                if (redirectTimerRef.current) {
+                    clearTimeout(redirectTimerRef.current);
+                }
+
+                redirectTimerRef.current = setTimeout(() => {
+                    navigate("/login");
+                }, 5000);
+            }
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (

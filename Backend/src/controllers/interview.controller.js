@@ -70,6 +70,12 @@ async function generateInterviewReportController(req, res) {
         const normalizedResume = resumeText.trim()
         const normalizedJobDescription = jobDescriptionText.trim()
 
+        if (normalizedResume === normalizedJobDescription) {
+            return res.status(400).json({
+                message: "Resume and Job Description cannot be identical."
+            })
+        }
+
         const interviewReportByAI =
             await generateInterviewReport({
                 resume: normalizedResume,
@@ -89,7 +95,14 @@ async function generateInterviewReportController(req, res) {
             interviewReport
         })
     } catch (error) {
-        console.error("[Interview Controller]", error)
+        console.error({
+            controller: "Interview Controller",
+            route: req.originalUrl,
+            method: req.method,
+            userId: req.user?.id || null,
+            error: error.message,
+            stack: process.env.NODE_ENV !== "production" ? error.stack : undefined
+        })
 
         return res.status(500).json({
             message:
@@ -125,6 +138,7 @@ async function getInterviewReportByIdController(req, res) {
                 _id: interviewId,
                 user: req.user.id
             })
+            .select("-__v")
             .lean()
 
         if (!interviewReport) {
@@ -138,7 +152,14 @@ async function getInterviewReportByIdController(req, res) {
             interviewReport
         })
     } catch (error) {
-        console.error("[Interview Controller]", error)
+        console.error({
+            controller: "Interview Controller",
+            route: req.originalUrl,
+            method: req.method,
+            userId: req.user?.id || null,
+            error: error.message,
+            stack: process.env.NODE_ENV !== "production" ? error.stack : undefined
+        })
 
         return res.status(500).json({
             message:
@@ -162,22 +183,21 @@ async function getAllInterviewReportsController(req, res) {
     }
 
     try {
-        const interviewReports = await interviewReportModel.find({ user: req.user.id }).sort({ createdAt: -1 }).select([
-            "-resume",
-            "-jobDescription",
-            "-technicalQuestions",
-            "-behavioralQuestions",
-            "-skillGaps",
-            "-preparationPlan",
-            "-__v"
-        ].join(" ")).lean()
+        const interviewReports = await interviewReportModel.find({ user: req.user.id }).sort({ createdAt: -1 }).select("-resume -jobDescription -__v").lean()
 
         return res.status(200).json({
             message: "Interview reports fetched successfully.",
             interviewReports
         })
     } catch (error) {
-        console.error("[Interview Controller]", error)
+        console.error({
+            controller: "Interview Controller",
+            route: req.originalUrl,
+            method: req.method,
+            userId: req.user?.id || null,
+            error: error.message,
+            stack: process.env.NODE_ENV !== "production" ? error.stack : undefined
+        })
 
         return res.status(500).json({
             message:
@@ -214,6 +234,7 @@ async function generateResumePdfController(req, res) {
                 _id: interviewReportId,
                 user: req.user.id
             })
+                .select("resume jobDescription")
 
         if (!interviewReport) {
             return res.status(404).json({
@@ -230,9 +251,21 @@ async function generateResumePdfController(req, res) {
             "Content-Disposition": `attachment; filename=resume_${interviewReportId}.pdf`
         })
 
+        res.set(
+            "Content-Length",
+            pdfBuffer.length
+        )
+
         return res.send(pdfBuffer)
     } catch (error) {
-        console.error("[Interview Controller]", error)
+        console.error({
+            controller: "Interview Controller",
+            route: req.originalUrl,
+            method: req.method,
+            userId: req.user?.id || null,
+            error: error.message,
+            stack: process.env.NODE_ENV !== "production" ? error.stack : undefined
+        })
 
         return res.status(500).json({
             message:
