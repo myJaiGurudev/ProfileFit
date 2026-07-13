@@ -9,55 +9,30 @@ export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
 
     const getUser = async () => {
-
         setLoading(true);
-
         try {
-
             const res = await api.get("/auth/get-details");
-
-            setUser(res.data.user);
-
-        }
-        catch (error) {
-
+            if (res.data.user) {
+                setUser(res.data.user);
+            }
+        } catch (error) {
             console.log(error);
-
             setUser(null);
-
-        }
-        finally {
-
+        } finally {
             setLoading(false);
-
         }
-
     };
 
-    useEffect(() => {
-
-        getUser();
-
-    }, []);
+    useEffect(() => { getUser(); }, []);
 
     const logout = async () => {
-
         try {
-
             await api.get("/auth/logout");
-
-        }
-        catch (error) {
-
+        } catch (error) {
             console.log(error);
-
-        }
-        finally {
-
+        } finally {
             setUser(null);
-
         }
-
     };
 
     return (

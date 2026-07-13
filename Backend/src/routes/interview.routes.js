@@ -10,9 +10,6 @@ const upload = require("../middlewares/file.middleware")
 
 const interviewRouter = express.Router()
 
-
-
-
 /**
  * @route POST /api/interview/
  * @description Generate a new interview report using the resume and job description. Both documents can be uploaded as PDF/TXT files or provided as pasted text.

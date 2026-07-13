@@ -102,6 +102,27 @@ const interviewReportSchema = new mongoose.Schema({
         ]
     },
 
+    overallScore: {
+        type: Number,
+        default: 0,
+        min: 0,
+        max: 100
+    },
+
+    atsScore: {
+        type: Number,
+        default: 0,
+        min: 0,
+        max: 100
+    },
+
+    matchScore: {
+        type: Number,
+        default: 0,
+        min: 0,
+        max: 100
+    },
+
     hiringProbability: {
         type: Number,
         default: 0,

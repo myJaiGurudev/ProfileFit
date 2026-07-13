@@ -8,57 +8,62 @@ import GuestRoute from "./features/main/components/GuestRoute";
 import AnalyzeResume from "./features/main/pages/AnalyzeResume";
 import LayoutWithFooter from "./features/main/components/LayoutWithFooter";
 import LayoutWithoutFooter from "./features/main/components/LayoutWithoutFooter";
+import ResumeAnalysis from "./features/ResumeAnalysis/ResumeAnalysis";
 
-export const router=createBrowserRouter([
+export const router = createBrowserRouter([
     {
-        element:<LayoutWithFooter />,
-        errorElement:<Error />,
-        children:[
+        element: <LayoutWithFooter />,
+        errorElement: <Error />,
+        children: [
             {
-                path:"/",
-                element:<Home />
+                path: "/",
+                element: <Home />
             }
         ]
     },
     {
-        element:<LayoutWithoutFooter />,
-        errorElement:<Error />,
-        children:[
+        element: <LayoutWithoutFooter />,
+        errorElement: <Error />,
+        children: [
             {
-                path:"/analyze-resume",
-                element:<AnalyzeResume />
+                path: "/analyze-resume",
+                element: <AnalyzeResume />
+            },
+            {
+                path: "/resume-analysis/:id",
+                element: <ResumeAnalysis />
             }
         ]
     },
     {
-        path:"/login",
-        element:(
+        path: "/login",
+        element: (
             <GuestRoute>
                 <Login />
             </GuestRoute>
         ),
-        errorElement:<Error />
+        errorElement: <Error />
     },
     {
-        path:"/register",
-        element:(
+        path: "/register",
+        element: (
             <GuestRoute>
                 <Register />
             </GuestRoute>
         ),
-        errorElement:<Error />
+        errorElement: <Error />
     },
     {
-        path:"/reset-password",
-        element:(
+        path: "/reset-password",
+        element: (
             <GuestRoute>
                 <ResetPassword />
             </GuestRoute>
         ),
-        errorElement:<Error />
+        errorElement: <Error />
     },
     {
-        path:"*",
-        element:<Error />
+        path: "*",
+        element: <Error />
     }
 ]);

@@ -125,8 +125,11 @@ const interviewReportSchema = z.object({
         "Medium",
         "Hard"
     ]),
-    hiringProbability: z.number().min(0).max(100),
-    confidenceScore: z.number().min(0).max(100)
+    overallScore: z.number().int().min(0).max(100),
+    atsScore: z.number().int().min(0).max(100),
+    matchScore: z.number().int().min(0).max(100),
+    hiringProbability: z.number().int().min(0).max(100),
+    confidenceScore: z.number().int().min(0).max(100)
 })
 
 const resumePdfSchema = z.object({

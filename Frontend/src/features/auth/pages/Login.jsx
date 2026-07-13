@@ -14,7 +14,7 @@ const Login = () => {
     const navigate = useNavigate();
     const [step, setStep] = useState(1);
     const [loginSuccess, setLoginSuccess] = useState(false);
-    const { setUser, refreshUser } = useAuth();
+    const { setUser } = useAuth();
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -27,7 +27,13 @@ const Login = () => {
                 password
             });
 
-            setUser(res.data.user);
+            if (res.data.token) {
+                localStorage.setItem("token", res.data.token);
+            }
+
+            if (res.data.user) {
+                setUser(res.data.user);
+            }
 
             setLoginSuccess(true);
             setStep(2);
@@ -78,7 +84,13 @@ const Login = () => {
                 token: credentialResponse.credential
             });
 
-            setUser(res.data.user);
+            if (res.data.token) {
+                localStorage.setItem("token", res.data.token);
+            }
+
+            if (res.data.user) {
+                setUser(res.data.user);
+            }
 
             setLoginSuccess(true);
             setStep(2);

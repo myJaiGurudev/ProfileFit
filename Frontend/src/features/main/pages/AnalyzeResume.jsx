@@ -82,6 +82,7 @@ export default function AnalyzeResume() {
             setLoading(true);
 
             const formData = new FormData();
+
             if (resumeFile) {
                 formData.append("resume", resumeFile);
             } else {
@@ -98,10 +99,13 @@ export default function AnalyzeResume() {
                     jobDescriptionText.trim()
                 );
             }
-            const response = await api.post(
-                "/interview",
-                formData
+            const response = await api.post("/interview", formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data"
+                }
+            }
             );
+
             localStorage.removeItem("document-text-Resume");
             localStorage.removeItem("document-text-Job Description");
             setResumeFile(null);

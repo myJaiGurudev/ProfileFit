@@ -80,6 +80,16 @@ Follow these rules carefully.
 17. Return empty arrays [] if nothing is available.
 
 18. Return an empty string "" if a string value is unavailable.
+
+19. All numeric scores must be integers between 0 and 100.
+
+20. The numeric scores must be logically consistent.
+
+21. Do not assign high scores if significant required skills or qualifications are missing.
+
+22. Do not assign low scores when the resume strongly satisfies the job description.
+
+23. ATS Score, Match Score, Overall Score, Hiring Probability, and Confidence Score should each represent different aspects of the evaluation and should not all have identical values.
 `
 
 }
@@ -98,6 +108,9 @@ Generate a complete interview preparation report.
 The report should help the candidate:
 
 - understand how well the resume matches the job
+- calculate an ATS score
+- calculate a job match score
+- calculate an overall candidate score
 - identify strengths
 - identify weaknesses
 - identify missing keywords
@@ -107,7 +120,6 @@ The report should help the candidate:
 - identify missing skills
 - create a preparation roadmap
 - choose useful projects
-- choose useful certifications
 - prioritize learning
 
 The response must be useful, practical and realistic.
@@ -335,11 +347,77 @@ Hard
 
 ------------------------------------------------
 
+"overallScore"
+
+Return a number between 0 and 100.
+
+This represents the overall evaluation of the candidate for this specific role.
+
+It should consider:
+
+- resume quality
+- relevance to the job description
+- technical skills
+- project quality
+- experience relevance
+- education
+- keyword coverage
+- overall competitiveness
+
+------------------------------------------------
+
+"atsScore"
+
+Return a number between 0 and 100.
+
+This represents how ATS-friendly the resume is.
+
+Consider:
+
+- section structure
+- keyword optimization
+- readability
+- formatting
+- completeness
+- professional resume writing practices
+
+Do NOT penalize for PDF formatting that cannot be inferred from extracted text.
+
+------------------------------------------------
+
+"matchScore"
+
+Return a number between 0 and 100.
+
+This represents how closely the resume matches the job description.
+
+Consider:
+
+- required skills
+- preferred skills
+- projects
+- technologies
+- experience relevance
+- education relevance
+- keyword overlap
+
+------------------------------------------------
+
 "hiringProbability"
 
 Return a number between 0 and 100.
 
-This should represent the estimated likelihood of getting shortlisted for this specific role based ONLY on the resume and job description.
+This represents the estimated probability that the candidate would be shortlisted by a recruiter for this specific role.
+
+Consider:
+
+- overall profile quality
+- ATS compatibility
+- job match
+- technical strengths
+- missing requirements
+
+Do not simply copy the Overall Score.
 
 ------------------------------------------------
 
@@ -347,7 +425,15 @@ This should represent the estimated likelihood of getting shortlisted for this s
 
 Return a number between 0 and 100.
 
-This represents your confidence in this evaluation based on the completeness of the resume and job description.
+This represents your confidence in the accuracy of this evaluation.
+
+Higher confidence should be given when:
+
+- the resume contains detailed information
+- the job description is complete
+- sufficient evidence exists for evaluation
+
+Lower confidence should be given when either document is incomplete or ambiguous.
 
 ====================
 RETURN EXACTLY THIS JSON STRUCTURE
@@ -369,6 +455,9 @@ RETURN EXACTLY THIS JSON STRUCTURE
     "recommendedProjects": [],
     "prioritySkills": [],
     "interviewDifficulty": "Medium",
+    "overallScore": 0,
+    "atsScore": 0,
+    "matchScore": 0,
     "hiringProbability": 0,
     "confidenceScore": 0
 }

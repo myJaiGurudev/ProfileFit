@@ -22,7 +22,7 @@ const Register = () => {
     const [countdown, setCountdown] = useState(30);
     const otpRefs = useRef([]);
     const navigate = useNavigate();
-    const { setUser, refreshUser } = useAuth();
+    const { setUser } = useAuth();
 
     const clearOtp = () => {
 
@@ -372,15 +372,17 @@ const Register = () => {
         setCreatingAccount(true);
 
         try {
-
-            await api.post("/auth/register", {
-
+            const res = await api.post("/auth/register", {
                 username: formData.name,
                 email: formData.email,
                 password: formData.password
-
             });
-
+            if (res.data.token) {
+                localStorage.setItem("token", res.data.token);
+            }
+            if (res.data.user) {
+                setUser(res.data.user);
+            }
             clearOtp();
             clearPassword();
             setFormData({
@@ -422,7 +424,13 @@ const Register = () => {
                 token: credentialResponse.credential
             });
 
-            setUser(res.data.user);
+            if (res.data.token) {
+                localStorage.setItem("token", res.data.token);
+            }
+
+            if (res.data.user) {
+                setUser(res.data.user);
+            }
             setCreatingAccount(true);
             setStep(4);
 
