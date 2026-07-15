@@ -17,11 +17,17 @@ export default function ResumeAnalysis() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
-    // Section Visibility toggles
+    // Section Visibility toggles (Fully Separated)
     const [sections, setSections] = useState({
-        feedback: true,
-        keywords: true,
-        questions: false,
+        recruiter: true,
+        technical: true,
+        matchedKw: false,
+        missingKw: false,
+        strengths: false,
+        weaknesses: false,
+        adjustments: false,
+        techQs: false,
+        behavioralQs: false,
         actionPlan: false,
         recommendations: false
     });
@@ -153,56 +159,62 @@ export default function ResumeAnalysis() {
                 <div className="animate-fade-up flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between mb-10">
                     <button
                         onClick={() => navigate("/analyze-resume")}
-                        className="cursor-pointer group flex w-fit items-center gap-3 rounded-full border border-white/5 bg-white/2 px-5 py-2.5 text-sm font-medium text-slate-300 backdrop-blur-md transition-all hover:bg-white/5 hover:text-white"
+                        className="cursor-pointer group flex w-fit items-center gap-3 rounded-full border border-white/10 bg-black/40 px-6 py-2.5 text-sm font-semibold text-slate-300 backdrop-blur-xl transition-all duration-300 hover:bg-white/10 hover:text-white hover:border-white/20 hover:shadow-[0_0_20px_rgba(255,255,255,0.1)] active:scale-95"
                     >
-                        <div className="flex h-6 w-6 items-center justify-center rounded-full bg-white/10 transition-transform group-hover:-translate-x-1">
-                            <FiArrowLeft className="h-3 w-3" />
+                        <div className="flex h-7 w-7 items-center justify-center rounded-full bg-white/10 transition-transform duration-300 group-hover:-translate-x-1.5 group-hover:bg-white/20">
+                            <FiArrowLeft className="h-3.5 w-3.5" />
                         </div>
                         Back to Workspace
                     </button>
 
-                    <div className="flex items-center gap-3 rounded-full border border-white/5 bg-white/2 p-1.5 backdrop-blur-md">
-                        <div className="flex items-center gap-2 rounded-full bg-white/5 px-4 py-1.5 text-xs font-medium text-slate-300">
-                            <FiCpu className="h-3.5 w-3.5 text-indigo-400" />
+                    <div className="flex items-center gap-3 rounded-full border border-white/10 bg-black/40 p-1.5 backdrop-blur-xl shadow-inner">
+                        <div className="flex items-center gap-2.5 rounded-full border border-white/5 bg-white/5 px-4 py-1.5 text-xs font-semibold tracking-wide text-slate-200 shadow-sm">
+                            <FiCpu className="h-4 w-4 text-indigo-400" />
                             {report.generatedWith || "gemini-2.5-flash"}
                         </div>
-                        <div className="flex items-center gap-2 rounded-full bg-white/5 px-4 py-1.5 text-xs font-medium text-slate-300">
-                            <FiClock className="h-3.5 w-3.5 text-emerald-400" />
+                        <div className="flex items-center gap-2.5 rounded-full border border-white/5 bg-white/5 px-4 py-1.5 text-xs font-semibold tracking-wide text-slate-200 shadow-sm">
+                            <FiClock className="h-4 w-4 text-emerald-400" />
                             {(report.processingTime / 1000).toFixed(2)}s
                         </div>
                     </div>
                 </div>
 
                 {/* --- HERO PROFILE CARD --- */}
-                <div className="animate-fade-up relative mb-12 overflow-hidden rounded-3xl border border-white/10 bg-white/2 backdrop-blur-xl shadow-2xl shadow-black/50">
-                    {/* Top Gradient Line */}
-                    <div className="absolute top-0 left-0 w-full h-0.5 bg-linear-to-r from-transparent via-indigo-500 to-transparent opacity-50"></div>
+                <div className="animate-fade-up relative mb-14 overflow-hidden rounded-[2.5rem] border border-white/10 bg-[#0a0a10]/80 backdrop-blur-2xl shadow-[0_30px_60px_-15px_rgba(0,0,0,0.8)] group">
+                    {/* Animated Top Glow Line */}
+                    <div className="absolute top-0 left-0 w-full h-0.5 bg-linear-to-r from-transparent via-indigo-500 to-transparent opacity-70 group-hover:via-emerald-400 transition-colors duration-700"></div>
+                    {/* Subtle Inner Ambient Glow */}
+                    <div className="absolute inset-0 bg-linear-to-br from-indigo-500/5 via-transparent to-emerald-500/5 pointer-events-none"></div>
 
-                    <div className="p-8 sm:p-12 flex flex-col gap-8 md:flex-row md:items-center md:justify-between">
+                    <div className="relative z-10 p-8 sm:p-12 flex flex-col gap-8 md:flex-row md:items-center md:justify-between">
                         <div className="flex-1">
-                            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-emerald-400 shadow-[0_0_15px_rgba(52,211,153,0.1)]">
+                            <div className="mb-6 inline-flex items-center gap-2.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-5 py-2 text-[11px] font-bold uppercase tracking-widest text-emerald-400 shadow-[0_0_20px_rgba(52,211,153,0.15)]">
                                 <span className="relative flex h-2 w-2">
                                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                                     <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                                 </span>
                                 Analysis Complete
                             </div>
-                            <h1 className="text-3xl font-light tracking-tight text-white sm:text-5xl lg:text-5xl">
+                            {/* Premium Gradient Text */}
+                            <h1 className="text-4xl font-extrabold tracking-tight text-transparent bg-clip-text bg-linear-to-r from-white via-slate-200 to-slate-400 sm:text-5xl lg:text-6xl pb-2">
                                 {report.title}
                             </h1>
-                            <p className="mt-4 text-base text-slate-400 max-w-2xl leading-relaxed font-light">
+                            <p className="mt-4 text-[16px] text-slate-400 max-w-2xl leading-relaxed font-medium">
                                 Comprehensive AI-driven competency matrix and alignment evaluation for optimal role positioning.
                             </p>
                         </div>
 
-                        {/* Difficulty Badge */}
-                        <div className="flex shrink-0 items-center gap-5 rounded-2xl border border-white/5 bg-black/20 p-5 shadow-inner">
-                            <div className={`flex h-14 w-14 items-center justify-center rounded-xl bg-linear-to-br from-white/5 to-transparent border border-white/10 ${report.interviewDifficulty === "Hard" ? "text-rose-400" : report.interviewDifficulty === "Medium" ? "text-amber-400" : "text-emerald-400"}`}>
-                                <FiActivity className="h-7 w-7 drop-shadow-md" />
+                        {/* Premium Difficulty Badge */}
+                        <div className="relative flex shrink-0 items-center gap-5 rounded-3xl border border-white/10 bg-white/3 p-6 shadow-2xl backdrop-blur-md overflow-hidden transition-all duration-500 hover:border-white/20 hover:bg-white/5">
+                            {/* Background blur flare based on difficulty */}
+                            <div className={`absolute -right-6 -top-6 h-24 w-24 rounded-full blur-2xl opacity-20 ${report.interviewDifficulty === "Hard" ? "bg-rose-500" : report.interviewDifficulty === "Medium" ? "bg-amber-500" : "bg-emerald-500"}`}></div>
+
+                            <div className={`flex h-16 w-16 items-center justify-center rounded-2xl bg-linear-to-br from-white/10 to-transparent border border-white/10 shadow-inner z-10 ${report.interviewDifficulty === "Hard" ? "text-rose-400" : report.interviewDifficulty === "Medium" ? "text-amber-400" : "text-emerald-400"}`}>
+                                <FiActivity className="h-8 w-8 drop-shadow-lg" />
                             </div>
-                            <div>
-                                <div className="text-xs text-slate-500 font-medium tracking-widest uppercase mb-1">Interview Level</div>
-                                <div className={`text-2xl font-semibold tracking-wide ${report.interviewDifficulty === "Hard" ? "text-rose-400" : report.interviewDifficulty === "Medium" ? "text-amber-400" : "text-emerald-400"}`}>
+                            <div className="z-10 pr-2">
+                                <div className="text-[11px] text-slate-400 font-bold tracking-widest uppercase mb-1.5">Interview Level</div>
+                                <div className={`text-3xl font-extrabold tracking-tight drop-shadow-md ${report.interviewDifficulty === "Hard" ? "text-rose-400" : report.interviewDifficulty === "Medium" ? "text-amber-400" : "text-emerald-400"}`}>
                                     {report.interviewDifficulty || "Medium"}
                                 </div>
                             </div>
@@ -211,30 +223,70 @@ export default function ResumeAnalysis() {
                 </div>
 
                 {/* --- METRICS DASHBOARD --- */}
-                <div className="animate-fade-up grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5 mb-16" style={{ animationDelay: '100ms' }}>
+                <div
+                    className="animate-fade-up grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5 mb-16"
+                    style={{ animationDelay: '100ms' }}
+                >
                     {[
-                        { label: "Overall Rating", val: report.overallScore, sub: "Competency Index" },
-                        { label: "ATS Readiness", val: report.atsScore, sub: "Parsing Match" },
-                        { label: "JD Alignment", val: report.matchScore, sub: "Profile Match" },
-                        { label: "Hiring Odds", val: report.hiringProbability, sub: "Conversion Rate" },
-                        { label: "AI Certainty", val: report.confidenceScore, sub: "Model Confidence" }
+                        // Updated for clearer, more user-friendly wording
+                        { label: "Resume Score", val: report?.overallScore || 0, sub: "Overall Quality" },
+                        { label: "ATS Score", val: report?.atsScore || 0, sub: "Format Readability" },
+                        { label: "Job Match", val: report?.matchScore || 0, sub: "Requirement Fit" },
+                        { label: "Hire Chance", val: report?.hiringProbability || 0, sub: "Interview Odds" },
+                        { label: "AI Certainty", val: report?.confidenceScore || 0, sub: "Analysis Confidence" }
                     ].map((metric, i) => {
-                        const theme = getScoreTheme(metric.val);
-                        return (
-                            <div key={i} className="group relative flex flex-col items-center justify-center rounded-3xl border border-white/5 bg-white/2 p-6 text-center backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:bg-white/4 hover:border-white/10">
-                                {/* Subtle Hover Glow */}
-                                <div className={`absolute inset-0 -z-10 rounded-3xl bg-linear-to-b from-${theme.hex}/20 to-transparent opacity-0 blur-xl transition-opacity duration-300 group-hover:opacity-20`}></div>
+                        // Fallback to avoid crashes if data is missing
+                        const theme = getScoreTheme(metric.val) || { hex: "#ffffff" };
+                        const strokeColor = theme.hex;
 
-                                <div className="relative flex items-center justify-center h-20 w-20 mb-5">
-                                    {/* SVG Radial Progress */}
-                                    <svg className="w-full h-full transform -rotate-90 drop-shadow-lg" viewBox="0 0 36 36">
-                                        <path className="text-white/5" strokeWidth="2.5" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                                        <path className={`transition-all duration-1000 ease-out ${theme.stroke}`} strokeWidth="2.5" strokeLinecap="round" strokeDasharray={`${metric.val}, 100`} fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                        return (
+                            <div
+                                key={i}
+                                className="group relative flex flex-col items-center justify-center rounded-3xl border border-white/10 bg-[#0a0a10]/60 p-4 sm:p-5 backdrop-blur-md transition-transform duration-300 ease-in-out hover:-translate-y-1"
+                            >
+                                {/* Precision Circle SVG - Responsive sizing (h-20 on mobile, h-24 on larger screens) */}
+                                <div className="relative flex items-center justify-center h-20 w-20 sm:h-24 sm:w-24 mb-4 sm:mb-5">
+                                    <svg className="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                                        {/* Background Track */}
+                                        <path
+                                            className="text-white/10"
+                                            strokeWidth="3"
+                                            stroke="currentColor"
+                                            fill="none"
+                                            d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                                        />
+                                        {/* Foreground Progress */}
+                                        <path
+                                            style={{
+                                                stroke: strokeColor,
+                                                transition: 'stroke-dasharray 1.5s cubic-bezier(0.4, 0, 0.2, 1)'
+                                            }}
+                                            strokeWidth="3.5"
+                                            strokeLinecap="round"
+                                            strokeDasharray={`${metric.val}, 100`}
+                                            fill="none"
+                                            d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                                        />
                                     </svg>
-                                    <span className={`absolute text-xl font-medium tracking-tight ${theme.text}`}>{metric.val}<span className="text-xs text-slate-500">%</span></span>
+
+                                    {/* Centered Percentage */}
+                                    <div className="absolute flex flex-col items-center justify-center mt-0.5">
+                                        <span className="text-xl sm:text-2xl font-semibold text-white tracking-tight">
+                                            {metric.val}
+                                            <span className="text-xs sm:text-sm font-normal text-white/50 ml-0.5">%</span>
+                                        </span>
+                                    </div>
                                 </div>
-                                <span className="text-[13px] font-semibold text-slate-200 tracking-wide uppercase">{metric.label}</span>
-                                <span className="text-[11px] text-slate-500 mt-1 font-medium">{metric.sub}</span>
+
+                                {/* Typography Labels */}
+                                <div className="text-center w-full">
+                                    <div className="text-[11px] sm:text-[12px] font-bold text-white/90 uppercase tracking-wider mb-1 truncate">
+                                        {metric.label}
+                                    </div>
+                                    <div className="text-[9px] sm:text-[10px] font-medium text-white/40 uppercase tracking-widest truncate">
+                                        {metric.sub}
+                                    </div>
+                                </div>
                             </div>
                         );
                     })}
@@ -243,131 +295,204 @@ export default function ResumeAnalysis() {
                 {/* --- STRUCTURED REPORT SECTIONS --- */}
                 <div className="animate-fade-up space-y-6" style={{ animationDelay: '200ms' }}>
 
-                    {/* Section 1: Executive Summary */}
+                    {/* 1. Recruiter Assessment */}
                     <div className="rounded-3xl border border-white/5 bg-white/2 backdrop-blur-xl transition-all duration-300 overflow-hidden">
-                        <div
-                            onClick={() => toggleSection("feedback")}
-                            className="cursor-pointer flex items-center justify-between p-6 sm:px-8 hover:bg-white/2 transition-colors"
-                        >
+                        <div onClick={() => toggleSection("recruiter")} className="cursor-pointer flex items-center justify-between p-6 sm:px-8 hover:bg-white/2 transition-colors">
                             <div className="flex items-center gap-4">
                                 <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-linear-to-br from-emerald-500/20 to-transparent border border-emerald-500/20 text-emerald-400">
                                     <FiTarget className="h-6 w-6" />
                                 </div>
-                                <h2 className="text-lg font-medium tracking-wide text-white">Executive Summary & Feedback</h2>
+                                <h2 className="text-lg font-medium tracking-wide text-white">Recruiter Assessment</h2>
                             </div>
-                            <div className={`flex h-10 w-10 items-center justify-center rounded-full border border-white/5 bg-black/20 text-slate-400 transition-transform duration-300 ${sections.feedback ? 'rotate-180' : 'rotate-0'}`}>
+                            <div className={`flex h-10 w-10 items-center justify-center rounded-full border border-white/5 bg-black/20 text-slate-400 transition-transform duration-300 ${sections.recruiter ? 'rotate-180' : 'rotate-0'}`}>
                                 <FiChevronDown size={20} />
                             </div>
                         </div>
-
-                        {/* CSS Grid Height Animation Wrapper */}
-                        <div className={`accordion-content ${sections.feedback ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}>
+                        <div className={`accordion-content ${sections.recruiter ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}>
                             <div className="overflow-hidden">
-                                <div className="p-6 sm:p-8 pt-0 grid gap-6 md:grid-cols-2">
-                                    <div className="rounded-2xl border border-white/5 bg-black/20 p-6 sm:p-8">
-                                        <h3 className="flex items-center gap-3 text-[13px] font-semibold text-emerald-400 uppercase tracking-widest mb-6">
-                                            <div className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399]"></div>
-                                            Recruiter Assessment
-                                        </h3>
-                                        <div className="premium-scrollbar text-[15px] text-slate-300/90 leading-loose whitespace-pre-wrap max-h-100 overflow-y-auto pr-4">
+                                <div className="p-6 sm:p-8 pt-0">
+                                    {/* Premium Glass Card with Glowing Left Border */}
+                                    <div className="relative rounded-2xl border border-emerald-500/10 bg-emerald-500/3 p-6 sm:p-10 transition-colors hover:bg-emerald-500/5 hover:border-emerald-500/20 overflow-hidden shadow-inner">
+                                        <div className="absolute top-0 left-0 w-1.5 h-full bg-linear-to-b from-emerald-400 to-emerald-600 shadow-[0_0_12px_#34d399]"></div>
+                                        <p className="text-[15.5px] text-slate-300/90 leading-[1.8] whitespace-pre-wrap relative z-10 pl-2">
                                             {report.recruiterSummary}
-                                        </div>
-                                    </div>
-                                    <div className="rounded-2xl border border-white/5 bg-black/20 p-6 sm:p-8">
-                                        <h3 className="flex items-center gap-3 text-[13px] font-semibold text-indigo-400 uppercase tracking-widest mb-6">
-                                            <div className="h-1.5 w-1.5 rounded-full bg-indigo-400 shadow-[0_0_8px_#818cf8]"></div>
-                                            Technical Evaluation
-                                        </h3>
-                                        <div className="premium-scrollbar text-[15px] text-slate-300/90 leading-loose whitespace-pre-wrap max-h-100 overflow-y-auto pr-4">
-                                            {report.overallFeedback}
-                                        </div>
+                                        </p>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    {/* Section 2: Keywords & Gaps */}
+                    {/* 2. Technical Evaluation */}
                     <div className="rounded-3xl border border-white/5 bg-white/2 backdrop-blur-xl transition-all duration-300 overflow-hidden">
-                        <div
-                            onClick={() => toggleSection("keywords")}
-                            className="cursor-pointer flex items-center justify-between p-6 sm:px-8 hover:bg-white/2 transition-colors"
-                        >
+                        <div onClick={() => toggleSection("technical")} className="cursor-pointer flex items-center justify-between p-6 sm:px-8 hover:bg-white/2 transition-colors">
                             <div className="flex items-center gap-4">
                                 <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-linear-to-br from-indigo-500/20 to-transparent border border-indigo-500/20 text-indigo-400">
+                                    <FiCpu className="h-6 w-6" />
+                                </div>
+                                <h2 className="text-lg font-medium tracking-wide text-white">Technical Evaluation</h2>
+                            </div>
+                            <div className={`flex h-10 w-10 items-center justify-center rounded-full border border-white/5 bg-black/20 text-slate-400 transition-transform duration-300 ${sections.technical ? 'rotate-180' : 'rotate-0'}`}>
+                                <FiChevronDown size={20} />
+                            </div>
+                        </div>
+                        <div className={`accordion-content ${sections.technical ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}>
+                            <div className="overflow-hidden">
+                                <div className="p-6 sm:p-8 pt-0">
+                                    {/* Premium Glass Card with Glowing Left Border */}
+                                    <div className="relative rounded-2xl border border-indigo-500/10 bg-indigo-500/3 p-6 sm:p-10 transition-colors hover:bg-indigo-500/5 hover:border-indigo-500/20 overflow-hidden shadow-inner">
+                                        <div className="absolute top-0 left-0 w-1.5 h-full bg-linear-to-b from-indigo-400 to-indigo-600 shadow-[0_0_12px_#818cf8]"></div>
+                                        <p className="text-[15.5px] text-slate-300/90 leading-[1.8] whitespace-pre-wrap relative z-10 pl-2">
+                                            {report.overallFeedback}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* 3. Matched Keywords */}
+                    <div className="rounded-3xl border border-white/5 bg-white/2 backdrop-blur-xl transition-all duration-300 overflow-hidden">
+                        <div onClick={() => toggleSection("matchedKw")} className="cursor-pointer flex items-center justify-between p-6 sm:px-8 hover:bg-white/2 transition-colors">
+                            <div className="flex items-center gap-4">
+                                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-linear-to-br from-emerald-500/20 to-transparent border border-emerald-500/20 text-emerald-400">
+                                    <FiCheckCircle className="h-6 w-6" />
+                                </div>
+                                <h2 className="text-lg font-medium tracking-wide text-white">Matched ATS Keywords</h2>
+                            </div>
+                            <div className={`flex h-10 w-10 items-center justify-center rounded-full border border-white/5 bg-black/20 text-slate-400 transition-transform duration-300 ${sections.matchedKw ? 'rotate-180' : 'rotate-0'}`}>
+                                <FiChevronDown size={20} />
+                            </div>
+                        </div>
+                        <div className={`accordion-content ${sections.matchedKw ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}>
+                            <div className="overflow-hidden">
+                                <div className="p-6 sm:p-8 pt-0">
+                                    <div className="rounded-2xl border border-emerald-900/30 bg-black/20 p-6 sm:p-8">
+                                        <div className="premium-scrollbar flex flex-wrap gap-2.5 max-h-62.5 overflow-y-auto pr-2">
+                                            {report.matchedKeywords?.map((kw, idx) => (
+                                                <span key={idx} className="rounded-full bg-emerald-500/10 px-4 py-1.5 text-[13px] font-medium text-emerald-300 border border-emerald-500/20">{kw}</span>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* 4. Missing Keywords */}
+                    <div className="rounded-3xl border border-white/5 bg-white/2 backdrop-blur-xl transition-all duration-300 overflow-hidden">
+                        <div onClick={() => toggleSection("missingKw")} className="cursor-pointer flex items-center justify-between p-6 sm:px-8 hover:bg-white/2 transition-colors">
+                            <div className="flex items-center gap-4">
+                                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-linear-to-br from-rose-500/20 to-transparent border border-rose-500/20 text-rose-400">
+                                    <FiXCircle className="h-6 w-6" />
+                                </div>
+                                <h2 className="text-lg font-medium tracking-wide text-white">Missing ATS Keywords</h2>
+                            </div>
+                            <div className={`flex h-10 w-10 items-center justify-center rounded-full border border-white/5 bg-black/20 text-slate-400 transition-transform duration-300 ${sections.missingKw ? 'rotate-180' : 'rotate-0'}`}>
+                                <FiChevronDown size={20} />
+                            </div>
+                        </div>
+                        <div className={`accordion-content ${sections.missingKw ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}>
+                            <div className="overflow-hidden">
+                                <div className="p-6 sm:p-8 pt-0">
+                                    <div className="rounded-2xl border border-rose-900/30 bg-black/20 p-6 sm:p-8">
+                                        <div className="premium-scrollbar flex flex-wrap gap-2.5 max-h-62.5 overflow-y-auto pr-2">
+                                            {report.missingKeywords?.map((kw, idx) => (
+                                                <span key={idx} className="rounded-full bg-rose-500/10 px-4 py-1.5 text-[13px] font-medium text-rose-300 border border-rose-500/20">{kw}</span>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* 5. Core Strengths */}
+                    <div className="rounded-3xl border border-white/5 bg-white/2 backdrop-blur-xl transition-all duration-300 overflow-hidden">
+                        <div onClick={() => toggleSection("strengths")} className="cursor-pointer flex items-center justify-between p-6 sm:px-8 hover:bg-white/2 transition-colors">
+                            <div className="flex items-center gap-4">
+                                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-linear-to-br from-emerald-500/20 to-transparent border border-emerald-500/20 text-emerald-400">
                                     <FiTrendingUp className="h-6 w-6" />
                                 </div>
-                                <h2 className="text-lg font-medium tracking-wide text-white">Competence Gap Analysis</h2>
+                                <h2 className="text-lg font-medium tracking-wide text-white">Core Strengths</h2>
                             </div>
-                            <div className={`flex h-10 w-10 items-center justify-center rounded-full border border-white/5 bg-black/20 text-slate-400 transition-transform duration-300 ${sections.keywords ? 'rotate-180' : 'rotate-0'}`}>
+                            <div className={`flex h-10 w-10 items-center justify-center rounded-full border border-white/5 bg-black/20 text-slate-400 transition-transform duration-300 ${sections.strengths ? 'rotate-180' : 'rotate-0'}`}>
                                 <FiChevronDown size={20} />
                             </div>
                         </div>
-
-                        <div className={`accordion-content ${sections.keywords ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}>
+                        <div className={`accordion-content ${sections.strengths ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}>
                             <div className="overflow-hidden">
-                                <div className="p-6 sm:p-8 pt-0 space-y-6">
-
-                                    {/* Keywords */}
-                                    <div className="grid gap-6 sm:grid-cols-2">
-                                        <div className="rounded-2xl border border-emerald-900/30 bg-black/20 p-6 sm:p-8">
-                                            <h3 className="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-emerald-400 mb-6">
-                                                <FiCheckCircle className="h-4 w-4" /> Matched Keywords ({report.matchedKeywords?.length || 0})
-                                            </h3>
-                                            <div className="premium-scrollbar flex flex-wrap gap-2.5 max-h-62.5 overflow-y-auto pr-2">
-                                                {report.matchedKeywords?.map((kw, idx) => (
-                                                    <span key={idx} className="rounded-full bg-emerald-500/10 px-4 py-1.5 text-[13px] font-medium text-emerald-300 border border-emerald-500/20">{kw}</span>
-                                                ))}
+                                <div className="p-6 sm:p-8 pt-0">
+                                    {/* Switched to a fully visible Card Grid layout instead of a scrollable list */}
+                                    <div className="grid gap-4 sm:grid-cols-2">
+                                        {report.strengths?.map((item, idx) => (
+                                            <div key={idx} className="flex gap-4 rounded-2xl border border-emerald-500/10 bg-emerald-500/2 p-5 transition-all hover:bg-emerald-500/5 hover:border-emerald-500/30">
+                                                <div className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                                                    <FiCheckCircle className="h-3.5 w-3.5" />
+                                                </div>
+                                                <span className="text-[14.5px] text-slate-300/90 leading-relaxed flex-1">{item}</span>
                                             </div>
-                                        </div>
-                                        <div className="rounded-2xl border border-rose-900/30 bg-black/20 p-6 sm:p-8">
-                                            <h3 className="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-rose-400 mb-6">
-                                                <FiXCircle className="h-4 w-4" /> Missing Keywords ({report.missingKeywords?.length || 0})
-                                            </h3>
-                                            <div className="premium-scrollbar flex flex-wrap gap-2.5 max-h-62.5 overflow-y-auto pr-2">
-                                                {report.missingKeywords?.map((kw, idx) => (
-                                                    <span key={idx} className="rounded-full bg-rose-500/10 px-4 py-1.5 text-[13px] font-medium text-rose-300 border border-rose-500/20">{kw}</span>
-                                                ))}
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* 6. Identified Weaknesses */}
+                    <div className="rounded-3xl border border-white/5 bg-white/2 backdrop-blur-xl transition-all duration-300 overflow-hidden">
+                        <div onClick={() => toggleSection("weaknesses")} className="cursor-pointer flex items-center justify-between p-6 sm:px-8 hover:bg-white/2 transition-colors">
+                            <div className="flex items-center gap-4">
+                                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-linear-to-br from-rose-500/20 to-transparent border border-rose-500/20 text-rose-400">
+                                    <FiAlertTriangle className="h-6 w-6" />
+                                </div>
+                                <h2 className="text-lg font-medium tracking-wide text-white">Identified Weaknesses</h2>
+                            </div>
+                            <div className={`flex h-10 w-10 items-center justify-center rounded-full border border-white/5 bg-black/20 text-slate-400 transition-transform duration-300 ${sections.weaknesses ? 'rotate-180' : 'rotate-0'}`}>
+                                <FiChevronDown size={20} />
+                            </div>
+                        </div>
+                        <div className={`accordion-content ${sections.weaknesses ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}>
+                            <div className="overflow-hidden">
+                                <div className="p-6 sm:p-8 pt-0">
+                                    {/* Switched to a fully visible Card Grid layout instead of a scrollable list */}
+                                    <div className="grid gap-4 sm:grid-cols-2">
+                                        {report.weaknesses?.map((item, idx) => (
+                                            <div key={idx} className="flex gap-4 rounded-2xl border border-rose-500/10 bg-rose-500/2 p-5 transition-all hover:bg-rose-500/5 hover:border-rose-500/30">
+                                                <div className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-rose-500/10 text-rose-400 border border-rose-500/20">
+                                                    <FiXCircle className="h-3.5 w-3.5" />
+                                                </div>
+                                                <span className="text-[14.5px] text-slate-300/90 leading-relaxed flex-1">{item}</span>
                                             </div>
-                                        </div>
+                                        ))}
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-                                    {/* Strengths & Weaknesses */}
-                                    <div className="grid gap-6 sm:grid-cols-2">
-                                        <div className="rounded-2xl border border-white/5 bg-black/20 p-6 sm:p-8">
-                                            <h3 className="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-6 pb-4 border-b border-white/5">Core Strengths</h3>
-                                            <ul className="premium-scrollbar space-y-4 max-h-75 overflow-y-auto pr-4">
-                                                {report.strengths?.map((item, idx) => (
-                                                    <li key={idx} className="flex items-start gap-4 text-[14.5px] text-slate-300/90 leading-relaxed">
-                                                        <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399]" />
-                                                        {item}
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        </div>
-                                        <div className="rounded-2xl border border-white/5 bg-black/20 p-6 sm:p-8">
-                                            <h3 className="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-6 pb-4 border-b border-white/5">Identified Weaknesses</h3>
-                                            <ul className="premium-scrollbar space-y-4 max-h-75 overflow-y-auto pr-4">
-                                                {report.weaknesses?.map((item, idx) => (
-                                                    <li key={idx} className="flex items-start gap-4 text-[14.5px] text-slate-300/90 leading-relaxed">
-                                                        <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-rose-400 shadow-[0_0_8px_#fb7185]" />
-                                                        {item}
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        </div>
-                                    </div>
-
-                                    {/* Actionable Improvements */}
+                    {/* 7. Recommended Adjustments */}
+                    <div className="rounded-3xl border border-white/5 bg-white/2 backdrop-blur-xl transition-all duration-300 overflow-hidden">
+                        <div onClick={() => toggleSection("adjustments")} className="cursor-pointer flex items-center justify-between p-6 sm:px-8 hover:bg-white/2 transition-colors">
+                            <div className="flex items-center gap-4">
+                                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-linear-to-br from-indigo-500/20 to-transparent border border-indigo-500/20 text-indigo-400">
+                                    <FiPlusCircle className="h-6 w-6" />
+                                </div>
+                                <h2 className="text-lg font-medium tracking-wide text-white">Recommended Adjustments</h2>
+                            </div>
+                            <div className={`flex h-10 w-10 items-center justify-center rounded-full border border-white/5 bg-black/20 text-slate-400 transition-transform duration-300 ${sections.adjustments ? 'rotate-180' : 'rotate-0'}`}>
+                                <FiChevronDown size={20} />
+                            </div>
+                        </div>
+                        <div className={`accordion-content ${sections.adjustments ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}>
+                            <div className="overflow-hidden">
+                                <div className="p-6 sm:p-8 pt-0">
                                     <div className="rounded-2xl border border-indigo-900/30 bg-indigo-950/10 p-6 sm:p-8">
-                                        <h3 className="text-xs font-semibold uppercase tracking-widest text-indigo-300 mb-6 flex items-center gap-2">
-                                            <FiPlusCircle className="h-4 w-4" /> Recommended Adjustments
-                                        </h3>
                                         <div className="premium-scrollbar grid gap-4 sm:grid-cols-2 max-h-75 overflow-y-auto pr-4">
                                             {report.resumeImprovements?.map((imp, idx) => (
-                                                <div key={idx} className="flex gap-4 rounded-xl border border-white/5 bg-black/20 p-4 text-[14.5px] text-slate-300/90 leading-relaxed">
+                                                <div key={idx} className="flex gap-4 rounded-xl border border-white/5 bg-black/20 p-4 text-[14.5px] text-slate-300/90 leading-relaxed transition-all hover:bg-white/4">
                                                     <span className="text-indigo-400 font-semibold">{idx + 1}.</span>
-                                                    <span>{imp}</span>
+                                                    <span className="flex-1">{imp}</span>
                                                 </div>
                                             ))}
                                         </div>
@@ -377,67 +502,77 @@ export default function ResumeAnalysis() {
                         </div>
                     </div>
 
-                    {/* Section 3: Interview Questions */}
+                    {/* 8. Technical Competency Assessment */}
                     <div className="rounded-3xl border border-white/5 bg-white/2 backdrop-blur-xl transition-all duration-300 overflow-hidden">
-                        <div
-                            onClick={() => toggleSection("questions")}
-                            className="cursor-pointer flex items-center justify-between p-6 sm:px-8 hover:bg-white/2 transition-colors"
-                        >
+                        <div onClick={() => toggleSection("techQs")} className="cursor-pointer flex items-center justify-between p-6 sm:px-8 hover:bg-white/2 transition-colors">
                             <div className="flex items-center gap-4">
-                                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-linear-to-br from-amber-500/20 to-transparent border border-amber-500/20 text-amber-400">
+                                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-linear-to-br from-indigo-500/20 to-transparent border border-indigo-500/20 text-indigo-400">
                                     <FiBriefcase className="h-6 w-6" />
                                 </div>
-                                <h2 className="text-lg font-medium tracking-wide text-white">Simulated Interview Prompts</h2>
+                                <h2 className="text-lg font-medium tracking-wide text-white">Technical Competency Assessment</h2>
                             </div>
-                            <div className={`flex h-10 w-10 items-center justify-center rounded-full border border-white/5 bg-black/20 text-slate-400 transition-transform duration-300 ${sections.questions ? 'rotate-180' : 'rotate-0'}`}>
+                            <div className={`flex h-10 w-10 items-center justify-center rounded-full border border-white/5 bg-black/20 text-slate-400 transition-transform duration-300 ${sections.techQs ? 'rotate-180' : 'rotate-0'}`}>
                                 <FiChevronDown size={20} />
                             </div>
                         </div>
-
-                        <div className={`accordion-content ${sections.questions ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}>
+                        <div className={`accordion-content ${sections.techQs ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}>
                             <div className="overflow-hidden">
-                                <div className="p-6 sm:p-8 pt-0 grid gap-6 lg:grid-cols-2">
-                                    <div className="rounded-2xl border border-white/5 bg-black/20 p-6 sm:p-8">
-                                        <h3 className="text-xs font-semibold text-indigo-400 uppercase tracking-widest mb-6 pb-4 border-b border-white/5 flex items-center gap-2">
-                                            <FiCpu className="h-4 w-4" /> Technical Core Stack
-                                        </h3>
-                                        <div className="premium-scrollbar space-y-4 max-h-125 overflow-y-auto pr-4">
-                                            {report.technicalQuestions?.map((q, idx) => (
-                                                <div key={idx} className="flex gap-4 p-5 rounded-xl border border-white/5 bg-white/2 hover:bg-white/4 transition-colors">
-                                                    <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-indigo-500/10 text-indigo-400 font-semibold text-xs border border-indigo-500/20">
-                                                        {idx + 1}
-                                                    </div>
-                                                    <p className="text-[14.5px] text-slate-300/90 leading-relaxed pt-0.5">{q}</p>
+                                <div className="p-6 sm:p-8 pt-0">
+                                    <div className="grid gap-4">
+                                        {report.technicalQuestions?.map((q, idx) => (
+                                            <div key={idx} className="group relative flex gap-5 rounded-2xl border border-indigo-500/10 bg-indigo-500/2 p-6 transition-all hover:bg-indigo-500/5 hover:border-indigo-500/30 hover:shadow-[0_0_20px_rgba(99,102,241,0.05)] overflow-hidden">
+                                                {/* Left Edge Highlight */}
+                                                <div className="absolute top-0 left-0 w-1 h-full bg-indigo-500/20 group-hover:bg-indigo-400 transition-colors duration-300"></div>
+
+                                                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-indigo-500/10 text-indigo-400 font-bold text-sm border border-indigo-500/20 group-hover:scale-110 transition-transform duration-300">
+                                                    {idx + 1}
                                                 </div>
-                                            ))}
-                                        </div>
-                                    </div>
-                                    <div className="rounded-2xl border border-white/5 bg-black/20 p-6 sm:p-8">
-                                        <h3 className="text-xs font-semibold text-emerald-400 uppercase tracking-widest mb-6 pb-4 border-b border-white/5 flex items-center gap-2">
-                                            <FiTarget className="h-4 w-4" /> Behavioral & Cultural
-                                        </h3>
-                                        <div className="premium-scrollbar space-y-4 max-h-125 overflow-y-auto pr-4">
-                                            {report.behavioralQuestions?.map((q, idx) => (
-                                                <div key={idx} className="flex gap-4 p-5 rounded-xl border border-white/5 bg-white/2 hover:bg-white/4 transition-colors">
-                                                    <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-400 font-semibold text-xs border border-emerald-500/20">
-                                                        {idx + 1}
-                                                    </div>
-                                                    <p className="text-[14.5px] text-slate-300/90 leading-relaxed pt-0.5">{q}</p>
-                                                </div>
-                                            ))}
-                                        </div>
+                                                <p className="text-[15.5px] text-slate-300/90 leading-relaxed pt-1.5 flex-1">{q}</p>
+                                            </div>
+                                        ))}
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    {/* Section 4: 7-Day Sprint Plan */}
+                    {/* 9. Cultural Alignment & Behavioral Scenarios */}
                     <div className="rounded-3xl border border-white/5 bg-white/2 backdrop-blur-xl transition-all duration-300 overflow-hidden">
-                        <div
-                            onClick={() => toggleSection("actionPlan")}
-                            className="cursor-pointer flex items-center justify-between p-6 sm:px-8 hover:bg-white/2 transition-colors"
-                        >
+                        <div onClick={() => toggleSection("behavioralQs")} className="cursor-pointer flex items-center justify-between p-6 sm:px-8 hover:bg-white/2 transition-colors">
+                            <div className="flex items-center gap-4">
+                                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-linear-to-br from-amber-500/20 to-transparent border border-amber-500/20 text-amber-400">
+                                    <FiActivity className="h-6 w-6" />
+                                </div>
+                                <h2 className="text-lg font-medium tracking-wide text-white">Cultural Alignment & Behavioral Scenarios</h2>
+                            </div>
+                            <div className={`flex h-10 w-10 items-center justify-center rounded-full border border-white/5 bg-black/20 text-slate-400 transition-transform duration-300 ${sections.behavioralQs ? 'rotate-180' : 'rotate-0'}`}>
+                                <FiChevronDown size={20} />
+                            </div>
+                        </div>
+                        <div className={`accordion-content ${sections.behavioralQs ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}>
+                            <div className="overflow-hidden">
+                                <div className="p-6 sm:p-8 pt-0">
+                                    <div className="grid gap-4">
+                                        {report.behavioralQuestions?.map((q, idx) => (
+                                            <div key={idx} className="group relative flex gap-5 rounded-2xl border border-amber-500/10 bg-amber-500/2 p-6 transition-all hover:bg-amber-500/5 hover:border-amber-500/30 hover:shadow-[0_0_20px_rgba(245,158,11,0.05)] overflow-hidden">
+                                                {/* Left Edge Highlight */}
+                                                <div className="absolute top-0 left-0 w-1 h-full bg-amber-500/20 group-hover:bg-amber-400 transition-colors duration-300"></div>
+
+                                                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-amber-500/10 text-amber-400 font-bold text-sm border border-amber-500/20 group-hover:scale-110 transition-transform duration-300">
+                                                    {idx + 1}
+                                                </div>
+                                                <p className="text-[15.5px] text-slate-300/90 leading-relaxed pt-1.5 flex-1">{q}</p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* 10. 7-Day Acceleration Sprint */}
+                    <div className="rounded-3xl border border-white/5 bg-white/2 backdrop-blur-xl transition-all duration-300 overflow-hidden">
+                        <div onClick={() => toggleSection("actionPlan")} className="cursor-pointer flex items-center justify-between p-6 sm:px-8 hover:bg-white/2 transition-colors">
                             <div className="flex items-center gap-4">
                                 <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-linear-to-br from-rose-500/20 to-transparent border border-rose-500/20 text-rose-400">
                                     <FiBookOpen className="h-6 w-6" />
@@ -448,40 +583,39 @@ export default function ResumeAnalysis() {
                                 <FiChevronDown size={20} />
                             </div>
                         </div>
-
                         <div className={`accordion-content ${sections.actionPlan ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}>
                             <div className="overflow-hidden">
                                 <div className="p-6 sm:p-8 pt-0">
                                     {/* Focus Areas Tag */}
-                                    <div className="mb-10 flex flex-col sm:flex-row sm:items-center gap-4 rounded-2xl border border-white/5 bg-black/20 p-6">
-                                        <span className="text-xs font-semibold text-slate-400 uppercase tracking-widest shrink-0">Priority Focus Areas:</span>
+                                    <div className="mb-12 flex flex-col sm:flex-row sm:items-center gap-4 rounded-2xl border border-rose-500/20 bg-rose-500/5 p-6 shadow-inner">
+                                        <span className="text-xs font-semibold text-rose-200 uppercase tracking-widest shrink-0">Sprint Focus Areas:</span>
                                         <div className="flex flex-wrap gap-2.5">
                                             {report.prioritySkills?.map((skill, i) => (
-                                                <span key={i} className="text-xs border border-rose-500/20 bg-rose-500/10 text-rose-300 font-medium px-4 py-1.5 rounded-full shadow-[0_0_10px_rgba(225,29,72,0.1)]">{skill}</span>
+                                                <span key={i} className="text-[13px] border border-rose-500/30 bg-rose-500/20 text-white font-medium px-4 py-1.5 rounded-full shadow-[0_0_15px_rgba(225,29,72,0.2)]">{skill}</span>
                                             ))}
                                         </div>
                                     </div>
 
-                                    {/* Flex-Based Timeline (Never clips numbers) */}
-                                    <div className="premium-scrollbar max-h-150 overflow-y-auto pr-4 flex flex-col gap-0">
+                                    {/* Premium Glowing Timeline */}
+                                    <div className="relative flex flex-col gap-0">
+                                        {/* Continuous Glowing Background Line */}
+                                        <div className="absolute left-6.75 top-6 bottom-6 w-0.5 bg-linear-to-b from-rose-500/50 via-rose-500/20 to-transparent rounded-full z-0" />
+
                                         {report.preparationPlan?.map((planStep, idx) => (
-                                            <div key={idx} className="flex group w-full">
-                                                {/* Vertical Line & Dot Column */}
-                                                <div className="flex flex-col items-center mr-6">
-                                                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#05050a] border-2 border-rose-500/40 text-sm font-bold text-rose-400 transition-all group-hover:bg-rose-500 group-hover:text-white group-hover:border-rose-400 shadow-[0_0_15px_rgba(225,29,72,0.15)] z-10">
+                                            <div key={idx} className="flex group w-full relative z-10 mb-8 last:mb-0">
+                                                <div className="flex flex-col items-center mr-6 sm:mr-8">
+                                                    <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-[#05050a] border-2 border-rose-500/30 text-[15px] font-bold text-rose-400 transition-all duration-300 group-hover:bg-rose-500 group-hover:text-white group-hover:border-rose-400 shadow-[0_0_15px_rgba(225,29,72,0.15)] group-hover:shadow-[0_0_25px_rgba(225,29,72,0.5)]">
                                                         {idx + 1}
                                                     </div>
-                                                    {/* The connecting line - render on all except the last item */}
-                                                    {idx < (report.preparationPlan.length - 1) && (
-                                                        <div className="w-0.5 flex-1 bg-linear-to-b from-rose-500/30 to-white/5 my-2 rounded-full"></div>
-                                                    )}
                                                 </div>
 
-                                                {/* Content Column */}
-                                                <div className="flex-1 pb-8">
-                                                    <div className="rounded-2xl border border-white/5 bg-black/20 p-6 transition-colors group-hover:bg-white/2 group-hover:border-white/10">
-                                                        <h4 className="text-[13px] font-bold text-white mb-2 uppercase tracking-widest opacity-80">Day 0{idx + 1}</h4>
-                                                        <p className="text-[15px] font-medium text-slate-300/90 leading-relaxed">{planStep}</p>
+                                                <div className="flex-1">
+                                                    <div className="rounded-2xl border border-rose-500/10 bg-rose-500/2 p-6 sm:p-8 transition-all duration-300 group-hover:bg-rose-500/5 group-hover:border-rose-500/30 group-hover:-translate-y-1 group-hover:shadow-xl">
+                                                        <h4 className="text-[14px] font-bold text-rose-300 mb-3 uppercase tracking-widest flex items-center gap-2">
+                                                            Day 0{idx + 1}
+                                                            <div className="h-px flex-1 bg-linear-to-r from-rose-500/20 to-transparent ml-2" />
+                                                        </h4>
+                                                        <p className="text-[15.5px] font-medium text-slate-300/90 leading-relaxed">{planStep}</p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -492,12 +626,9 @@ export default function ResumeAnalysis() {
                         </div>
                     </div>
 
-                    {/* Section 5: Recommended Projects */}
+                    {/* 11. Recommended Architectural Projects */}
                     <div className="rounded-3xl border border-white/5 bg-white/2 backdrop-blur-xl transition-all duration-300 overflow-hidden">
-                        <div
-                            onClick={() => toggleSection("recommendations")}
-                            className="cursor-pointer flex items-center justify-between p-6 sm:px-8 hover:bg-white/2 transition-colors"
-                        >
+                        <div onClick={() => toggleSection("recommendations")} className="cursor-pointer flex items-center justify-between p-6 sm:px-8 hover:bg-white/2 transition-colors">
                             <div className="flex items-center gap-4">
                                 <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-linear-to-br from-blue-500/20 to-transparent border border-blue-500/20 text-blue-400">
                                     <FiCpu className="h-6 w-6" />
@@ -508,17 +639,21 @@ export default function ResumeAnalysis() {
                                 <FiChevronDown size={20} />
                             </div>
                         </div>
-
                         <div className={`accordion-content ${sections.recommendations ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}>
                             <div className="overflow-hidden">
-                                <div className="p-6 sm:p-8 pt-0 premium-scrollbar max-h-150 overflow-y-auto grid gap-6 sm:grid-cols-2 pr-4">
+                                <div className="p-6 sm:p-8 pt-0 grid gap-6 lg:grid-cols-2">
                                     {report.recommendedProjects?.map((project, idx) => (
-                                        <div key={idx} className="group rounded-2xl border border-white/5 bg-black/20 p-6 sm:p-8 transition-all hover:bg-white/2 hover:border-blue-500/30">
-                                            <div className="flex items-center gap-4 mb-5 border-b border-white/5 pb-4">
-                                                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-500/10 text-blue-400 font-bold text-sm border border-blue-500/20">0{idx + 1}</div>
-                                                <div className="text-xs font-semibold uppercase tracking-widest text-blue-300">Portfolio Build</div>
+                                        <div key={idx} className="group relative rounded-2xl border border-blue-500/10 bg-blue-500/2 p-8 transition-all duration-300 hover:bg-blue-500/4 hover:border-blue-500/30 hover:-translate-y-1 hover:shadow-[0_15px_30px_-10px_rgba(59,130,246,0.2)] overflow-hidden">
+                                            {/* Top Glowing Tab Bar */}
+                                            <div className="absolute top-0 left-0 w-full h-0.75 bg-linear-to-r from-transparent via-blue-500/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+                                            <div className="flex items-center gap-4 mb-6 border-b border-blue-500/10 pb-5">
+                                                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-500/10 text-blue-400 font-bold text-lg border border-blue-500/20 group-hover:scale-110 transition-transform duration-300">
+                                                    0{idx + 1}
+                                                </div>
+                                                <div className="text-sm font-semibold uppercase tracking-widest text-blue-300">Architecture Blueprint</div>
                                             </div>
-                                            <p className="text-[14.5px] text-slate-300/90 leading-relaxed">{project}</p>
+                                            <p className="text-[15.5px] text-slate-300/90 leading-[1.7]">{project}</p>
                                         </div>
                                     ))}
                                 </div>
