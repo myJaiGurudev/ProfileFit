@@ -1,6 +1,7 @@
 const { Router } = require('express')
 const authController = require("../controllers/auth.controller")
 const authMiddleware = require("../middlewares/auth.middleware")
+const upload = require("../middlewares/file.middleware");
 
 const authRouter = Router()
 
@@ -47,5 +48,16 @@ authRouter.post("/google-login", authController.googleLoginController);
  */
 authRouter.get("/get-details", authMiddleware.authUser, authController.getMeController)
 
+/**
+ * @route PUT /api/auth/update-profile
+ * @description update user profile details
+ * @access private
+ */
+authRouter.put(
+    "/update-profile", 
+    authMiddleware.authUser, 
+    upload.single("profilePicture"),
+    authController.updateProfileController
+);
 
 module.exports = authRouter

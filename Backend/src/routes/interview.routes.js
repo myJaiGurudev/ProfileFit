@@ -4,7 +4,8 @@ const {
     generateInterviewReportController,
     getInterviewReportByIdController,
     getAllInterviewReportsController,
-    generateResumePdfController
+    generateResumePdfController,
+    deleteInterviewReportController
 } = require("../controllers/interview.controller")
 const upload = require("../middlewares/file.middleware")
 
@@ -57,6 +58,8 @@ interviewRouter.post(
     authMiddleware.authUser,
     generateResumePdfController
 )
+
+interviewRouter.delete("/:id", authMiddleware.authUser, deleteInterviewReportController);
 
 
 

@@ -9,6 +9,8 @@ import AnalyzeResume from "./features/main/pages/AnalyzeResume";
 import LayoutWithFooter from "./features/main/components/LayoutWithFooter";
 import LayoutWithoutFooter from "./features/main/components/LayoutWithoutFooter";
 import ResumeAnalysis from "./features/ResumeAnalysis/ResumeAnalysis";
+import InterviewHistory from "./features/main/pages/InterviewHistory"
+import Profile from "./features/main/pages/Profile"
 
 export const router = createBrowserRouter([
     {
@@ -32,6 +34,14 @@ export const router = createBrowserRouter([
             {
                 path: "/resume-analysis/:id",
                 element: <ResumeAnalysis />
+            },
+            {
+                path: "/history",
+                element: <InterviewHistory />
+            },
+            {
+                path: "/profile",
+                element: <Profile />
             }
         ]
     },

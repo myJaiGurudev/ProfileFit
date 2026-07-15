@@ -301,15 +301,12 @@ export default function Navbar() {
                                                     </Link>
 
                                                     <Link
-                                                        to="/settings"
+                                                        to="/history"
                                                         onClick={() => setProfileOpen(false)}
                                                         className="flex items-center gap-3 px-5 py-3 text-slate-700 transition hover:bg-slate-50"
                                                     >
-
-                                                        <FiSettings />
-
-                                                        Settings
-
+                                                        <FiGrid />
+                                                        History
                                                     </Link>
 
                                                     <motion.button
@@ -661,15 +658,12 @@ export default function Navbar() {
                                         </Link>
 
                                         <Link
-                                            to="/settings"
+                                            to="/history"
                                             onClick={closeMenu}
                                             className="cursor-pointer flex items-center gap-3 rounded-xl px-4 py-3 text-slate-700 transition hover:bg-slate-100 hover:text-blue-600"
                                         >
-
-                                            <FiSettings />
-
-                                            Settings
-
+                                            <FiGrid />
+                                            History
                                         </Link>
 
                                         <a

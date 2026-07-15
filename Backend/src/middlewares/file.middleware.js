@@ -5,12 +5,19 @@ const MAX_FILE_SIZE = 5 * 1024 * 1024
 
 const ALLOWED_MIME_TYPES = Object.freeze([
     "application/pdf",
-    "text/plain"
+    "text/plain",
+    "image/jpeg",
+    "image/png",
+    "image/webp"
 ])
 
 const ALLOWED_EXTENSIONS = Object.freeze([
     ".pdf",
-    ".txt"
+    ".txt",
+    ".jpg",
+    ".jpeg",
+    ".png",
+    ".webp"
 ])
 
 const storage = multer.memoryStorage()
