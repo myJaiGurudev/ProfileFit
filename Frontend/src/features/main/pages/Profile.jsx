@@ -1,6 +1,36 @@
 import { useState, useEffect, useRef } from "react";
 import { FiUser, FiMail, FiCheck, FiX, FiEdit2, FiCamera } from "react-icons/fi";
 import api from "../../auth/components/api";
+import { useAuth } from "../../../Context/AuthContext";
+
+// Helper function to compress images before upload
+const compressImage = (file) => {
+    return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = (event) => {
+            const img = new Image();
+            img.src = event.target.result;
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                const MAX_WIDTH = 800;
+                const scaleSize = MAX_WIDTH / img.width;
+                canvas.width = MAX_WIDTH;
+                canvas.height = img.height * scaleSize;
+
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+                canvas.toBlob((blob) => {
+                    resolve(new File([blob], file.name, {
+                        type: 'image/jpeg',
+                        lastModified: Date.now()
+                    }));
+                }, 'image/jpeg', 0.7);
+            };
+        };
+    });
+};
 
 export default function Profile() {
     const [user, setUser] = useState({ username: "", email: "", profilePicture: "" });
@@ -14,6 +44,8 @@ export default function Profile() {
 
     const fileInputRef = useRef(null);
     const editContainerRef = useRef(null);
+
+    const { setUser: setGlobalUser } = useAuth();
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -57,11 +89,22 @@ export default function Profile() {
 
         setIsUploadingPhoto(true);
         try {
+            const compressedFile = await compressImage(file);
+
             const formData = new FormData();
-            formData.append("profilePicture", file);
-            const response = await api.put("/auth/update-profile", formData);
+            formData.append("profilePicture", compressedFile);
+
+            const response = await api.put("/auth/update-profile", formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data"
+                }
+            });
+
             setUser(response.data.user);
             setPreviewImage(response.data.user.profilePicture);
+
+            setGlobalUser(response.data.user);
+
             showToast("Photo updated successfully.", "success");
         } catch (error) {
             showToast("Failed to upload photo.", "error");
@@ -77,15 +120,30 @@ export default function Profile() {
             setDraftName(user.username);
             return;
         }
+
+        const originalUser = { ...user };
+        const originalDraft = user.username;
+
+        setUser((prev) => ({ ...prev, username: draftName.trim() }));
+        setIsEditingName(false);
         setSavingName(true);
+
         try {
             const formData = new FormData();
             formData.append("username", draftName.trim());
             const response = await api.put("/auth/update-profile", formData);
+
+            // Update local state with confirmed backend data
             setUser(response.data.user);
-            setIsEditingName(false);
+
+            // Update global state for Navbar to see immediately
+            setGlobalUser(response.data.user);
+
             showToast("Username updated.", "success");
         } catch (error) {
+            // Rollback to original if it failed
+            setUser(originalUser);
+            setDraftName(originalDraft);
             showToast(error.response?.data?.message || "Failed to update name.", "error");
         } finally {
             setSavingName(false);
@@ -93,25 +151,24 @@ export default function Profile() {
     };
 
     return (
-        <main className="min-h-screen bg-[#020617] text-slate-200 py-16 sm:py-24 px-4 sm:px-6 flex justify-center relative selection:bg-cyan-500/30">
+        <main className="min-h-screen bg-[#020617] text-slate-200 pt-24 pb-16 sm:py-24 px-4 sm:px-6 flex justify-center relative overflow-x-hidden selection:bg-cyan-500/30">
 
             {/* Tech Grid Background matching your image */}
             <div className="fixed inset-0 z-0 pointer-events-none">
                 <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-size-[3.5rem_3.5rem] opacity-60"></div>
-                {/* Subtle top glow to match the header lighting in your image */}
                 <div className="absolute top-[-20%] left-[20%] w-[60%] h-[50%] bg-cyan-900/10 rounded-full blur-[120px]"></div>
             </div>
 
-            <div className="relative z-10 w-full max-w-2xl">
-                <header className="mb-10 sm:mb-12 text-center sm:text-left">
-                    <h1 className="text-4xl sm:text-5xl font-extrabold text-white tracking-tight">
+            <div className="relative z-10 w-full max-w-2xl flex flex-col items-center sm:items-stretch">
+                <header className="mb-8 sm:mb-12 text-center sm:text-left w-full">
+                    <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight">
                         Account <span className="text-cyan-400">Profile</span>
                     </h1>
-                    <p className="text-slate-400 mt-3 text-[15px]">Manage your intelligence profile and personal details.</p>
+                    <p className="text-slate-400 mt-2 sm:mt-3 text-sm sm:text-[15px]">Manage your intelligence profile and personal details.</p>
                 </header>
 
                 {loading ? (
-                    <div className="bg-[#0B1120]/90 border border-slate-800 p-8 sm:p-12 rounded-4xl relative overflow-hidden shadow-2xl">
+                    <div className="bg-[#0B1120]/90 border border-slate-800 p-6 sm:p-12 rounded-2xl sm:rounded-4xl relative overflow-hidden shadow-2xl w-full max-w-[calc(100vw-2rem)] sm:max-w-none">
                         {/* Premium AI Scanner Shimmer */}
                         <div className="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-cyan-500/10 to-transparent animate-[shimmer_1.5s_infinite]"></div>
 
@@ -130,7 +187,7 @@ export default function Profile() {
                         </div>
                     </div>
                 ) : (
-                    <div className="bg-[#0B1120]/80 backdrop-blur-md border border-slate-800/80 p-8 sm:p-12 rounded-4xl shadow-[0_8px_32px_rgba(0,0,0,0.5)]">
+                    <div className="bg-[#0B1120]/80 backdrop-blur-md border border-slate-800/80 p-6 sm:p-12 rounded-2xl sm:rounded-4xl shadow-[0_8px_32px_rgba(0,0,0,0.5)] w-full max-w-[calc(100vw-2rem)] sm:max-w-none">
                         <div className="flex flex-col sm:flex-row gap-10 sm:gap-12 items-center sm:items-start w-full">
 
                             {/* Avatar Section */}
@@ -181,7 +238,7 @@ export default function Profile() {
                                     <label className="text-[11px] font-bold text-slate-500 uppercase tracking-widest cursor-default">Username</label>
                                     <div className="flex w-full justify-center sm:justify-start relative h-12 items-center">
                                         {isEditingName ? (
-                                            <div ref={editContainerRef} className="relative w-full max-w-sm">
+                                            <div ref={editContainerRef} className="relative w-full max-w-60 sm:max-w-sm">
                                                 <input
                                                     value={draftName}
                                                     onChange={(e) => setDraftName(e.target.value)}
@@ -222,8 +279,8 @@ export default function Profile() {
                                                 </div>
                                             </div>
                                         ) : (
-                                            <div className="group flex items-center gap-3">
-                                                <span className="text-2xl font-bold text-white cursor-default tracking-tight text-center sm:text-left break-all">{user.username}</span>
+                                            <div className="group flex flex-col sm:flex-row items-center gap-2 sm:gap-3 w-full">
+                                                <span className="text-xl sm:text-2xl font-bold text-white cursor-default tracking-tight text-center sm:text-left break-all">{user.username}</span>
                                                 <button
                                                     onClick={() => setIsEditingName(true)}
                                                     className="p-2 rounded-lg bg-slate-800/50 hover:bg-cyan-500/20 text-slate-400 hover:text-cyan-400 sm:opacity-0 group-hover:opacity-100 transition-all focus:opacity-100 shrink-0 cursor-pointer border border-transparent hover:border-cyan-500/30"
@@ -254,10 +311,13 @@ export default function Profile() {
             {/* Premium Tech Toast */}
             <div className={`fixed bottom-6 sm:bottom-10 right-0 left-0 sm:left-auto sm:right-10 z-50 flex justify-center sm:justify-end transition-all duration-400 transform px-4 sm:px-0 ${toast.visible ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-4 opacity-0 scale-95 pointer-events-none'}`}>
                 <div className={`px-4 py-3 rounded-xl border shadow-2xl flex items-center gap-3 w-full sm:w-auto max-w-sm ${toast.type === 'error'
-                        ? 'bg-[#150a0a] border-red-500/40 text-red-100'
-                        : 'bg-[#061121] border-cyan-500/40 text-cyan-50 shadow-[0_0_15px_rgba(34,211,238,0.1)]'
+                    ? 'bg-[#150a0a] border-red-500/40 text-red-100'
+                    : 'bg-[#061121] border-emerald-500/40 text-emerald-50 shadow-[0_0_15px_rgba(16,185,129,0.1)]'
                     }`}>
-                    <div className={`flex items-center justify-center h-6 w-6 rounded-md shrink-0 ${toast.type === 'error' ? 'bg-red-500/20 text-red-400' : 'bg-cyan-500/20 text-cyan-400'}`}>
+                    <div className={`flex items-center justify-center h-6 w-6 rounded-md shrink-0 ${toast.type === 'error'
+                        ? 'bg-red-500/20 text-red-400'
+                        : 'bg-emerald-500/20 text-emerald-400'
+                        }`}>
                         {toast.type === 'error' ? <FiX className="h-3.5 w-3.5" /> : <FiCheck className="h-3.5 w-3.5" />}
                     </div>
                     <span className="font-medium text-[13px] pr-2">{toast.message}</span>
