@@ -6,23 +6,21 @@ import {
     FiTrendingUp, FiBriefcase, FiBookOpen, FiActivity,
     FiChevronDown, FiDownload
 } from "react-icons/fi";
+import { IoClose } from "react-icons/io5";
 import api from "../auth/components/api";
 
 export default function ResumeAnalysis() {
     const { id } = useParams();
     const navigate = useNavigate();
-    const location = useLocation(); // Captured to read immediate redirect payloads
+    const location = useLocation();
 
-    // Core states
     const [report, setReport] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
-    // PDF Generation State
     const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
     const [pdfError, setPdfError] = useState("");
 
-    // Section Visibility toggles
     const [sections, setSections] = useState({
         recruiter: true,
         technical: true,
@@ -41,14 +39,12 @@ export default function ResumeAnalysis() {
         setSections(prev => ({ ...prev, [sectionKey]: !prev[sectionKey] }));
     };
 
-    // Unified Processing: Handles both loading old reports AND analyzing fresh inputs
     useEffect(() => {
         const processAnalysisReport = async () => {
             try {
                 setLoading(true);
                 setError("");
 
-                // Scenario A: User clicked "Analyze" in workspace and redirected here immediately
                 if (id === "new" && location.state) {
                     const { resumeFile, resumeText, jobDescriptionFile, jobDescriptionText } = location.state;
 
@@ -66,7 +62,6 @@ export default function ResumeAnalysis() {
                         formData.append("jobDescription", jobDescriptionText);
                     }
 
-                    // Execute long-running computational analysis inside this screen
                     const response = await api.post("/interview", formData, {
                         headers: {
                             "Content-Type": "multipart/form-data"
@@ -76,17 +71,14 @@ export default function ResumeAnalysis() {
                     const dynamicReport = response.data.interviewReport;
                     setReport(dynamicReport);
 
-                    // Rewrite browser address bar query from /new to /:id silently
                     if (dynamicReport?._id) {
                         window.history.replaceState(null, "", `/resume-analysis/${dynamicReport._id}`);
                     }
                 } 
-                // Scenario B: Traditional mounting loop via standard historical ID path
                 else if (id && id !== "new") {
                     const response = await api.get(`/interview/report/${id}`);
                     setReport(response.data.interviewReport);
                 } else {
-                    // Fallback boundary check if state is missing on /new
                     throw new Error("Missing document vectors. Please re-upload inside the workspace.");
                 }
             } catch (err) {
@@ -100,7 +92,6 @@ export default function ResumeAnalysis() {
         processAnalysisReport();
     }, [id, location.state]);
 
-    // PDF Generation Handler
     const handleGenerateResume = async () => {
         try {
             setIsGeneratingPdf(true);
@@ -121,9 +112,12 @@ export default function ResumeAnalysis() {
             link.remove();
             window.URL.revokeObjectURL(url);
         } catch (err) {
-            console.error("Failed to generate resume:", err);
-            setPdfError("Premium resume generation temporarily unavailable. Please try again shortly.");
-            setTimeout(() => setPdfError(""), 5000);
+            console.error("PDF Generation Failed (Hidden from user):", err);
+            
+            // Clean two-line message
+            setPdfError("Resume generation failed.\nPlease try again shortly.");
+
+            setTimeout(() => setPdfError(""), 6000);
         } finally {
             setIsGeneratingPdf(false);
         }
@@ -195,7 +189,6 @@ export default function ResumeAnalysis() {
 
             <div className="mx-auto max-w-7xl px-4 pt-24 sm:px-6 lg:px-8 relative z-10">
                 
-                {/* --- HEADER ACTIONS --- */}
                 <div className="animate-fade-up flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between mb-10">
                     <button
                         onClick={() => navigate("/analyze-resume")}
@@ -207,14 +200,7 @@ export default function ResumeAnalysis() {
                         Back to Workspace
                     </button>
 
-                    <div className="flex flex-col sm:flex-row items-center gap-4 relative">
-                        {pdfError && (
-                            <div className="absolute right-0 -top-12 flex items-center gap-2 rounded-xl border border-rose-500/20 bg-rose-500/10 px-4 py-2 text-xs font-semibold text-rose-300 backdrop-blur-md animate-fade-up shadow-[0_4px_20px_rgba(225,29,72,0.15)]">
-                                <FiAlertTriangle className="w-3.5 h-3.5 text-rose-400 shrink-0" />
-                                <span>{pdfError}</span>
-                            </div>
-                        )}
-
+                    <div className="flex flex-col sm:flex-row items-center gap-4">
                         <div className="flex items-center gap-3 rounded-full border border-white/10 bg-black/40 p-1.5 backdrop-blur-xl shadow-inner select-none cursor-default">
                             <div className="flex items-center gap-2.5 rounded-full border border-white/5 bg-white/5 px-4 py-1.5 text-xs font-semibold tracking-wide text-slate-200 shadow-sm">
                                 <FiCpu className="h-4 w-4 text-indigo-400" />
@@ -231,9 +217,9 @@ export default function ResumeAnalysis() {
                             disabled={isGeneratingPdf}
                             className={`group relative flex items-center justify-center gap-2.5 px-7 py-2.5 text-sm font-semibold text-slate-100 transition-all duration-300 rounded-full border backdrop-blur-md shadow-lg overflow-hidden
                             ${isGeneratingPdf
-                                ? "cursor-not-allowed opacity-60 border-indigo-500/10 bg-indigo-500/5"
-                                : "cursor-pointer bg-indigo-500/10 border-indigo-500/30 hover:bg-indigo-500/20 hover:border-indigo-400 hover:shadow-[0_0_20px_rgba(99,102,241,0.2)] active:scale-95"
-                            }`}
+                                    ? "cursor-not-allowed opacity-60 border-indigo-500/10 bg-indigo-500/5"
+                                    : "cursor-pointer bg-indigo-500/10 border-indigo-500/30 hover:bg-indigo-500/20 hover:border-indigo-400 hover:shadow-[0_0_20px_rgba(99,102,241,0.2)] active:scale-95"
+                                }`}
                         >
                             {!isGeneratingPdf && <div className="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent group-hover:animate-[shimmer_1.5s_infinite_linear]" />}
 
@@ -255,7 +241,6 @@ export default function ResumeAnalysis() {
                     </div>
                 </div>
 
-                {/* --- HERO PROFILE CARD --- */}
                 <div className="animate-fade-up relative mb-14 overflow-hidden rounded-[2.5rem] border border-white/10 bg-[#0a0a10]/80 backdrop-blur-2xl shadow-[0_30px_60px_-15px_rgba(0,0,0,0.8)] group">
                     <div className="absolute top-0 left-0 w-full h-0.5 bg-linear-to-r from-transparent via-indigo-500 to-transparent opacity-70 group-hover:via-emerald-400 transition-colors duration-700"></div>
                     <div className="absolute inset-0 bg-linear-to-br from-indigo-500/5 via-transparent to-emerald-500/5 pointer-events-none"></div>
@@ -292,7 +277,6 @@ export default function ResumeAnalysis() {
                     </div>
                 </div>
 
-                {/* --- METRICS DASHBOARD --- */}
                 <div className="animate-fade-up grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5 mb-16" style={{ animationDelay: '100ms' }}>
                     {[
                         { label: "Resume Score", val: report?.overallScore || 0, sub: "Overall Quality" },
@@ -329,9 +313,8 @@ export default function ResumeAnalysis() {
                     })}
                 </div>
 
-                {/* --- STRUCTURED REPORT SECTIONS --- */}
                 <div className="animate-fade-up space-y-6" style={{ animationDelay: '200ms' }}>
-                    {/* 1. Recruiter Assessment */}
+                    
                     <div className="rounded-3xl border border-white/5 bg-white/2 backdrop-blur-xl transition-all duration-300 overflow-hidden">
                         <div onClick={() => toggleSection("recruiter")} className="cursor-pointer flex items-center justify-between p-6 sm:px-8 hover:bg-white/2 transition-colors">
                             <div className="flex items-center gap-4">
@@ -358,7 +341,6 @@ export default function ResumeAnalysis() {
                         </div>
                     </div>
 
-                    {/* 2. Technical Evaluation */}
                     <div className="rounded-3xl border border-white/5 bg-white/2 backdrop-blur-xl transition-all duration-300 overflow-hidden">
                         <div onClick={() => toggleSection("technical")} className="cursor-pointer flex items-center justify-between p-6 sm:px-8 hover:bg-white/2 transition-colors">
                             <div className="flex items-center gap-4">
@@ -385,7 +367,6 @@ export default function ResumeAnalysis() {
                         </div>
                     </div>
 
-                    {/* 3. Matched Keywords */}
                     <div className="rounded-3xl border border-white/5 bg-white/2 backdrop-blur-xl transition-all duration-300 overflow-hidden">
                         <div onClick={() => toggleSection("matchedKw")} className="cursor-pointer flex items-center justify-between p-6 sm:px-8 hover:bg-white/2 transition-colors">
                             <div className="flex items-center gap-4">
@@ -413,7 +394,6 @@ export default function ResumeAnalysis() {
                         </div>
                     </div>
 
-                    {/* 4. Missing Keywords */}
                     <div className="rounded-3xl border border-white/5 bg-white/2 backdrop-blur-xl transition-all duration-300 overflow-hidden">
                         <div onClick={() => toggleSection("missingKw")} className="cursor-pointer flex items-center justify-between p-6 sm:px-8 hover:bg-white/2 transition-colors">
                             <div className="flex items-center gap-4">
@@ -441,7 +421,6 @@ export default function ResumeAnalysis() {
                         </div>
                     </div>
 
-                    {/* 5. Core Strengths */}
                     <div className="rounded-3xl border border-white/5 bg-white/2 backdrop-blur-xl transition-all duration-300 overflow-hidden">
                         <div onClick={() => toggleSection("strengths")} className="cursor-pointer flex items-center justify-between p-6 sm:px-8 hover:bg-white/2 transition-colors">
                             <div className="flex items-center gap-4">
@@ -472,7 +451,6 @@ export default function ResumeAnalysis() {
                         </div>
                     </div>
 
-                    {/* 6. Identified Weaknesses */}
                     <div className="rounded-3xl border border-white/5 bg-white/2 backdrop-blur-xl transition-all duration-300 overflow-hidden">
                         <div onClick={() => toggleSection("weaknesses")} className="cursor-pointer flex items-center justify-between p-6 sm:px-8 hover:bg-white/2 transition-colors">
                             <div className="flex items-center gap-4">
@@ -503,7 +481,6 @@ export default function ResumeAnalysis() {
                         </div>
                     </div>
 
-                    {/* 7. Recommended Adjustments */}
                     <div className="rounded-3xl border border-white/5 bg-white/2 backdrop-blur-xl transition-all duration-300 overflow-hidden">
                         <div onClick={() => toggleSection("adjustments")} className="cursor-pointer flex items-center justify-between p-6 sm:px-8 hover:bg-white/2 transition-colors">
                             <div className="flex items-center gap-4">
@@ -534,7 +511,6 @@ export default function ResumeAnalysis() {
                         </div>
                     </div>
 
-                    {/* 8. Technical Competency Assessment */}
                     <div className="rounded-3xl border border-white/5 bg-white/2 backdrop-blur-xl transition-all duration-300 overflow-hidden">
                         <div onClick={() => toggleSection("techQs")} className="cursor-pointer flex items-center justify-between p-6 sm:px-8 hover:bg-white/2 transition-colors">
                             <div className="flex items-center gap-4">
@@ -566,7 +542,6 @@ export default function ResumeAnalysis() {
                         </div>
                     </div>
 
-                    {/* 9. Cultural Alignment & Behavioral Scenarios */}
                     <div className="rounded-3xl border border-white/5 bg-white/2 backdrop-blur-xl transition-all duration-300 overflow-hidden">
                         <div onClick={() => toggleSection("behavioralQs")} className="cursor-pointer flex items-center justify-between p-6 sm:px-8 hover:bg-white/2 transition-colors">
                             <div className="flex items-center gap-4">
@@ -598,7 +573,6 @@ export default function ResumeAnalysis() {
                         </div>
                     </div>
 
-                    {/* 10. 7-Day Acceleration Sprint */}
                     <div className="rounded-3xl border border-white/5 bg-white/2 backdrop-blur-xl transition-all duration-300 overflow-hidden">
                         <div onClick={() => toggleSection("actionPlan")} className="cursor-pointer flex items-center justify-between p-6 sm:px-8 hover:bg-white/2 transition-colors">
                             <div className="flex items-center gap-4">
@@ -649,7 +623,6 @@ export default function ResumeAnalysis() {
                         </div>
                     </div>
 
-                    {/* 11. Recommended Architectural Projects */}
                     <div className="rounded-3xl border border-white/5 bg-white/2 backdrop-blur-xl transition-all duration-300 overflow-hidden">
                         <div onClick={() => toggleSection("recommendations")} className="cursor-pointer flex items-center justify-between p-6 sm:px-8 hover:bg-white/2 transition-colors">
                             <div className="flex items-center gap-4">
@@ -665,18 +638,26 @@ export default function ResumeAnalysis() {
                         <div className={`accordion-content ${sections.recommendations ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}>
                             <div className="overflow-hidden">
                                 <div className="p-6 sm:p-8 pt-0 grid gap-6 lg:grid-cols-2">
-                                    {report?.recommendedProjects?.map((project, idx) => (
-                                        <div key={idx} className="group relative rounded-2xl border border-blue-500/10 bg-blue-500/2 p-8 transition-all duration-300 hover:bg-blue-500/4 hover:border-blue-500/30 hover:-translate-y-1 hover:shadow-[0_15px_30px_-10px_rgba(59,130,246,0.2)] overflow-hidden">
-                                            <div className="absolute top-0 left-0 w-full h-0.75 bg-linear-to-r from-transparent via-blue-500/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                                            <div className="flex items-center gap-4 mb-6 border-b border-blue-500/10 pb-5">
-                                                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-500/10 text-blue-400 font-bold text-lg border border-blue-500/20 group-hover:scale-110 transition-transform duration-300">
-                                                    0{idx + 1}
+                                    {report?.recommendedProjects?.map((project, idx) => {
+                                        const parts = typeof project === "string" ? project.split(/[:\-]/, 2) : [];
+                                        const title = parts.length > 1 ? parts[0].trim() : `Project 0${idx + 1}`;
+                                        const desc = parts.length > 1 ? project.substring(parts[0].length + 1).trim() : project;
+
+                                        return (
+                                            <div key={idx} className="group relative rounded-2xl border border-blue-500/10 bg-blue-500/2 p-8 transition-all duration-300 hover:bg-blue-500/4 hover:border-blue-500/30 hover:-translate-y-1 hover:shadow-[0_15px_30px_-10px_rgba(59,130,246,0.2)] overflow-hidden">
+                                                <div className="absolute top-0 left-0 w-full h-0.75 bg-linear-to-r from-transparent via-blue-500/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                                                <div className="flex items-center gap-4 mb-6 border-b border-blue-500/10 pb-5">
+                                                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-500/10 text-blue-400 font-bold text-lg border border-blue-500/20 group-hover:scale-110 transition-transform duration-300">
+                                                        0{idx + 1}
+                                                    </div>
+                                                    <div className="text-sm font-semibold uppercase tracking-widest text-blue-300 line-clamp-1">
+                                                        {title}
+                                                    </div>
                                                 </div>
-                                                <div className="text-sm font-semibold uppercase tracking-widest text-blue-300">Architecture Blueprint</div>
+                                                <p className="text-[15.5px] text-slate-300/90 leading-[1.7] whitespace-pre-wrap">{desc}</p>
                                             </div>
-                                            <p className="text-[15.5px] text-slate-300/90 leading-[1.7]">{project}</p>
-                                        </div>
-                                    ))}
+                                        );
+                                    })}
                                 </div>
                             </div>
                         </div>
@@ -684,6 +665,38 @@ export default function ResumeAnalysis() {
 
                 </div>
             </div>
+
+            {/* --- PREMIUM FIXED ERROR TOAST --- */}
+            <div
+                className={`fixed bottom-8 right-8 z-9999 transition-all duration-500 ease-out ${
+                    pdfError
+                        ? "translate-y-0 opacity-100 scale-100"
+                        : "translate-y-5 opacity-0 scale-95 pointer-events-none"
+                }`}
+            >
+                <div className="flex w-96 items-center gap-4 rounded-2xl border border-rose-500/30 bg-[#150505]/95 p-5 shadow-[0_20px_50px_rgba(225,29,72,0.3)] backdrop-blur-xl">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-rose-500/15 text-rose-400 border border-rose-500/20 shadow-inner animate-pulse">
+                        <FiAlertTriangle className="h-5 w-5" />
+                    </div>
+
+                    <div className="flex flex-1 flex-col justify-center min-h-10">
+                        <span className="text-[11px] font-bold uppercase tracking-widest text-rose-400/70 mb-0.5 font-mono">
+                            Generation Failed
+                        </span>
+                        <p className="text-[13.5px] font-medium leading-relaxed text-rose-200 whitespace-pre-line">
+                            {pdfError}
+                        </p>
+                    </div>
+
+                    <button
+                        onClick={() => setPdfError("")}
+                        className="cursor-pointer flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-rose-400 transition-all duration-200 hover:scale-110 hover:bg-rose-500/15 hover:text-white active:scale-95"
+                    >
+                        <IoClose className="h-5 w-5" />
+                    </button>
+                </div>
+            </div>
+
         </main>
     );
 }

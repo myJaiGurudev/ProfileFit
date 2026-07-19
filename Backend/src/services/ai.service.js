@@ -29,46 +29,29 @@ if (!process.env.GOOGLE_GENAI_API_KEY) {
 }
 
 async function generateAiResponse(request) {
-
-    const MAX_RETRIES = 3
+    const MAX_RETRIES = 3;
 
     for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
-
         try {
-
             const response = await Promise.race([
                 ai.models.generateContent(request),
                 new Promise((_, reject) =>
                     setTimeout(() => reject(new Error("AI request timed out.")), AI_TIMEOUT)
                 )
-            ])
+            ]);
 
-            if (!response || !response.text) {
-                throw new Error("AI returned an empty response.")
-            }
-
-            return response
-
+            return response;
         } catch (error) {
-
-            if (attempt === MAX_RETRIES) {
-                throw error
+            // Check for Quota Exceeded (429)
+            if (error.message && error.message.includes("429")) {
+                throw new Error("API limit reached. Please upgrade your plan or try again later.");
             }
 
-            await new Promise(resolve =>
-                setTimeout(
-                    resolve,
-                    Math.min(
-                        2000 * attempt,
-                        5000
-                    )
-                )
-            )
+            if (attempt === MAX_RETRIES) throw error;
 
+            await new Promise(resolve => setTimeout(resolve, 2000 * attempt));
         }
-
     }
-
 }
 
 function safeJsonParse(text) {
