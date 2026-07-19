@@ -56,87 +56,30 @@ export default function AnalyzeResume() {
         };
     }, []);
 
-    const handleAnalyze = async () => {
-        if (!canAnalyze) {
+    const handleAnalyze = () => {
+        if (!canAnalyze) return;
+
+        const token = localStorage.getItem("token");
+        if (!token) {
+            if (redirectTimerRef.current) clearTimeout(redirectTimerRef.current);
+            triggerError("Please login to analyze your resume.");
+            redirectTimerRef.current = setTimeout(() => navigate("/login"), 5000);
             return;
         }
-        try {
 
-            const token = localStorage.getItem("token");
+        // Clear local cache immediately
+        localStorage.removeItem("document-text-Resume");
+        localStorage.removeItem("document-text-Job Description");
 
-            if (!token) {
-
-                if (redirectTimerRef.current) {
-                    clearTimeout(redirectTimerRef.current);
-                }
-
-                triggerError("Please login to analyze your resume.");
-
-                redirectTimerRef.current = setTimeout(() => {
-                    navigate("/login");
-                }, 5000);
-
-                return;
+        // NAVIGATE IMMEDIATELY: Pass files/text directly into the next view route state
+        navigate("/resume-analysis/new", {
+            state: {
+                resumeFile,
+                resumeText: resumeText.trim(),
+                jobDescriptionFile,
+                jobDescriptionText: jobDescriptionText.trim()
             }
-
-            setLoading(true);
-
-            const formData = new FormData();
-
-            if (resumeFile) {
-                formData.append("resume", resumeFile);
-            } else {
-                formData.append("resume", resumeText.trim());
-            }
-            if (jobDescriptionFile) {
-                formData.append(
-                    "jobDescriptionFile",
-                    jobDescriptionFile
-                );
-            } else {
-                formData.append(
-                    "jobDescription",
-                    jobDescriptionText.trim()
-                );
-            }
-            const response = await api.post("/interview", formData, {
-                headers: {
-                    "Content-Type": "multipart/form-data"
-                }
-            }
-            );
-
-            localStorage.removeItem("document-text-Resume");
-            localStorage.removeItem("document-text-Job Description");
-            setResumeFile(null);
-            setJobDescriptionFile(null);
-            setResumeText("");
-            setJobDescriptionText("");
-            navigate(
-                `/resume-analysis/${response.data.interviewReport._id}`
-            );
-        } catch (error) {
-
-            const message =
-                error.response?.data?.message ||
-                error.message ||
-                "Unable to analyze resume. Please try again.";
-
-            triggerError(message);
-
-            if (error.response?.status === 401) {
-
-                if (redirectTimerRef.current) {
-                    clearTimeout(redirectTimerRef.current);
-                }
-
-                redirectTimerRef.current = setTimeout(() => {
-                    navigate("/login");
-                }, 5000);
-            }
-        } finally {
-            setLoading(false);
-        }
+        });
     };
 
     return (
